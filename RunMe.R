@@ -1,0 +1,79 @@
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Script:            North Macedonia Country Report - RunMe File
+##
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+##
+## Dependencies:      World Justice Project
+##
+## Creation date:     November 13th, 2023
+##
+## This version:      November 13th, 2023
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Outline:                                                                                                 ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## 0.  Presettings                                                                                          ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Required Packages, Fonts, ggplot theme, color palettes, comparison countries and other general routines are
+# loaded from the following script:
+source("Code/settings.R")
+
+# Loading functions for sections
+source("Code/S01.R")
+
+# Loading plotting functions from GitHub
+source("https://raw.githubusercontent.com/ctoruno/WJP-Data-Viz/main/loading.R")
+loadVIZ(set = "NM")
+
+# Loading data
+master_data.df <- 
+  read_dta(file.path(path2SP, "6. Country Reports/North-Macedonia/Data/NMdata.dta")) %>%
+  mutate(
+    latestYear = max(year),
+    ethnigroup = case_when(
+      ethni == "Macedonian" ~ "Macedonian",
+      TRUE ~ "Other"
+    ),
+    relgroup = case_when(
+      relig %in% c("C57 - Orthodox Christian", "C60 - Protestant", "C67 - Roman Catholic") ~ "Christian",
+      TRUE ~ "Other"
+    )
+  )
+
+# Cleaning the Outputs directory for this country
+ordnung.fn()
+
+# Defining Main Country
+mainCountry <- "North Macedonia"
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##  Section 1: Authoritarianism, Fundamental Freedoms, and Accountability                                   ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Figure 1
+figure_PAB.fn()
+
+# Figure 2
+figure_PABGS.fn()
+
+# Figure 3
+figure_AROL.fn()
+
+# Figure 4
+figure_FFOT.fn()
+
+# Figure 5
+figure_FFD.fn()
+
+figure_PAOT.fn()
