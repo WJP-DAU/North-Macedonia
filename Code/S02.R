@@ -1,0 +1,388 @@
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Script:            LAC Country Reports - Section II Functions
+##
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+##                    A. Santiago Pardo G.        (spardo@worldjusticeproject.org)
+##
+## Dependencies:      World Justice Project
+##
+## Creation date:     November 13th, 2023
+##
+## This version:      November 13th, 2023
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Outline:                                                                                                 ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of Corruption by Institution Over Time (PCOT)                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+figure_PCOT.fn <- function(nchart = 7, data = master_data.df) {
+  
+  # Variables to plot
+  vars4plot = list("Legislative"  = c("q2a"), 
+                   "Police"       = c("q2d"), 
+                   "Executive"    = c("q2b", "q2c"), 
+                   "Judiciary"    = c("q2e", "q2f", "q2g"))
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry) %>%
+    select(year, all_of(unlist(vars4plot))) %>%
+    mutate(
+      across(!year,
+             ~if_else(.x == 3 | .x == 4, 1,
+                      if_else(!is.na(.x)  & .x != 99, 0, 
+                              NA_real_)))
+    ) %>%
+    group_by(year) %>%
+    summarise(across(everything(),
+                     \(x) mean(x, na.rm = TRUE))) %>%
+    pivot_longer(!year,
+                 names_to  = "category",
+                 values_to = "value") %>%
+    mutate(value = value*100,
+           label = paste0(format(round(value, 0),
+                                 nsmall = 0),
+                          "%")) %>%
+    filter(year >= 2014)
+  
+  # Pulling minimum and maximum available year
+  minyear <- 2013
+  maxyear <- 2023
+  
+  # Creating a vector for yearly axis
+  x.axis.values <- seq(minyear, maxyear, by = 2)
+  sec.ticks     <- seq(minyear, maxyear, by = 1)
+  x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
+  
+  # Saving data points
+  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+  #            file      = file.path("Outputs", 
+  #                                  str_replace_all(mainCountry, " ", "_"),
+  #                                  "dataPoints.xlsx",
+  #                                  fsep = "/"), 
+  #            sheetName = paste0("Chart_", nchart),
+  #            append    = T,
+  #            row.names = T)
+  
+  # Plotting each panel of Figure 8
+  imap(c("A" = "Legislative", 
+         "B" = "Police", 
+         "C" = "Executive", 
+         "D" = "Judiciary"),
+       function(varSet, panelName) {
+         
+         # Filtering data2plot to leave the variable for each panel
+         data2plot <- data2plot %>%
+           filter(str_detect(category, varSet))
+         
+         # Defining colors4plot
+         colors4plot    <- glinesPalette[1:length(vars4plot[[varSet]])]
+         naming_vector  <- paste0(varSet, as.character(1:length(vars4plot[[varSet]])))
+         
+         if (length(vars4plot[[varSet]]) == 1) {
+           naming_vector <- str_remove(naming_vector, "1")
+         }
+         
+         names(naming_vector)
+         
+         # Applying plotting function
+         chart <- LAC_lineChart(data           = data2plot,
+                                target_var     = "value",
+                                grouping_var   = "year",
+                                ngroups        = data2plot$category, 
+                                labels_var     = "label",
+                                colors_var     = "category",
+                                colors         = colors4plot,
+                                repel          = F,
+                                custom.axis    = T,
+                                x.breaks       = x.axis.values,
+                                x.labels       = x.axis.labels,
+                                sec.ticks      = sec.ticks
+         )
+         
+         # Saving panels
+         saveIT.fn(chart  = chart,
+                   n      = nchart,
+                   suffix = panelName,
+                   w      = 91.37955,
+                   h      = 76.9697)
+       })
+}
+
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Attitudes Towards Corrupt Behaviors (ACB)                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+figure_ACB.fn <- function(nchart = 8, data = master_data.df){
+  
+  # Defining variables to use in the plot
+  vars4plot <- list(
+    "Offered"   = c("CAR_q2c"),
+    "Requested" = c("CAR_q2b", "CAR_q2f", "CAR_q2g"),
+    "Nepotism"  = c("CAR_q2a", "CAR_q2d", "CAR_q2e")
+  )
+  
+  # Defining data frame for plot
+  data2plot <- master_data.df %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(unlist(vars4plot, 
+                  use.names = F)) %>%
+    mutate(
+      across(everything(),
+             ~case_when(
+               .x == 1  ~ "Always Acceptable",
+               .x == 2  ~ "Usually Acceptable",
+               .x == 3  ~ "Sometimes Acceptable",
+               .x == 4  ~ "Not Acceptable",
+               .x == 99 ~ "DK/NA"
+             ))
+    ) %>%
+    pivot_longer(everything(),
+                 names_to   = "variable",
+                 values_to  = "statement") %>%
+    group_by(variable, statement) %>%
+    summarise(count = n()) %>%
+    mutate(count     = if_else(statement == "DK/NA", 
+                               count/2, 
+                               count),
+           statement = if_else(statement == "DK/NA", 
+                               "Don't know (positive)", 
+                               statement))
+  
+  # Splitting DK/NA
+  data2plot <- data2plot %>%
+    bind_rows(
+      data2plot %>%
+        filter(statement %in% c("Don't know (positive)")) %>%
+        mutate(statement = "Don't know (negative)")
+    ) %>%
+    arrange(variable, statement)
+  
+  # Labeling and percentages
+  data2plot <- data2plot %>%
+    filter(!is.na(statement)) %>%
+    group_by(variable) %>%
+    mutate(
+      n = sum(count),
+      perc = count/n,
+      direction = if_else(statement %in% c("Not Acceptable", "Don't know (positive)"),
+                          "Positive",
+                          "Negative"),
+      value2plot  = if_else(direction == "Positive", perc*100, perc*-100),
+      value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      labels = case_when(
+        variable == "CAR_q2b" ~ "A public officer asking for a bribe to \nspeed up administrative procedures",
+        variable == "CAR_q2f" ~ "A law enforcement officer (police, \ncustoms, immigration, civil guard, \nmilitary police) asking for a bribe",
+        variable == "CAR_q2g" ~ "A company official asking for a bribe\nfrom a job applicant",
+        variable == "CAR_q2c" ~ "A private citizen offering a bribe \nto a public official to speed up \nadministrative procedures                 ",
+        variable == "CAR_q2a" ~ "A public officer being recruited on \nthe basis of family ties and \nfriendship networks",
+        variable == "CAR_q2d" ~ "An elected official taking public funds\nfor private use",
+        variable == "CAR_q2e" ~ "An elected official using stolen public \nfunds to assist his or her community"
+      ),
+      order_value = case_when(
+        variable == "CAR_q2b"  ~ 2,
+        variable == "CAR_q2f"  ~ 3,
+        variable == "CAR_q2g"  ~ 1,
+        variable == "CAR_q2c"  ~ 1,
+        variable == "CAR_q2a"  ~ 1,
+        variable == "CAR_q2d"  ~ 3,
+        variable == "CAR_q2e"  ~ 2
+      ),
+      statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
+                          "Don't know",
+                          statement),
+      statement = factor(statement,
+                         levels = c("Not Acceptable", "Always Acceptable", "Usually Acceptable", "Sometimes Acceptable", "Don't know"))
+    )
+  
+  # Defining color palette
+  colors4plot <- lickertPalette
+  names(colors4plot) <- c("Not Acceptable", "Sometimes Acceptable", "Don't know", "Usually Acceptable", "Always Acceptable")
+  
+  # Saving data points
+  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+  #            file      = file.path("Outputs", 
+  #                                  str_replace_all(mainCountry, " ", "_"),
+  #                                  "dataPoints.xlsx",
+  #                                  fsep = "/"), 
+  #            sheetName = paste0("Chart_", nchart), 
+  #            append    = T,
+  #            row.names = T)
+  
+  # Plotting each panel of Figure 12
+  imap(c("A" = "Offered", 
+         "B" = "Requested", 
+         "C" = "Nepotism"),
+       function(varSet, panelName) {
+         
+         # Filtering data2plot to leave the variable for each panel
+         data2plot <- data2plot %>%
+           filter(variable %in% vars4plot[[varSet]])
+         
+         # Applying plotting function
+         chart <- NM_divBars(data           = data2plot,
+                             target_var     = "value2plot",
+                             rows_var       = "labels",
+                             grouping_var   = "statement",
+                             negative_value = "Negative",
+                             colors         = colors4plot,
+                             labels_var     = "value_label",
+                             custom_order   = TRUE,
+                             order_var      = "order_value")
+         
+         # Defining height
+         if (length(vars4plot[[varSet]]) == 3 ) {
+           h = 47.44707
+         }
+         
+         if (length(vars4plot[[varSet]]) == 1 ) {
+           h = 32.23357
+         }
+         
+         # Saving panels
+         saveIT.fn(chart  = chart,
+                   n      = nchart,
+                   suffix = panelName,
+                   w      = 189.7883,
+                   h      = h)
+       })
+}
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Bribery Victimization (BVOT)                                                                          ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+figure_BVOT.fn <- function(nchart = 9, carib = FALSE) {
+  
+  # Defining variables to include in plot
+  vars4plot <- c("q4a", "q4b", "q4c", "q4d", "q4e")
+  
+  # Defining data frame for plot
+  data2plot <- data_subset.df %>%
+    filter(year == latestYear & country %in% countrySet) %>%
+    select(country, all_of(unlist(vars4plot, use.names = F))) %>%
+    mutate(across(!country,
+                  ~if_else(.x == 99, NA_real_, as.double(.x)))) %>%
+    group_by(country) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(!country,
+                 names_to   = "category",
+                 values_to  = "value2plot") %>%
+    mutate(value2plot  = value2plot*100,
+           highlighted = if_else(country == mainCountry, 
+                                 "Highlighted", 
+                                 "Regular"),
+           labels      = to_percentage.fn(value2plot),
+           country     = if_else(country %in% "Bahamas", 
+                                 "The Bahamas", 
+                                 country)) %>%
+    mutate(labels = if_else(country == "Haiti" & category == "CAR_q8e", "13%", labels))
+  
+  
+  # Specifying a custom order for West Caribbean
+  if (mainCountry %in% westCaribbean_and_guianas.ls) {
+    c.order <- T
+  } else {
+    c.order <- F
+  }
+  if (mainCountry %in% westCaribbean_and_guianas.ls) {
+    data2plot <- data2plot %>%
+      mutate(
+        order_var = case_when(
+          country == "The Bahamas"        ~ 1,
+          country == "Dominican Republic" ~ 2,
+          country == "Guyana"             ~ 3,
+          country == "Haiti"              ~ 4,
+          country == "Jamaica"            ~ 5
+        )
+      )
+  }
+  
+  
+  # Saving data points
+  # write.xlsx(as.data.frame(data2plot %>% select(!highlighted) %>% ungroup()), 
+  #            file      = file.path("Outputs", 
+  #                                  str_replace_all(mainCountry, " ", "_"),
+  #                                  "dataPoints.xlsx",
+  #                                  fsep = "/"), 
+  #            sheetName = paste0("Chart_", nchart),
+  #            append    = T,
+  #            row.names = T)
+  
+  # Defining colors
+  colors4plot <- barsPalette
+  names(colors4plot) <- c("Highlighted", "Regular")
+  
+  # Plotting each panel of Figure 5
+  panelVector <- c("A" = vars4plot[1], 
+                   "B" = vars4plot[2], 
+                   "C" = vars4plot[3], 
+                   "D" = vars4plot[4], 
+                   "E" = vars4plot[5])
+  
+  if (carib == T) {
+    panelVector <- c(panelVector, "F" = vars4plot[6])
+  }
+  
+  imap(panelVector,
+       function(tvar, panelName) {
+         
+         # Filtering data2plot to leave the variable for each panel
+         data2plot <- data2plot %>%
+           filter(category %in% tvar)
+         
+         # Applying plotting function
+         chart <- LAC_barsChart(data           = data2plot,
+                                target_var     = "value2plot",
+                                grouping_var   = "country",
+                                labels_var     = "labels",
+                                colors_var     = "highlighted",
+                                colors         = colors4plot,
+                                direction      = "horizontal",
+                                custom_order   = c.order,
+                                order_var      = "order_var")
+         
+         # Defining height
+         if (length(countrySet) == 3 & mainCountry != "Paraguay") {
+           h = 24.60219
+         }
+         if (length(countrySet) == 4) {
+           h = 30.92846
+         }
+         if (length(countrySet) == 6) {
+           h = 43.22956
+         }
+         if (length(countrySet) > 6) {
+           h = 55.17919
+         }
+         if (mainCountry == "Paraguay") {
+           h = 35.14598
+         }
+         
+         # Saving panels
+         saveIT.fn(chart  = chart,
+                   n      = nchart,
+                   suffix = panelName,
+                   w      = 86.81057,
+                   h      = h)
+         
+       })
+  }
+  
+# vars4plot <- c("CAR_q8a", "CAR_q8b", "CAR_q8d", "CAR_q8e", "CAR_q8f", "CAR_q8i")

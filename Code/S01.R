@@ -7,9 +7,9 @@
 ##
 ## Dependencies:      World Justice Project
 ##
-## Creation date:     November 18th, 2022
+## Creation date:     November 13th, 2023
 ##
-## This version:       March 23rd, 2023
+## This version:      November 13th, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -34,7 +34,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
   )
   
   # Defining data frame for plot
-  data2plot <- master_data.df %>%
+  data2plot <- data %>%
     filter(year == latestYear & country == mainCountry) %>%
     select(unlist(vars4plot, 
                   use.names = F)) %>%
@@ -183,7 +183,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
   )
   
   # Defining data frame for plot
-  data2plot <- master_data.df %>%
+  data2plot <- data %>%
     filter(country == mainCountry & year == latestYear) %>%
     select(CAR_q59_G1, 
            CAR_q59_G2, 
