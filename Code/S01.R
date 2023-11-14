@@ -344,13 +344,14 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
          # Preparing waffle data
          waffle_data <- waffle_iron(data2plot, 
                                     aes_d(group = category),
-                                    rows = 25)
+                                    sample_size = 0.25,
+                                    rows = 12)
          
          # Plotting waffle
          chart <- ggplot(waffle_data, 
                          aes(x, y, fill = group),
                          color = "white",
-                         size = 3) + 
+                         size = 0.75) + 
            geom_waffle() + 
            coord_equal() + 
            scale_fill_manual(values = colors4plot) + 
