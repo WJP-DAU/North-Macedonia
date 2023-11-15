@@ -344,8 +344,8 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
          # Preparing waffle data
          waffle_data <- waffle_iron(data2plot, 
                                     aes_d(group = category),
-                                    sample_size = 0.25,
-                                    rows = 12)
+                                    sample_size = 0.20,
+                                    rows = 10)
          
          # Plotting waffle
          chart <- ggplot(waffle_data, 
