@@ -32,7 +32,7 @@ security.universe <- function(master_data) {
 
 # Upper Panel
 
-figure_TCEP.fn <- function(nchart = 12, data = master_data.df) 
+figure_TCEP.fn <- function(nchart = 13, data = master_data.df) 
 {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
@@ -86,7 +86,7 @@ figure_TCEP.fn <- function(nchart = 12, data = master_data.df)
 
 # Upper Panel
 
-figure_PSOT1.fn <- function(nchart = 13, data = master_data.df) {
+figure_PSOT1.fn <- function(nchart = 14, data = master_data.df) {
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -153,7 +153,7 @@ figure_PSOT1.fn <- function(nchart = 13, data = master_data.df) {
 } 
 
 # Lower Panel
-figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
+figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
     
@@ -259,7 +259,7 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
 
 # Upper Panel
 
-figurePCJS_1.fn <- function(nchart = 14, data = master_data.df) {
+figurePCJS_1.fn <- function(nchart = 15, data = master_data.df) {
   
   # Defining which years to show in the plot: Two latest years for each country
   yrs <- data %>%
@@ -358,7 +358,7 @@ figurePCJS_1.fn <- function(nchart = 14, data = master_data.df) {
 
 # Lower Panel
 
-figurePCJS_2.fn <- function(nchart = 14, data = master_data.df) {
+figurePCJS_2.fn <- function(nchart = 15, data = master_data.df) {
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -456,7 +456,7 @@ figurePCJS_2.fn <- function(nchart = 14, data = master_data.df) {
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-figure_TCJA.fn <- function(nchart = 15, data = master_data.df) {
+figure_TCJA.fn <- function(nchart = 16, data = master_data.df) {
   
   # Variables to plot
   vars4plot = list("Trust"         = c("q1e", "q1f", "q1g"), 
@@ -559,7 +559,7 @@ figure_TCJA.fn <- function(nchart = 15, data = master_data.df) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-figure_POP.fn <- function(nchart = 16, data = master_data.df) {
+figure_POP.fn <- function(nchart = 17, data = master_data.df) {
   
   # Panel A: Serve the Public
   panelA <- data %>%
@@ -993,7 +993,7 @@ figure_POP.fn <- function(nchart = 16, data = master_data.df) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-figure_PTCV.fn <- function(nchart = 17, data = master_data.df) {
+figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
   
   # Defining variables to use in rose chart
   vars4plot <- c("EXP_q24a_G1", "EXP_q24b_G1", "EXP_q24c_G1", "EXP_q24d_G1", "EXP_q24a_G2", "EXP_q24b_G2",
@@ -1084,3 +1084,7 @@ figure_PTCV.fn <- function(nchart = 17, data = master_data.df) {
             w      = 189.7883,
             h      = 168.7007)
 }
+
+
+
+
