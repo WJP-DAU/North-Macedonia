@@ -102,33 +102,36 @@ figure_BVOT.fn()
 # Figure 11
 figure_TIOT.fn()
 
+# Figure 12
+figure_PCTE.fn()
+
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
 ##  Section 3:Security and Criminal Justice                                                                 ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Figure 12
+# Figure 13
 figure_TCEP.fn()
 
-# Figure 13_1
+# Figure 14_1
 figure_PSOT1.fn()
 
-# Figure 13_2
+# Figure 14_2
 figure_PSOT2.fn()
 
-# Figure 14_1
+# Figure 15_1
 figurePCJS_1.fn()
 
-# Figure 14_2
+# Figure 15_2
 figurePCJS_2.fn()
 
-# Figure 15
+# Figure 16
 figure_TCJA.fn()
 
-# Figure 16
+# Figure 17
 figure_POP.fn()
 
-# Figure 17
+# Figure 18
 figure_PTCV.fn()
 
