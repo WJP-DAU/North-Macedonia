@@ -30,6 +30,7 @@ source("Code/settings.R")
 # Loading functions for sections
 source("Code/S01.R")
 source("Code/S02.R")
+source("Code/S03.R")
 
 # Loading plotting functions from GitHub
 source("https://raw.githubusercontent.com/ctoruno/WJP-Data-Viz/main/loading.R")
@@ -69,16 +70,17 @@ figure_PAB.fn()
 figure_PABGS.fn()
 
 # Figure 3
-figure_AROL.fn()
+#figure_AROL.fn()
 
 # Figure 4
 figure_FFOT.fn()
 
 # Figure 5
-figure_FFD.fn()
+#figure_FFD.fn()
 
 # Figure 6
 figure_PAOT.fn()
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -106,7 +108,7 @@ figure_TIOT.fn()
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Figure 12_1
+# Figure 12
 figure_TCEP.fn()
 
 # Figure 13_1
@@ -115,7 +117,18 @@ figure_PSOT1.fn()
 # Figure 13_2
 figure_PSOT2.fn()
 
-# Figure 14
+# Figure 14_1
+figurePCJS_1.fn()
+
+# Figure 14_2
+figurePCJS_2.fn()
 
 # Figure 15
 figure_TCJA.fn()
+
+# Figure 16
+figure_POP.fn()
+
+# Figure 17
+figure_PTCV.fn()
+
