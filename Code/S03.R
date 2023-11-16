@@ -32,7 +32,7 @@ security.universe <- function(master_data) {
 
 # Upper Panel
 
-figure_TCEP.fn <- function(nchart = 26, data = master_data.df) 
+figure_TCEP.fn <- function(nchart = 12, data = master_data.df) 
 {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
@@ -86,7 +86,7 @@ figure_TCEP.fn <- function(nchart = 26, data = master_data.df)
 
 # Upper Panel
 
-figure_PSOT1.fn <- function(nchart = 27, data = master_data.df) {
+figure_PSOT1.fn <- function(nchart = 13, data = master_data.df) {
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -157,7 +157,7 @@ figure_PSOT1.fn <- function(nchart = 27, data = master_data.df) {
 } 
 
 # Lower Panel
-figure_PSOT2.fn <- function(nchart = 27, data = master_data.df) {
+figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
   
@@ -361,7 +361,7 @@ figure_PSOT2.fn <- function(nchart = 27, data = master_data.df) {
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-figure_TCJA.fn <- function(nchart = 29, data = master_data.df) {
+figure_TCJA.fn <- function(nchart = 15, data = master_data.df) {
   
   # Variables to plot
   vars4plot = list("Trust"         = c("q1e", "q1f", "q1g"), 
