@@ -118,10 +118,6 @@ figure_PSOT1.fn <- function(nchart = 13, data = master_data.df) {
     maxyear <- maxyear + 1
   }
   
-  if (mainCountry == "Haiti") {
-    x.axis.values <- c(2021, 2022)
-    x.axis.labels <- c("'21", "'22")
-  }
   
   # Creating a vector for yearly axis
   x.axis.values <- seq(minyear, maxyear, by = 2)
@@ -160,46 +156,8 @@ figure_PSOT1.fn <- function(nchart = 13, data = master_data.df) {
 figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
-  
-  if (mainCountry == "Bahamas"  | mainCountry == "Peru"    | 
-      mainCountry == "Barbados" | mainCountry == "Dominica"|
-      mainCountry == "St. Lucia"| mainCountry == "St. Vincent and the Grenadines"|
-      mainCountry == "Grenada") {
     
-    perception <- security_universe %>%
-      mutate(unsafe_bin    =  if_else(q9 == 1 | q9 == 2, 1, 
-                                      if_else(q9 == 3 | q9 ==4, 0, NA_real_)),
-             victim        =  if_else(victim == 1, "Victim", "Non Victim"),
-             white         =  if_else(COLOR == 1 | COLOR == 2 | COLOR == 3 | COLOR == 4, "White" , 
-                                      if_else(COLOR == 5 | COLOR == 6 | COLOR == 7 | COLOR == 8 | COLOR == 9 | COLOR == 10, "No White", NA_character_)),
-             young         =  if_else(age < 3, "Less than 35 years", 
-                                      if_else(age > 2, "More than 35 years", NA_character_)),
-             poor          =  if_else(fin == 1 | fin == 2, "Poor",
-                                      if_else(fin == 3 | fin == 4 | fin == 5, "No Poor", NA_character_)),
-             area          =  if_else(Urban == 1, "Urban", "Rural"),
-             gender        =  if_else(gend == 1, "Male", "Female"),
-             diploma       =  if_else(edu == 4 | edu == 5 | edu == 6| edu == 7, "High Education Level", 
-                                      if_else(edu < 4, "No High Education Level", NA_character_))) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
-  } else if (mainCountry == "United States") {
-    
-    perception <- security_universe %>%
-      mutate(unsafe_bin    =  if_else(q9 == 1 | q9 == 2, 1, 
-                                      if_else(q9 == 3 | q9 ==4, 0, NA_real_)),
-             victim        =  if_else(victim == 1, "Victim", "Non Victim"), 
-             young         =  if_else(age < 30, "Less than 30 years", 
-                                      if_else(age > 29, "More than 30 years", NA_character_)),
-             poor          =  if_else(fin == 1 | fin == 2, "Poor",
-                                      if_else(fin == 3 | fin == 4 | fin == 5, "No Poor", NA_character_)),
-             area          =  if_else(Urban == 1, "Urban", "Rural"),
-             gender        =  if_else(gend == 1, "Male", "Female"),
-             diploma       =  if_else(edu == 5 | edu == 6| edu == 7, "High Education Level", 
-                                      if_else(edu < 5, "No High Education Level", NA_character_)),
-             white         =  if_else(ethni == "White", "White", "No white", NA_character_)
-      ) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
-    
-  } else {
-    
-    perception <- security_universe %>%
+  perception <- security_universe %>%
       mutate(unsafe_bin    =  if_else(q9 == 1 | q9 == 2, 1, 
                                       if_else(q9 == 3 | q9 ==4, 0, NA_real_)),
              victim        =  if_else(victim == 1, "Victim", "Non Victim", NA_character_),
@@ -214,7 +172,6 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
              diploma       =  if_else(edu == 4 | edu == 5 | edu == 6| edu == 7, "High Education Level", 
                                       if_else(edu < 4, "No High Education Level", NA_character_))) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
     
-  } 
   condition <- perception %>%
     select(victim, white, young, poor, area, gender, diploma) %>%
     mutate(counter = 1)
@@ -236,34 +193,8 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
     pull(variable)
   
   logit_demo <- function(mainData, Yvar) {
-    
-    if (mainCountry == "Bahamas"  | mainCountry == "Peru"    | 
-        mainCountry == "Barbados" | mainCountry == "Dominica"|
-        mainCountry == "St. Lucia"| mainCountry == "St. Vincent and the Grenadines"|
-        mainCountry == "Grenada") {
       
-      logit_data <- perception %>%
-        select(unsafe_bin, all_of(selectables)) %>%
-        rowid_to_column("id") %>%
-        pivot_longer(cols = !c(unsafe_bin, id), names_to = "categories", values_to = "values") %>%
-        mutate(values = if_else(categories %in% "young" & values %in% "More than 35 years", "1More than 35 years", values),
-               values = if_else(categories %in% "gender" & values %in% "Male", "1Male", values)) %>%
-        pivot_wider(id_cols = c(unsafe_bin, id), names_from = categories, values_from = values)
-      
-    } else if(mainCountry == "United States") {
-      
-      logit_data <- perception %>%
-        select(unsafe_bin, all_of(selectables)) %>%
-        rowid_to_column("id") %>%
-        pivot_longer(cols = !c(Yvar, id), names_to = "categories", values_to = "values") %>%
-        mutate(values = if_else(categories %in% "young" & values %in% "More than 30 years", "1More than 30 years", values),
-               values = if_else(categories %in% "gender" & values %in% "Male", "1Male", values),
-               values = if_else(categories %in% "white" & values %in% "White", "1White", values)) %>%
-        pivot_wider(id_cols = c(Yvar, id), names_from = categories, values_from = values)
-      
-    } else {
-      
-      logit_data <- perception %>%
+    logit_data <- perception %>%
         select(unsafe_bin, all_of(selectables)) %>%
         rowid_to_column("id") %>%
         pivot_longer(cols = !c(unsafe_bin, id), names_to = "categories", values_to = "values") %>%
@@ -271,7 +202,6 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
                values = if_else(categories %in% "gender" & values %in% "Male", "1Male", values)) %>%
         pivot_wider(id_cols = c(unsafe_bin, id), names_from = categories, values_from = values)
       
-    }
     
     logit_data<- logit_data %>%
       select(all_of(selectables),
@@ -292,38 +222,12 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
     
     summaryreg <- bind_rows(as.data.frame(coef(summary(models[[1]]))))
     
-    # write.xlsx(as.data.frame(summaryreg %>% ungroup()), 
-    #            file      = file.path("Outputs", 
-    #                                  str_replace_all(mainCountry, " ", "_"),
-    #                                  "dataPoints.xlsx",
-    #                                  fsep = "/"), 
-    #            sheetName = paste0("Chart_", nchart, "B", "reg"),
-    #            append    = T,
-    #            row.names = T)
-    
     margEff    <- margins_summary(models[[1]], data = models[[1]]$model)
     
     data2plot <- margEff
-    if (mainCountry == "Bahamas"  | mainCountry == "Peru"    | 
-        mainCountry == "Barbados" | mainCountry == "Dominica"|
-        mainCountry == "St. Lucia"| mainCountry == "St. Vincent and the Grenadines"|
-        mainCountry == "Grenada") {
-      
-      data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
-                                 "areaUrban" = "Urban", "whiteWhite" = "Light skin \ntone", "youngLess than 35 years" = "Younger than 35",
-                                 "diplomaNo High Education Level" = "No high school \ndiploma")
-    } else if(mainCountry == "United States") {
-      
-      data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
-                                 "areaUrban" = "Urban", "youngLess than 30 years" = "Younger than 30",
-                                 "diplomaNo High Education Level" = "No Bachelor's \ndegree", "whiteNo white" = "Non-white")
-    }
-    else {
-      
-      data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
+    data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
                                  "areaUrban" = "Urban", "whiteWhite" = "Light skin \ntone", "youngLess than 30 years" = "Younger than 30",
                                  "diplomaNo High Education Level" = "No high school \ndiploma") 
-    }
     
     data2plot <- data2plot %>%
       mutate(category = mainCountry,
@@ -353,6 +257,197 @@ figure_PSOT2.fn <- function(nchart = 13, data = master_data.df) {
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+# Upper Panel
+
+figurePCJS_1.fn <- function(nchart = 14, data = master_data.df) {
+  
+  # Defining which years to show in the plot: Two latest years for each country
+  yrs <- data %>%
+    filter(country == mainCountry) %>%
+    group_by(year) %>%
+    summarise() %>%
+    slice_max(order_by = year,
+              n = 2) %>%
+    pull(year)
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry & year %in% yrs) %>%
+    select(year, latestYear, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1, EXP_q23d_G1, q49c_G1, q49b_G1) %>%
+    mutate(
+      
+      # We need to concatenate variables q49d_G1 and EXP_q23d_G1 into a single one
+      q49d_G1_merge = rowSums(across(c(q49d_G1, EXP_q23d_G1)), 
+                              na.rm = T),
+      q49d_G1_merge = if_else(is.na(q49d_G1) & is.na(EXP_q23d_G1), NA_real_, q49d_G1_merge),
+      
+      # Transforming everything into binary variables
+      across(!c(year, latestYear),
+             ~if_else(.x == 1 | .x == 2, 1,
+                      if_else(!is.na(.x) & .x != 99, 0, NA_real_)))
+    ) %>%
+    select(year, latestYear, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1_merge, q49c_G1, q49b_G1) %>%
+    group_by(year) %>%
+    summarise(latestYear = first(latestYear),
+              across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(!c(year, latestYear),
+                 names_to  = "category",
+                 values_to = "value4radar") %>%
+    mutate(
+      order_value = case_when(
+        category     == 'q49a'          ~ 1,
+        category     == 'q49b_G2'       ~ 2,
+        category     == 'q49e_G2'       ~ 3,
+        category     == 'q49c_G2'       ~ 4,
+        category     == 'q49e_G1'       ~ 5,
+        category     == 'q49d_G1_merge' ~ 6,
+        category     == 'q49c_G1'       ~ 7,
+        category     == 'q49b_G1'       ~ 8
+      ),
+      valuelabel = to_percentage.fn(value4radar*100),
+      label = case_when(
+        category == 'q49a'          ~ paste("Is **effective** in bringing<br>people who commit<br>crimes to justice"),
+        category == 'q49b_G2'       ~ paste("Ensures **equal treatment<br>of victims** by allowing all<br>",
+                                            "victims to seek justice<br>regardless of who they are"),
+        category == 'q49e_G2'       ~ paste("Safeguards the<br>**presumption of<br>innocence** by treating<br>those",
+                                            "accused of<br>crimes as innocent<br>until proven guilty"),
+        category == 'q49c_G2'       ~ paste("Ensures **equal treatment of<br>the accused** by giving all a<br>",
+                                            "fair trial regardless of who<br>they are"),
+        category == 'q49e_G1'       ~ paste("Gives **appropriate<br>punishments** that fit<br>the crime"),
+        category == 'q49d_G1_merge' ~ paste("Ensures **uniform quality** by<br>providing equal service<br>",
+                                            "regardless of where<br>they live",
+                                            "</span>"),
+        category == 'q49c_G1'       ~ paste("Ensures everyone<br>has **access** to the<br>justice system"),
+        category == 'q49b_G1'       ~ paste("Ensures **timeliness**<br>by dealing with<br>cases promptly",
+                                            "and<br>efficiently")
+      ),
+      across(label,
+             ~paste0("<span style='color:", "#fa4d57", ";font-size:6.326276mm;font-weight:bold'>",  
+                     valuelabel,
+                     "</span>",
+                     "<br>",
+                     "<span style='color:#524F4C;font-size:3.514598mm;font-weight:bold'>",
+                     label,
+                     "</span>")),
+      label = if_else(year != latestYear, 
+                      NA_character_, 
+                      label)
+    )
+  
+  
+  # Defining color palette
+  colors4plot <- binPalette
+  names(colors4plot) <- yrs
+  
+  chart <- LAC_radarChart(data          = data2plot,
+                          axis_var      = "category",         
+                          target_var    = "value4radar",     
+                          label_var     = "label", 
+                          order_var     = "order_value",
+                          colors        = colors4plot)
+  
+  # Saving panels
+  saveIT.fn(chart  = chart,
+            n      = nchart,
+            suffix = "A",
+            w      = 189.7883,
+            h      = 183.1106)
+}
+
+# Lower Panel
+
+figurePCJS_2.fn <- function(nchart = 14, data = master_data.df) {
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry) %>%
+    filter(year == latestYear) %>%
+    select(ethni, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1, EXP_q23d_G1, q49c_G1, q49b_G1) %>%
+    mutate(ethnicity = case_when(
+      ethni == "Macedonian" ~ "Macedonian",
+      TRUE ~ "Other"
+    )) %>%
+    mutate(
+      
+      # We need to concatenate variables q49d_G1 and EXP_q23d_G1 into a single one
+      q49d_G1_merge = rowSums(across(c(q49d_G1, EXP_q23d_G1)), 
+                              na.rm = T),
+      q49d_G1_merge = if_else(is.na(q49d_G1) & is.na(EXP_q23d_G1), NA_real_, q49d_G1_merge),
+      
+      # Transforming everything into binary variables
+      across(!c(ethnicity),
+             ~if_else(.x == 1 | .x == 2, 1,
+                      if_else(!is.na(.x) & .x != 99, 0, NA_real_)))
+    ) %>%
+    select(ethnicity, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1_merge, q49c_G1, q49b_G1) %>%
+    group_by(ethnicity) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(!c(ethnicity),
+                 names_to  = "category",
+                 values_to = "value4radar") %>%
+    mutate(
+      order_value = case_when(
+        category     == 'q49a'          ~ 1,
+        category     == 'q49b_G2'       ~ 2,
+        category     == 'q49e_G2'       ~ 3,
+        category     == 'q49c_G2'       ~ 4,
+        category     == 'q49e_G1'       ~ 5,
+        category     == 'q49d_G1_merge' ~ 6,
+        category     == 'q49c_G1'       ~ 7,
+        category     == 'q49b_G1'       ~ 8
+      ),
+      valuelabel = to_percentage.fn(value4radar*100),
+      label = case_when(
+        category == 'q49a'          ~ paste("Is **effective** in bringing<br>people who commit<br>crimes to justice"),
+        category == 'q49b_G2'       ~ paste("Ensures **equal treatment<br>of victims** by allowing all<br>",
+                                            "victims to seek justice<br>regardless of who they are"),
+        category == 'q49e_G2'       ~ paste("Safeguards the<br>**presumption of<br>innocence** by treating<br>those",
+                                            "accused of<br>crimes as innocent<br>until proven guilty"),
+        category == 'q49c_G2'       ~ paste("Ensures **equal treatment of<br>the accused** by giving all a<br>",
+                                            "fair trial regardless of who<br>they are"),
+        category == 'q49e_G1'       ~ paste("Gives **appropriate<br>punishments** that fit<br>the crime"),
+        category == 'q49d_G1_merge' ~ paste("Ensures **uniform quality** by<br>providing equal service<br>",
+                                            "regardless of where<br>they live",
+                                            "</span>"),
+        category == 'q49c_G1'       ~ paste("Ensures everyone<br>has **access** to the<br>justice system"),
+        category == 'q49b_G1'       ~ paste("Ensures **timeliness**<br>by dealing with<br>cases promptly",
+                                            "and<br>efficiently")
+      ),
+      across(label,
+             ~paste0("<br> <br>",
+                     "<span style='color:#524F4C;font-size:3.514598mm;font-weight:bold'>",
+                     label,
+                     "</span>"))
+    ) %>%
+    drop_na() %>%
+    rename(year = ethnicity) 
+  
+  
+  # Defining color palette
+  colors4plot <- c("#a90099", "#3273ff")
+  names(colors4plot) <- data2plot %>% distinct(year) %>% arrange(year) %>% pull(year)
+  
+  latestYear <- "Macedonian"
+  
+  chart <- LAC_radarChart(data          = data2plot,
+                          axis_var      = "category",         
+                          target_var    = "value4radar",     
+                          label_var     = "label", 
+                          order_var     = "order_value",
+                          colors        = colors4plot,
+                          latestYear    = "Macedonian")
+  
+  # Saving panels
+  saveIT.fn(chart  = chart,
+            n      = nchart,
+            suffix = "B",
+            w      = 189.7883,
+            h      = 183.1106)
+}
 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -405,10 +500,6 @@ figure_TCJA.fn <- function(nchart = 15, data = master_data.df) {
     maxyear <- maxyear + 1
   }
   
-  if (mainCountry == "Haiti") {
-    x.axis.values <- c(2021, 2022)
-    x.axis.labels <- c("'21", "'22")
-  }
   
   # Creating a vector for yearly axis
   x.axis.values <- seq(minyear, maxyear, by = 2)
@@ -461,67 +552,535 @@ figure_TCJA.fn <- function(nchart = 15, data = master_data.df) {
        })
 } 
 
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of the Police                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-
-
-
-
-
-
-
-
-
-# Experimental figure 16
-treemap_function <- function(data2plot, margin_top) {
-  a <- ggplot(data = data2plot, aes(area = value, fill = group, label = label)) +
-    geom_treemap() +
-    geom_treemap_text() +
-    scale_fill_manual(values = c("q48c_G2" = "#2a2a94", "EXP_q22i_G2" = "#4a4a49", "EXP_q22h_G2" = "#f3f3f3")) +
-    coord_flip(clip = "off") +
-    WJP_theme() +
-    theme(panel.grid.major.x = element_blank(),
-          panel.grid.major.y = element_blank(),
-          axis.text.y = element_blank(),
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          axis.text.x = element_blank(),
-          plot.margin = margin(margin_top, 10, -15, 0),
-          plot.background = element_blank())
-  
-  return(a)
-}
-
-
-figure_POP.fn <- function(nchart = 35, data = master_data.df) {
+figure_POP.fn <- function(nchart = 16, data = master_data.df) {
   
   # Panel A: Serve the Public
   panelA <- data %>%
     filter(year == latestYear & country == mainCountry) %>%
-    select(q48c_G2, EXP_q22i_G2, EXP_q22h_G2) %>%
-    summarise(across(everything(), mean, na.rm = TRUE)) %>%
-    pivot_longer(everything(), names_to = "variable", values_to = "value") %>%
+    select(q48c_G2, EXP_q22i_G2 , EXP_q22h_G2) %>%
     mutate(
-      empty_value = 1 - value,
-      group = variable,
-      label = paste0(format(round(value * 100, 0), nsmall = 0), "%"),
-      label = ifelse(value == 0, NA_character_, label)
-    )
-
+      q48c_G2 = case_when(
+        q48c_G2 == 1  ~ 1,
+        q48c_G2 == 2  ~ 1,
+        q48c_G2 == 3  ~ 0,
+        q48c_G2 == 4  ~ 0
+      ),
+      EXP_q22i_G2 = case_when(
+        EXP_q22i_G2 == 1  ~ 1,
+        EXP_q22i_G2 == 2  ~ 1,
+        EXP_q22i_G2 == 3  ~ 0,
+        EXP_q22i_G2 == 4  ~ 0
+      ),
+      EXP_q22h_G2 = case_when(
+        EXP_q22h_G2 == 1  ~ 1,
+        EXP_q22h_G2 == 2  ~ 1,
+        EXP_q22h_G2 == 3  ~ 0,
+        EXP_q22h_G2 == 4  ~ 0
+      ),
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(
+      empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q48c_G2", 3.15,
+                      if_else(variable %in% "EXP_q22i_G2", 2.15,
+                              if_else(variable %in% "EXP_q22h_G2", 1.15, NA_real_))),
+      variable = case_when(
+        variable == "q48c_G2" ~ "Are available to help when needed",
+        variable == "EXP_q22i_G2" ~ "Serve the interests of the community",
+        variable == "EXP_q22h_G2" ~ "Serve the interests of regular citizens"
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label),
+    );panelA
   
-  panelA <- panelA %>%
-    group_by(group) %>%
-    mutate(value = value / sum(value))
+  a <- horizontal_edgebars (data2plot    = panelA,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);a
   
-  treemap_A <- treemap_function(data2plot = panelA, margin_top = 0)
-  
-  saveIT.fn(chart = treemap_A,
-            n = nchart,
+  saveIT.fn(chart  = a,
+            n      = nchart,
             suffix = "a",
-            w = 82.59305,
-            h = 45.33831)
+            w      = 82.59305,
+            h      = 45.33831)
   
-  #Other panels here
+  # Panel B: Crime Control and Safety
+  
+  panelB <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(EXP_q24e_G2, q48a_G2, q48b_G2, q48b_G1) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 1  ~ 1,
+               .x == 2  ~ 1,
+               .x == 3  ~ 0,
+               .x == 4  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             ))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q48b_G2", 1.1,
+                      if_else(variable %in% "q48b_G1", 2.15,
+                              if_else(variable %in% "q48a_G2", 3.15, 4.15))),
+      variable = case_when(
+        variable == "q48b_G2"     ~ "Help them feel safe",
+        variable == "q48a_G2"     ~ "Resolve security problems in  the community",
+        variable == "q48b_G1"     ~ "Perform effective and lawful investigations",
+        variable == "EXP_q24e_G2" ~ "Respond to crime reports",
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelB
+  
+  b <- horizontal_edgebars (data2plot    = panelB,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);b
+  
+  saveIT.fn(chart  = b,
+            n      = nchart,
+            suffix = "b",
+            w      = 82.59305,
+            h      = 59.74817)
+  
+  # Panel C: Due Process
+  panelC <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(q48a_G1, EXP_q22e_G1, q48c_G1, q48d_G2) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 1  ~ 1,
+               .x == 2  ~ 1,
+               .x == 3  ~ 0,
+               .x == 4  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             )),
+      EXP_q22e_G1 = if_else(EXP_q22e_G1 == 1, 0, 
+                            if_else(EXP_q22e_G1 == 0, 1, NA_real_))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q48a_G1", 4.15,
+                      if_else(variable %in% "EXP_q22e_G1", 3.15,
+                              if_else(variable %in% "q48c_G1", 2.15, 1.15))),
+      variable = case_when(
+        variable == "q48a_G1"     ~ "Act lawfully",
+        variable == "EXP_q22e_G1" ~ "Do not use excessive force",
+        variable == "q48c_G1"     ~ "Respect the rights of suspects",
+        variable == "q48d_G2"     ~ "Treat all people with respect",
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelC
+  
+  c <- horizontal_edgebars (data2plot    = panelC,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);c
+  
+  saveIT.fn(chart  = c,
+            n      = nchart,
+            suffix = "c",
+            w      = 82.59305,
+            h      = 59.74817)
+  
+  # Panel D: Discrimination
+  
+  panelD <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(q18b, EXP_q17g, EXP_q17h, EXP_q17i, EXP_q17j) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 0  ~ 1,
+               .x == 1  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             ))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q18b", 1.15,
+                      if_else(variable %in% "EXP_q17g", 2.15,
+                              if_else(variable %in% "EXP_q17h", 3.15, 
+                                      if_else(variable %in% "EXP_q17i", 4.15, 5.15)))),
+      variable = case_when(
+        variable == "q18b"        ~ "Gender",
+        variable == "EXP_q17g"    ~ "Skin color",
+        variable == "EXP_q17h"    ~ "Indigenous identity",
+        variable == "EXP_q17i"    ~ "Tattoos",
+        variable == "EXP_q17j"    ~ "Age"
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelD
+  
+  d <- horizontal_edgebars (data2plot    = panelD,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);d
+  
+  saveIT.fn(chart  = d,
+            n      = nchart,
+            suffix = "d",
+            w      = 82.59305,
+            h      = 74.86094)
+  
+  # Panel E: Discrimination
+  
+  panelE <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(q2d, q48e_G2, EXP_q22k_G2, EXP_q22j_G2) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 1  ~ 1,
+               .x == 2  ~ 1,
+               .x == 3  ~ 0,
+               .x == 4  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             )),
+      EXP_q22k_G2 = if_else(EXP_q22k_G2 == 1, 0, 
+                            if_else(EXP_q22k_G2 == 0, 1, NA_real_)),
+      EXP_q22j_G2 = if_else(EXP_q22j_G2 == 1, 0, 
+                            if_else(EXP_q22j_G2 == 0, 1, NA_real_))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q2d", 4.15,
+                      if_else(variable %in% "q48e_G2", 3.15,
+                              if_else(variable %in% "EXP_q22k_G2", 2.15, 
+                                      if_else(variable %in% "EXP_q22j_G2", 1.15, NA_real_)))),
+      variable = case_when(
+        variable == "q2d"         ~ "Are not involved in corrupt practices",
+        variable == "q48e_G2"     ~ "Investigate crimes in an independent manner",
+        variable == "EXP_q22k_G2" ~ "Do not serve the interests of gangs",
+        variable == "EXP_q22j_G2" ~ "Do not serve the interests of politicians"
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelE
+  
+  e <- horizontal_edgebars (data2plot    = panelE,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);e
+  
+  saveIT.fn(chart  = e,
+            n      = nchart,
+            suffix = "e",
+            w      = 82.59305,
+            h      = 59.74817)
+  
+  # Panel F: Trust and Safety
+  
+  panelF <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(q1d, EXP_q8d, q9) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 1  ~ 1,
+               .x == 2  ~ 1,
+               .x == 3  ~ 0,
+               .x == 4  ~ 0,
+               .x == 0  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             ))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q1d", 3.15,
+                      if_else(variable %in% "EXP_q8d", 2.15,
+                              if_else(variable %in% "q9", 1.15, NA_real_))),
+      variable = case_when(
+        variable == "q1d"     ~ "Trust the police",
+        variable == "EXP_q8d" ~ "Report a crime when they are a victim",
+        variable == "q9"      ~ "Feel safe in their neighborhoods"
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelF
+  
+  f <- horizontal_edgebars (data2plot    = panelF,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);f
+  
+  saveIT.fn(chart  = f,
+            n      = nchart,
+            suffix = "f",
+            w      = 82.59305,
+            h      = 45.33831)
+  
+  # Panel G: Accountability
+  
+  panelG <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(q48d_G1, EXP_q22f_G1, EXP_q22g_G1, EXP_q22h_G1) %>%
+    mutate(
+      across(everything(),
+             ~ case_when(
+               .x == 1  ~ 1,
+               .x == 2  ~ 1,
+               .x == 3  ~ 0,
+               .x == 4  ~ 0,
+               .x == 99 ~ NA_real_,
+               is.na(.x) ~ NA_real_
+             ))
+    ) %>%
+    summarise(across(everything(),
+                     mean,
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    mutate(empty_value = 1 - value) %>%
+    pivot_longer(!variable,
+                 names_to = "group",
+                 values_to = "value") %>%
+    mutate(
+      x_pos = if_else(variable %in% "q48d_G1", 4.15,
+                      if_else(variable %in% "EXP_q22f_G1", 3.15,
+                              if_else(variable %in% "EXP_q22g_G1", 2.15, 
+                                      if_else(variable %in% "EXP_q22h_G1", 1.15, NA_real_)))),
+      variable = case_when(
+        variable == "q48d_G1"         ~ "Are held accountable for violating laws",
+        variable == "EXP_q22f_G1"     ~ "Are held accountable for seeking bribes",
+        variable == "EXP_q22g_G1"     ~ "Are held accountable for accepting bribes",
+        variable == "EXP_q22h_G1"     ~ "Are investigated for misconduct"
+      ),
+      multiplier = if_else(group == "empty_value", 0, 1),
+      label      = paste0(format(round(value*100, 0), nsmall = 0),
+                          "%"),
+      label = if_else(multiplier == 0, NA_character_, label)
+    );panelG
+  
+  g <- horizontal_edgebars (data2plot    = panelG,
+                           y_value      = value,
+                           x_var        = variable,
+                           group_var    = group,
+                           label_var    = label,
+                           x_lab_pos    = x_pos,
+                           y_lab_pos    = 0,
+                           bar_color    = "#2a2a94",
+                           margin_top   = 0);g
+  
+  saveIT.fn(chart  = g,
+            n      = nchart,
+            suffix = "g",
+            w      = 82.59305,
+            h      = 59.74817)
   
 
+}
+
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of the Treatment of Crime Victims                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+figure_PTCV.fn <- function(nchart = 17, data = master_data.df) {
+  
+  # Defining variables to use in rose chart
+  vars4plot <- c("EXP_q24a_G1", "EXP_q24b_G1", "EXP_q24c_G1", "EXP_q24d_G1", "EXP_q24a_G2", "EXP_q24b_G2",
+                 "EXP_q24c_G2", "EXP_q24d_G2", "EXP_q24f_G2", "EXP_q24g_G2", "EXP_q23f_G1")
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry & year == latestYear) %>%
+    select(all_of(vars4plot)) %>%
+    mutate(
+      across(everything(), 
+             ~if_else(.x == 1 | .x == 2, 1, 
+                      if_else(!is.na(.x) & .x != 99, 0,
+                              NA_real_)))
+    ) %>%
+    summarise(across(everything(),
+                     mean, 
+                     na.rm = T)) %>%
+    pivot_longer(everything(),
+                 names_to  = "category",
+                 values_to = "avg") %>%
+    #arrange(desc(avg)) %>%
+    mutate(
+      percentage = to_percentage.fn(avg*100),
+      order_value = case_when (
+        category == "EXP_q24c_G1" ~ 1,
+        category == "EXP_q24d_G1" ~ 2,
+        category == "EXP_q24a_G2" ~ 3,
+        category == "EXP_q24b_G2" ~ 4,
+        category == "EXP_q24c_G2" ~ 5,
+        category == "EXP_q24d_G2" ~ 6,
+        category == "EXP_q24f_G2" ~ 7,
+        category == "EXP_q24g_G2" ~ 8,
+        category == "EXP_q23f_G1" ~ 9,
+        category == "EXP_q24a_G1" ~ 10,
+        category == "EXP_q24b_G1" ~ 11
+      )) %>%
+    arrange(order_value) %>%
+    mutate(
+      label = case_when(
+        category == "EXP_q24c_G1" ~ "Receive effective and\ntimely **medical and\npsychological care**",
+        category == "EXP_q24d_G1" ~ "Receive **information\nand legal advice**\nwhen going to the\nauthorities",
+        category == "EXP_q24a_G2" ~ "Receive **protection**\nfrom the police if\ntheir safety is in\ndanger",
+        category == "EXP_q24b_G2" ~ paste0("Receive protection\nduring criminal\nproceedings", 
+                                           " to\n**prevent repeat\nvictimization**"),
+        category == "EXP_q24c_G2" ~ "Receive adequate\ncare and protection\nas **victims of sexual\ncrimes**",
+        category == "EXP_q24d_G2" ~ "Receive adequate\ncare and protection\nas **victims of\ndomestic violence**",
+        category == "EXP_q24f_G2" ~ paste0("Receive a **clear\nexplanation** of\nthe process when\nreporting",
+                                           " a crime to\nthe police"),
+        category == "EXP_q24g_G2" ~ "Are addressed by\nthe police using\n**accessible language**",
+        category == "EXP_q23f_G1" ~ "Are **guaranteed\ntheir rights** in\ncriminal justice\nproceedings",
+        category == "EXP_q24a_G1" ~ "Receive **prompt and\ncourteous attention**\nwhen they report a\ncrime",
+        category == "EXP_q24b_G1" ~ "Are **believed** when\nthey report a crime"
+      ),
+      
+      
+      # Converting labels into HTML syntax
+      across(label,
+             function(raw_label){
+               html <- paste0("<span style='color:#000000;font-size:6.326276mm;font-weight:bold'>",  
+                              percentage, "</span>",
+                              "<br>",
+                              "<span style='color:#524F4C;font-size:3.514598mm'>",
+                              str_replace_all(raw_label, "\\n", "<br>"),
+                              "</span>")
+               return(html)
+             })
+    )
+  
+  
+  # Defining colors
+  colors4plot        <- rosePalette
+  names(colors4plot) <- data2plot %>% arrange(order_value) %>% pull(category)
+  
+  # Applying plotting function
+  chart <- LAC_roseChart(data = data2plot,
+                         target_var    = "avg",
+                         grouping_var  = "category",
+                         alabels_var   = "label",
+                         plabels_var   = "percentage",
+                         order_var     = "order_value",
+                         colors        = colors4plot)
+  
+  # Saving panels
+  saveIT.fn(chart  = chart,
+            n      = nchart,
+            suffix = NULL,
+            w      = 189.7883,
+            h      = 168.7007)
 }
