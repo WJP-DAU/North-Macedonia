@@ -447,7 +447,7 @@ figure_TCJA.fn <- function(nchart = 29, data = master_data.df) {
 
 
 
-# Define a function to create treemaps
+# Experimental figure 16
 treemap_function <- function(data2plot, margin_top) {
   a <- ggplot(data = data2plot, aes(area = value, fill = group, label = label)) +
     geom_treemap() +
@@ -466,7 +466,8 @@ treemap_function <- function(data2plot, margin_top) {
   
   return(a)
 }
-# Modify figure16.fn to use treemap_function
+
+
 figure_POP.fn <- function(nchart = 35, data = master_data.df) {
   
   # Panel A: Serve the Public
@@ -481,8 +482,8 @@ figure_POP.fn <- function(nchart = 35, data = master_data.df) {
       label = paste0(format(round(value * 100, 0), nsmall = 0), "%"),
       label = ifelse(value == 0, NA_character_, label)
     )
+
   
-  # Calculate percentages within each group
   panelA <- panelA %>%
     group_by(group) %>%
     mutate(value = value / sum(value))
@@ -495,7 +496,7 @@ figure_POP.fn <- function(nchart = 35, data = master_data.df) {
             w = 82.59305,
             h = 45.33831)
   
-  # Continue with other panels...
+  #Other panels here
   
 
 }
