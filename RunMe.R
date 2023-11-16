@@ -105,3 +105,17 @@ figure_TIOT.fn()
 ##  Section 3:Security and Criminal Justice                                                                 ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Figure 26
+figure_TCEP.fn()
+
+# Figure 27_1
+figure_PSOT1.fn()
+
+# Figure 27_2
+figure_PSOT2.fn()
+
+# Figure 28
+
+# Figure 29
+figure_TCJA.fn()
