@@ -1,4 +1,3 @@
-
 security.universe <- function(master_data) {
   
   security.universe <- master_data %>%
@@ -24,6 +23,14 @@ security.universe <- function(master_data) {
   
   return(security.universe)
 }
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Types of Crimes Experienced by People                                                           ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Upper Panel
 
 figure_TCEP.fn <- function(nchart = 26, data = master_data.df) 
 {
@@ -67,10 +74,18 @@ figure_TCEP.fn <- function(nchart = 26, data = master_data.df)
 }
 
 
+# Lower Panel
 
 
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of Security Over Time                                                           ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Upper Panel
+
 figure_PSOT1.fn <- function(nchart = 27, data = master_data.df) {
   
   # Defining data frame for plot
@@ -332,9 +347,19 @@ figure_PSOT2.fn <- function(nchart = 27, data = master_data.df) {
             h      = 81.89012)
 }
 
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of the Criminal Justice System                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Criminal Justice Actors                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 figure_TCJA.fn <- function(nchart = 29, data = master_data.df) {
   
