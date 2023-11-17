@@ -1,4 +1,4 @@
-security.universe <- function(master_data) {
+security.universe <- function(master_data = master_data.df) {
   
   security.universe <- master_data %>%
     filter(country %in% mainCountry) %>%
@@ -75,8 +75,101 @@ figure_TCEP.fn <- function(nchart = 13, data = master_data.df)
 
 
 # Lower Panel
-
-
+figure_TCEP_B.fn <- function(nchart = 13, data = master_data.df) {
+  
+  security_universe <- security.universe()
+  
+  victims <- security_universe %>%
+    summarise(victim = round(mean(victim, na.rm = T),2)) %>%
+    mutate(non_victim = 1 - victim)
+  
+  report <- security_universe %>%
+    mutate(EXP_q8d = case_when(
+      EXP_q8d == 1 ~ 1,
+      EXP_q8d == 0 ~ 0,
+      EXP_q8d == 99 ~ NA_real_
+    )) %>%
+    mutate(EXP_q8d = if_else(EXP_q8d == 1, 1, 0)) %>%
+    filter(victim == 1) %>%
+    summarise(report = round(mean(EXP_q8d, na.rm = T),2)) %>%
+    mutate(non_report = 1 - report)
+  
+  fill_report <- security_universe %>%
+    filter(victim == 1) %>%
+    select(EXP_q8d, EXP_q8f) %>%
+    mutate(across(everything(), 
+                  ~if_else(.x == 1, 1,
+                           if_else(!is.na(.x) & .x != 99, 0, 
+                                   NA_real_)))) %>%
+    group_by(EXP_q8d) %>%
+    summarise(fill_report = round(mean(EXP_q8f, na.rm = T),2)) %>%
+    mutate(non_fill_report = 1 - fill_report) %>%
+    filter(EXP_q8d == 1) %>%
+    select(!EXP_q8d)
+  
+  t1 <- sample(x = c("Victim", "Non-Victim"), size = 1000, replace = TRUE, prob = c(1,0))
+  t2 <- sample(x = c("Non-Report", "Report"), size = 1000, replace = TRUE, prob = c(report$non_report, report$report))
+  t3 <- sample(x = c("Non-Official", "Official"), size = 1000, replace = TRUE, prob = c(fill_report$non_fill_report,fill_report$fill_report))
+  
+  d <- data.frame(cbind(t1, t2))
+  names(d) <- c("Victim", "Report")
+  
+  df <- d %>%
+    mutate(`Official Crime Report` = if_else(Report %in% "Report", t3, " ")) 
+  
+  data2plot <- df %>%
+    make_long(Victim, Report, `Official Crime Report`)
+  
+  y <- c(1, 900, -300, 600, 75)
+  x <- c(0.7, 2, 2.3, 3.3, 3.3)
+  
+  label <- c(paste0("<span style='color:#003b8a;font-size:4.217518mm'>", '**',victims$victim*100, "%",'**',"</span> <br> <span style='color:#222221;font-size:3.514598mm'> of ", "North Macedonian" ,"s","<br>were victims <br>of a crime in <br> the last 12 <br> months"),
+             paste0("<span style='color:#003b8a;font-size:4.217518mm'>", '**',report$report*100, "%",'**',"</span> <br> <span style='color:#222221;font-size:3.514598mm'> reported <br> the crime"),
+             paste0("<span style='color:#fa4d57;font-size:4.217518mm'>", '**',report$non_report*100, "%",'**',"</span> <br> <span style='color:#222221;font-size:3.514598mm'> did not report <br>the crime"),
+             paste0("<span style='color:#003b8a;font-size:4.217518mm'>", '**',fill_report$fill_report*100, "%",'**',"</span> <br> <span style='color:#222221;font-size:3.514598mm'> filed an official <br> crime report"),
+             paste0("<span style='color:#fa4d57;font-size:4.217518mm'> ", '**',fill_report$non_fill_report*100, "%",'**',"</span> <br> <span style='color:#222221;font-size:3.514598mm'> did not file an <br>official crime report"))
+  
+  label.df <- data.frame(label)
+  
+  pl <- ggplot(data = data2plot, aes(x = x, 
+                                     next_x = next_x,
+                                     node = node,
+                                     next_node = next_node,
+                                     fill = factor(node))) +
+    geom_sankey(flow.alpha = 0.5,
+                node.color = "white",
+                show.legend = FALSE) +
+    geom_richtext(data = label.df, aes(x = x, label = label, y = y, 
+                                       next_x = NULL, node = NULL, 
+                                       next_node = NULL, fill = NULL, family = "Lato Medium"), 
+                  fill = NA, label.color = NA, hjust = 0.5, vjust = 0.5) +
+    scale_y_continuous(expand = expansion(mult = c(0,0.2))) +
+    scale_x_discrete(position = "top") +
+    scale_fill_manual(values = c("Victim" = "#003b8a",
+                                 'Non-Victim' = "#003b8a",
+                                 "Report" = "#003b8a",
+                                 "Non-Report" = "white",
+                                 "Official" = "#003b8a",
+                                 "Non-Official" = "#fa4d57",
+                                 ' ' = "white")) +
+    theme_sankey(base_size = 10, base_rect_size = 10) +
+    theme(legend.position = "none",
+          panel.background   = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.x = element_text(family ="Lato Full", 
+                                     size = 3.514598*.pt,
+                                     color = "Black"),
+          axis.text.y = element_blank(),
+          axis.ticks.x = element_blank());pl
+  
+  saveIT.fn(chart  = pl,
+            n      = nchart,
+            suffix = "B",
+            w      = 175.027,
+            h      = 94.54267)
+  
+}
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
