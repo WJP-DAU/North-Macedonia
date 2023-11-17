@@ -4,3 +4,4 @@
 .Ruserdata
 *.svg
 Data/NMdata.dta
+.DS_Store

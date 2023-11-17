@@ -113,7 +113,7 @@ figure_PCTE.fn()
 
 # Figure 13
 figure_TCEP.fn()
-
+figure_TCEP_B.fn()
 # Figure 14_1
 figure_PSOT1.fn()
 
