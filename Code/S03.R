@@ -32,7 +32,7 @@ security.universe <- function(master_data = master_data.df) {
 
 # Upper Panel
 
-figure_TCEP.fn <- function(nchart = 13, data = master_data.df) 
+figure_TCEP1.fn <- function(nchart = 13, data = master_data.df) 
 {
   
   security_universe <- security.universe(master_data = data) # This function assign the victim condition and select the main variables to security secction
@@ -75,9 +75,9 @@ figure_TCEP.fn <- function(nchart = 13, data = master_data.df)
 
 
 # Lower Panel
-figure_TCEP_B.fn <- function(nchart = 13, data = master_data.df) {
+figure_TCEP2.fn <- function(nchart = 13, data = master_data.df) {
   
-  security_universe <- security.universe()
+  security_universe <- security.universe(master_data = data)
   
   victims <- security_universe %>%
     summarise(victim = round(mean(victim, na.rm = T),2)) %>%
