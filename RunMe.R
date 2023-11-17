@@ -111,9 +111,12 @@ figure_PCTE.fn()
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Figure 13
-figure_TCEP.fn()
-figure_TCEP_B.fn()
+# Figure 13_1
+figure_TCEP1.fn()
+
+# Figure 13_2
+figure_TCEP2.fn()
+
 # Figure 14_1
 figure_PSOT1.fn()
 
