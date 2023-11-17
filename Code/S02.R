@@ -351,7 +351,7 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
 figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
   
   # Defining variables to use in the plot
-  vars4plot <- c("CAR_q8a", "CAR_q8b","CAR_q8c", "CAR_q8e", "CAR_q8i","CAR_q8k", "NM_q5_1d", "NM_q5_2d")
+  vars4plot <- c("CAR_q8a", "CAR_q8b","CAR_q8c", "CAR_q8e", "CAR_q8i","CAR_q8k", "NM_q5_2d")
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -405,8 +405,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
         variable == "CAR_q8e" ~ "CUSTOMS OFFICERS",
         variable == "CAR_q8i" ~ "CAR REGISTRATION AGENCY OFFICERS",
         variable == "CAR_q8k" ~ "ELECTED REPRESENTATIVES",
-        variable == "NM_q5_1d" ~ "PUBLIC DEFENCE ATTORNEYS 1",
-        variable == "NM_q5_2d" ~ "PUBLIC DEFENCE ATTORNEYS 2"
+        variable == "NM_q5_2d" ~ "PUBLIC DEFENCE ATTORNEYS"
       ),
       order_value = case_when(
         variable == "CAR_q8a"  ~ 1,
@@ -415,8 +414,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
         variable == "CAR_q8e"  ~ 4,
         variable == "CAR_q8i"  ~ 5,
         variable == "CAR_q8k"  ~ 6,
-        variable == "NM_q5_1d" ~ 7,
-        variable == "NM_q5_2d" ~ 8
+        variable == "NM_q5_2d" ~ 7
       ),
       statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
                           "Don't know",
@@ -447,7 +445,6 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
             w   = 189.7883,
             h   = 112.4671)  
 }
-
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
