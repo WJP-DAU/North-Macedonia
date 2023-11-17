@@ -348,7 +348,106 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# vars4plot <- c("CAR_q8a", "CAR_q8b", "CAR_q8d", "CAR_q8e", "CAR_q8f", "CAR_q8i")
+figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
+  
+  # Defining variables to use in the plot
+  vars4plot <- c("CAR_q8a", "CAR_q8b","CAR_q8c", "CAR_q8e", "CAR_q8i","CAR_q8k", "NM_q5_1d", "NM_q5_2d")
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(year == latestYear & country == mainCountry) %>%
+    select(vars4plot) %>%
+    mutate(
+      across(everything(),
+             ~case_when(
+               .x == 1  ~ "Yes",
+               .x == 0  ~ "No",
+               .x == 99 ~ "DK/NA"
+             ))
+    ) %>%
+    pivot_longer(everything(),
+                 names_to  = "variable",
+                 values_to = "statement") %>%
+    group_by(variable, statement) %>%
+    summarise(count = n()) %>%
+    mutate(count     = if_else(statement == "DK/NA", 
+                               count/2, 
+                               count),
+           statement = if_else(statement == "DK/NA", 
+                               "Don't know (positive)", 
+                               statement))
+  
+  # Splitting DK/NA
+  data2plot <- data2plot %>%
+    bind_rows(
+      data2plot %>%
+        filter(statement %in% c("Don't know (positive)")) %>%
+        mutate(statement = "Don't know (negative)")
+    ) %>%
+    arrange(variable, statement)
+  
+  # Labeling and percentages
+  data2plot <- data2plot %>%
+    filter(!is.na(statement)) %>%
+    group_by(variable) %>%
+    mutate(
+      n = sum(count),
+      perc = count/n,
+      direction = if_else(statement %in% c("Yes", "Don't know (positive)"),
+                          "Positive",
+                          "Negative"),
+      value2plot = if_else(direction == "Positive", perc*100, perc*-100),
+      value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      labels = case_when(
+        variable == "CAR_q8a" ~ "POLICE OFFICERS",
+        variable == "CAR_q8b" ~ "JUDGES AND MAGISTRATES",
+        variable == "CAR_q8c" ~ "PROSECUTORS",
+        variable == "CAR_q8e" ~ "CUSTOMS OFFICERS",
+        variable == "CAR_q8i" ~ "CAR REGISTRATION AGENCY OFFICERS",
+        variable == "CAR_q8k" ~ "ELECTED REPRESENTATIVES",
+        variable == "NM_q5_1d" ~ "PUBLIC DEFENCE ATTORNEYS 1",
+        variable == "NM_q5_2d" ~ "PUBLIC DEFENCE ATTORNEYS 2"
+      ),
+      order_value = case_when(
+        variable == "CAR_q8a"  ~ 1,
+        variable == "CAR_q8b"  ~ 2,
+        variable == "CAR_q8c"  ~ 3,
+        variable == "CAR_q8e"  ~ 4,
+        variable == "CAR_q8i"  ~ 5,
+        variable == "CAR_q8k"  ~ 6,
+        variable == "NM_q5_1d" ~ 7,
+        variable == "NM_q5_2d" ~ 8
+      ),
+      statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
+                          "Don't know",
+                          statement),
+      statement = factor(statement,
+                         levels = c("Yes", "No", "Don't know"))
+    )
+  
+  # Defining color palette
+  colors4plot <- c("#9395D3","#d9d9d9", "#FC8F72")
+  names(colors4plot) <- c("Yes","Don't know", "No")
+  
+  # Applying plotting function
+  chart <- NM_divBars(data      = data2plot,
+                      target_var   = "value2plot",
+                      rows_var    = "labels",
+                      grouping_var  = "statement",
+                      negative_value = "Negative",
+                      colors     = colors4plot,
+                      labels_var   = "value_label",
+                      custom_order  = TRUE,
+                      order_var   = "order_value")
+  
+  # Saving chart
+  saveIT.fn(chart = chart,
+            n   = nchart,
+            suffix = NULL,
+            w   = 189.7883,
+            h   = 112.4671)  
+}
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
