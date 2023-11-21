@@ -2,13 +2,13 @@
 ##
 ## Script:            North Macedonia Country Report - Settings
 ##
-## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org), Artha P. Pillai (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 13th, 2023
+## This version:      November 21st, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -33,7 +33,7 @@ library(pacman)
 
 p_load(char = c(
   # Visualizations
-  "showtext", "ggtext", "ggsankey", "ggwaffle", "ggplotify", "gridExtra", "patchwork", "ggh4x",
+  "showtext", "ggtext", "ggsankey", "ggwaffle", "ggplotify", "gridExtra", "patchwork", "ggh4x", "ggrepel",
   
   # Data Loading
   "haven", "readxl", "writexl",
@@ -161,7 +161,7 @@ ordnung.fn <- function(){
   file.remove(prevOutputs)
   
   # Creating folders for each chart output within the country directory
-  for (plot in 1:25) {
+  for (plot in 1:20) {
     dir.create(file.path("Outputs", 
                          paste0("imgChart", plot),
                          fsep = "/"), 
