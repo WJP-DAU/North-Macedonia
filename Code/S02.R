@@ -570,12 +570,9 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
          data2plot <- data %>%
            filter(country == mainCountry) %>%
            filter(year == latestYear) %>%
-           mutate(party = case_when(
-             paff3 == "The Democratic Party" ~ "Democratic Party",
-             paff3 == "The Republican Party" ~ "Republican Party"
-           )) %>%
-           select(party, all_of(unlist(vars4plot, 
-                                       use.names = F))) %>%
+           rename(targetvar = all_of(target)) %>%
+           select(targetvar, all_of(unlist(vars4plot, 
+                                           use.names = F))) %>%
            mutate(
              across(starts_with("q2"),
                     ~if_else(.x == 3 | .x == 4, 1,
@@ -586,10 +583,10 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
                              if_else(!is.na(.x) & .x != 99, 0, 
                                      NA_real_)))
            ) %>%
-           group_by(party) %>%
+           group_by(targetvar) %>%
            mutate(obs = n()) %>%
            ungroup() %>%
-           group_by(party) %>%
+           group_by(targetvar) %>%
            summarise(
              across(c(all_of(unlist(vars4plot, 
                                     use.names = F))),
@@ -605,11 +602,11 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
              n_obs = as.character(n_obs)
            ) %>%
            drop_na() %>%
-           pivot_longer(!c(party,n_obs),
+           pivot_longer(!c(targetvar,n_obs),
                         names_to      = c("category", "stat"),
                         names_pattern = "(.*)_(.*)",
                         values_to     = "value") %>%
-           pivot_wider(c(category,party,n_obs),
+           pivot_wider(c(category, targetvar, n_obs),
                        names_from  = stat,
                        values_from = value) %>%
            mutate(
@@ -629,8 +626,6 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
                category == "q1e" ~ "Prosecutors",
                category == "q1f" ~ "Public defense attorneys",
                category == "q1g" ~ "Judges and magistrates"
-               
-               
              ),
              lower = mean - qt(1- alpha/2, (n() - 1))*sd/sqrt(n_obs),
              upper = mean + qt(1- alpha/2, (n() - 1))*sd/sqrt(n_obs)
@@ -650,8 +645,9 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
          
          # Defining color palette
          colors4plot <- binPalette
-         names(colors4plot) <- data2plot %>% distinct(party) %>% arrange(party) %>% pull(party)
+         names(colors4plot) <- c(blue_category, "Other")
          
+         # Looping
          imap(c("A" = "corruption",
                 "B" = "trust"),
               function(varSet, panelName) {
@@ -661,14 +657,14 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
                   filter(batch %in% varSet)
                 
                 # Applying plotting function
-                chart <- errorDotsChart(data2plot = data2plot,
-                                        labels = "labels",
-                                        group = "party",
-                                        category = "category",
-                                        values = values,
-                                        lower = lower,
-                                        upper = upper, 
-                                        colors4plot = colors4plot, 
+                chart <- errorDotsChart(data2plot    = data2plot,
+                                        labels       = "labels",
+                                        group        = "targetvar",
+                                        category     = "category",
+                                        values       = values,
+                                        lower        = lower,
+                                        upper        = upper, 
+                                        colors4plot  = colors4plot, 
                                         custom_order = F, 
                                         order_values = order_values)
                 # Saving panels
