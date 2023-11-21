@@ -1,9 +1,9 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-## Script:            LAC Country Reports - Section I Functions
+## Script:           North Macedonia Report - Section I Functions
 ##
 ## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
-##                    A. Santiago Pardo G.        (spardo@worldjusticeproject.org)
+##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
@@ -32,6 +32,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
     "Judiciary"   = c("CAR_q66_G1", "CAR_q65_G1", "CAR_q64_G1"),
     "Media"       = c("CAR_q64_G2", "CAR_q60_G2", "CAR_q65_G2", "CAR_q60_G1")
   )
+  
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -117,17 +118,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
   # Defining color palette
   colors4plot <- lickertPalette
   names(colors4plot) <- c("Strongly agree", "Agree", "Don't know", "Disagree", "Strongly disagree")
-  
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart), 
-  #            append    = T,
-  #            row.names = T)
-  
+
   # Plotting each panel of Figure 12
   imap(c("A" = "Independent", 
          "B" = "Judiciary", 
@@ -242,16 +233,6 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
       )
     )
   
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
-  
   # Defining color palette
   colors4plot <- binPalette
   names(colors4plot) <- data2plot %>% distinct(govSupp) %>% arrange(desc(govSupp)) %>% pull(govSupp)
@@ -344,8 +325,8 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
          # Preparing waffle data
          waffle_data <- waffle_iron(data2plot, 
                                     aes_d(group = category),
-                                    sample_size = 0.20,
-                                    rows = 10)
+                                    sample_size = 0.25,
+                                    rows = 12)
          
          # Plotting waffle
          chart <- ggplot(waffle_data, 
@@ -414,16 +395,6 @@ figure_FFOT.fn <- function(nchart = 4, data = master_data.df) {
   x.axis.values <- seq(minyear, maxyear, by = 2)
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
-  
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
   
   # Plotting each panel of Figure 5
   imap(c("A" = "q46c_G2", "B" = "q46f_G2", "C" = "q46g_G2", "D" = "q46c_G1", "E" = "q46e_G2",
@@ -595,16 +566,6 @@ figure_PAOT.fn <- function(nchart = 6, data = master_data.df) {
   x.axis.values <- seq(minyear, maxyear, by = 2)
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
-  
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
   
   # Applying plotting function
   chart <- LAC_lineChart(data           = data2plot,
