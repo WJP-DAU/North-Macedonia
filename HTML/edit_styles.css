@@ -218,6 +218,16 @@
     background: #FA4D57;
 }
 
+/*Yes*/
+.c-yes{
+    background: #9395D3;
+}
+
+/*No*/
+.c-no{
+    background: #FC8F72;
+}
+
 /***************** Colors  *****************/
 
 /*Navy*/
