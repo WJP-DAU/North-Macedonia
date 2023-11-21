@@ -1,4 +1,25 @@
-security.universe <- function(master_data = master_data.df) {
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Script:           North Macedonia Report - Section I Functions
+##
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
+##
+## Dependencies:      World Justice Project
+##
+## Creation date:     November 13th, 2023
+##
+## This version:      November 21st, 2023
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+## Outline:                                                                                                 ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+security.universe <- function(master_data) {
   
   security.universe <- master_data %>%
     filter(country %in% mainCountry) %>%
@@ -170,6 +191,8 @@ figure_TCEP2.fn <- function(nchart = 13, data = master_data.df) {
             h      = 94.54267)
   
 }
+
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -1177,7 +1200,3 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
             w      = 189.7883,
             h      = 168.7007)
 }
-
-
-
-
