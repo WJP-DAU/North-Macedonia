@@ -2,13 +2,13 @@
 ##
 ## Script:            North Macedonia Country Report - RunMe File
 ##
-## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org), Artha P. Pillai (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 14th, 2023
+## This version:      November 21st, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -70,13 +70,13 @@ figure_PAB.fn()
 figure_PABGS.fn()
 
 # Figure 3
-#figure_AROL.fn()
+figure_AROL.fn()
 
 # Figure 4
 figure_FFOT.fn()
 
 # Figure 5
-#figure_FFD.fn()
+figure_FFD.fn()
 
 # Figure 6
 figure_PAOT.fn()
@@ -98,6 +98,7 @@ figure_ACB.fn()
 figure_BVOT.fn()
 
 # Figure 10
+figure_BVAG.fn()
 
 # Figure 11
 figure_TIOT.fn()
