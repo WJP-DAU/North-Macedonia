@@ -1,15 +1,15 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-## Script:            LAC Country Reports - Section II Functions
+## Script:            North Macedonia Report - Section II Functions
 ##
 ## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
-##                    A. Santiago Pardo G.        (spardo@worldjusticeproject.org)
+##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 13th, 2023
+## This version:      November 21st, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -62,16 +62,6 @@ figure_PCOT.fn <- function(nchart = 7, data = master_data.df) {
   x.axis.values <- seq(minyear, maxyear, by = 2)
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
-  
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
   
   # Plotting each panel of Figure 8
   imap(c("A" = "Legislative", 
@@ -211,16 +201,6 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
   colors4plot <- lickertPalette
   names(colors4plot) <- c("Not Acceptable", "Sometimes Acceptable", "Don't know", "Usually Acceptable", "Always Acceptable")
   
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart), 
-  #            append    = T,
-  #            row.names = T)
-  
   # Plotting each panel of Figure 12
   imap(c("A" = "Offered", 
          "B" = "Requested", 
@@ -293,17 +273,6 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
                            levels = c("2017", "2023"))
     )
   
-  
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% select(!highlighted) %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
-  
   # Defining colors
   colors4plot <- barsPalette
   names(colors4plot) <- c("Highlighted", "Regular")
@@ -330,7 +299,7 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
                                 colors_var     = "highlighted",
                                 colors         = colors4plot,
                                 direction      = "horizontal")
-
+         
          
          # Saving panels
          saveIT.fn(chart  = chart,
@@ -492,15 +461,6 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
-  # Saving data points
-  # write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-  #            file      = file.path("Outputs", 
-  #                                  str_replace_all(mainCountry, " ", "_"),
-  #                                  "dataPoints.xlsx",
-  #                                  fsep = "/"), 
-  #            sheetName = paste0("Chart_", nchart),
-  #            append    = T,
-  #            row.names = T)
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Community", 
