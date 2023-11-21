@@ -2,7 +2,8 @@
 ##
 ## Script:            North Macedonia Country Report - RunMe File
 ##
-## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org), Artha P. Pillai (apillai@worldjusticeproject.org)
+## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
+##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
