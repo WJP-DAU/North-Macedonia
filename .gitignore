@@ -5,3 +5,5 @@
 *.svg
 Data/NMdata.dta
 .DS_Store
+Outputs/A2J_tables.xlsx
+HTML/index-lt-b2255m3.html
