@@ -1,15 +1,15 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-## Script:           North Macedonia Report - Section I Functions
+## Script:            LAC Country Reports - Section I Functions
 ##
 ## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
-##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
+##                    A. Santiago Pardo G.        (spardo@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 21st, 2023
+## This version:      November 13th, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -248,7 +248,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
            filter(category %in% vars4plot[[varSet]])
          
          # Applying plotting function
-         chart <- LAC_dotsChart(data         = data2plot,
+         chart <- NM_dotsChart(data         = data2plot,
                                 target_var   = "value2plot",
                                 grouping_var = "govSupp",
                                 labels_var   = "labels",
@@ -302,16 +302,16 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
              ~case_when(
                .x == 3 | .x == 4 ~ "Positive",
                .x < 3   ~ "Negative",
-               .x == 5  ~ "Neutral",
-               .x == 99 ~ "No answer"
+               .x %in% c(5, 99)  ~ "Neutral/No answer"
              )),
       across(everything(),
-             \(x) factor(x, levels = c("Positive", "Neutral", "Negative", "No answer")))
+             \(x) factor(x, levels = c("Positive", "Neutral/No answer", "Negative")))
+      
     )
   
   # Defining colors for plot
-  colors4plot <- wafflePalette
-  names(colors4plot) <- c("Positive", "Neutral", "Negative", "No answer")
+  colors4plot <- c("#003B8A","#d9d9d9", "#fa4d57")
+  names(colors4plot) <- c("Positive", "Neutral/No answer", "Negative")
   
   # Plotting each figure panel
   names(vars4plot) <- c("A", "B", "C", "D", "E")
@@ -351,6 +351,8 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
                    h      = 119.4963)         # Idk why, but I have to multiply the dimensions by 4
        })
 }
+
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -538,17 +540,19 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
 ##    Perceptions of Accountability Over Time (PAOT)                                                        ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
 
-figure_PAOT.fn <- function(nchart = 6, data = master_data.df) {
-  
-  # Defining data frame for plot
-  data2plot <- data %>%
-    select(country, year, q43_G2) %>% 
-    mutate(
-      q43_G2 = if_else(q43_G2 == 3, 1, 
-                       if_else(!is.na(q43_G2) & q43_G2 != 99, 0, 
-                               NA_real_))
-    ) %>%     
+
+figure_PAOT1.fn <- function(nchart = 6, data = master_data.df) {
+
+# Defining data frame for plot
+data2plot <- data %>%
+  select(country, year, q43_G2) %>%
+  mutate(
+    q43_G2 = if_else(q43_G2 == 3, 1,
+                     if_else(!is.na(q43_G2) & q43_G2 != 99, 0,
+                             NA_real_))
+  ) %>%
     group_by(year, country) %>%
     summarise(value2plot = mean(q43_G2, na.rm = T)) %>%
     mutate(value2plot = value2plot*100,
@@ -556,22 +560,22 @@ figure_PAOT.fn <- function(nchart = 6, data = master_data.df) {
                                  nsmall = 0),
                           "%"),
            label = if_else(country == mainCountry, label, NA_character_)) %>%
-    filter(year >= 2014) 
-  
+    filter(year >= 2014)
+
   # Pulling minimum and maximum available year
   minyear <- 2013
   maxyear <- 2023
-  
+
   # Creating a vector for yearly axis
   x.axis.values <- seq(minyear, maxyear, by = 2)
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
-  
+
   # Applying plotting function
   chart <- LAC_lineChart(data           = data2plot,
                          target_var     = "value2plot",
                          grouping_var   = "year",
-                         ngroups        = data2plot$country, 
+                         ngroups        = data2plot$country,
                          labels_var     = "label",
                          colors_var     = "country",
                          colors         = mainCOLOR,
@@ -582,11 +586,12 @@ figure_PAOT.fn <- function(nchart = 6, data = master_data.df) {
                          x.labels       = x.axis.labels,
                          sec.ticks      = sec.ticks
   )
-  
+
   # Saving panels
   saveIT.fn(chart  = chart,
             n      = nchart,
-            suffix = NULL,
+            suffix = "A",
             w      = 189.7883,
             h      = 149.7219)
 }
+
