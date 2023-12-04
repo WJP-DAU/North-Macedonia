@@ -228,6 +228,10 @@
     background: #FC8F72;
 }
 
+/*Sometimes Acceptible*/
+.c-someacceptible{
+    background: #FAE5D3;
+}
 /***************** Colors  *****************/
 
 /*Navy*/
@@ -258,6 +262,11 @@
 /*Gray*/
 .bg-gray {
     background: #CCC;
+}
+
+/*Yellow*/
+.bg-yellow {
+    background: #FFEFD7;
 }
 
 /*------------- Diamond ------------------------*/
