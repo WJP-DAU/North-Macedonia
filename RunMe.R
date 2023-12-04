@@ -3,13 +3,12 @@
 ## Script:            North Macedonia Country Report - RunMe File
 ##
 ## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
-##                    Artha P. Pillai             (apillai@worldjusticeproject.org)
 ##
 ## Dependencies:      World Justice Project
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 21st, 2023
+## This version:      November 14th, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -32,6 +31,7 @@ source("Code/settings.R")
 source("Code/S01.R")
 source("Code/S02.R")
 source("Code/S03.R")
+source("Code/S04.R")
 
 # Loading plotting functions from GitHub
 source("https://raw.githubusercontent.com/ctoruno/WJP-Data-Viz/main/loading.R")
@@ -80,7 +80,9 @@ figure_FFOT.fn()
 figure_FFD.fn()
 
 # Figure 6
-figure_PAOT.fn()
+figure_PAOT1.fn()
+
+#figure_PAOT2.fn()  #Yet to write
 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -140,3 +142,16 @@ figure_POP.fn()
 # Figure 18
 figure_PTCV.fn()
 
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##  Section 4:Access to Justice                                                                 ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+a2j_section <- legal_assigment(master_data.df)
+
+a2j_tables.fn(a2j_section = a2j_section)
+
+a2j_plot1.fn(a2j_section = a2j_section)
+
+a2j_plot2.fn(a2j_section = a2j_section)
