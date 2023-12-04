@@ -198,8 +198,8 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
     )
   
   # Defining color palette
-  colors4plot <- lickertPalette
-  names(colors4plot) <- c("Not Acceptable", "Sometimes Acceptable", "Don't know", "Usually Acceptable", "Always Acceptable")
+  colors4plot <- c("#003B8A", "#d9d9d9","#FAE5D3", "#FC8F72", "#FA4D57")
+  names(colors4plot) <- c("Not Acceptable","Don't know", "Sometimes Acceptable",  "Usually Acceptable", "Always Acceptable")
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Offered", 
@@ -249,7 +249,7 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
 figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
   
   # Defining variables to include in plot
-  vars4plot <- c("q4a", "q4b", "q4c", "q4d", "q4e")
+  vars4plot <- c("q4a", "q4b", "q4d", "q4e")
   
   # Defining data frame for plot
   data2plot <- data %>%
@@ -281,8 +281,7 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
   panelVector <- c("A" = vars4plot[1], 
                    "B" = vars4plot[2], 
                    "C" = vars4plot[3], 
-                   "D" = vars4plot[4], 
-                   "E" = vars4plot[5])
+                   "D" = vars4plot[4])
   
   imap(panelVector,
        function(tvar, panelName) {
@@ -377,13 +376,13 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
         variable == "NM_q5_2d" ~ "PUBLIC DEFENCE ATTORNEYS"
       ),
       order_value = case_when(
-        variable == "CAR_q8a"  ~ 1,
-        variable == "CAR_q8b"  ~ 2,
-        variable == "CAR_q8c"  ~ 3,
-        variable == "CAR_q8e"  ~ 4,
-        variable == "CAR_q8i"  ~ 5,
+        variable == "CAR_q8a"  ~ 5,
+        variable == "CAR_q8b"  ~ 4,
+        variable == "CAR_q8c"  ~ 2,
+        variable == "CAR_q8e"  ~ 3,
+        variable == "CAR_q8i"  ~ 7,
         variable == "CAR_q8k"  ~ 6,
-        variable == "NM_q5_2d" ~ 7
+        variable == "NM_q5_2d" ~ 1
       ),
       statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
                           "Don't know",
@@ -393,7 +392,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
     )
   
   # Defining color palette
-  colors4plot <- c("#9395D3","#d9d9d9", "#FC8F72")
+  colors4plot <- c("#fa4d57","#d9d9d9", "#003b8a")
   names(colors4plot) <- c("Yes","Don't know", "No")
   
   # Applying plotting function
