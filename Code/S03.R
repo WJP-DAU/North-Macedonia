@@ -440,7 +440,7 @@ figurePCJS_1.fn <- function(nchart = 15, data = master_data.df) {
                                             "and<br>efficiently")
       ),
       across(label,
-             ~paste0("<span style='color:", "#fa4d57", ";font-size:6.326276mm;font-weight:bold'>",  
+             ~paste0("<span style='color:", "#003b8a", ";font-size:6.326276mm;font-weight:bold'>",  
                      valuelabel,
                      "</span>",
                      "<br>",
