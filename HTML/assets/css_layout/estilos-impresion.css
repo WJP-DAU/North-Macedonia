@@ -615,15 +615,15 @@
 		width: 90%;
 	}
 	/* BRIBERY VICTIMIZATION chart 10 page 22 */
-	#BriberyVictimization{
+	#Bribery1{
 		height: 34.47cm;
 	}
-	#BriberyVictimization .col-md-6 {
+	#Bribery1 .col-md-6 {
 		-ms-flex: 0 0 50%;
 		flex: 0 0 50%;
 		max-width: 50%;
 	}
-	#BriberyVictimization .img-chart{
+	#Bribery1 .img-chart{
 		width: 80%;
 	}
 	/* TRUST chart 11 page 23 */
@@ -722,10 +722,17 @@
 	/* chart 16 page 30 */
 	#Police2{
 		height: 34.47cm;
-		padding-top: 2rem !important;
+	}
+	#Police2 .col-md-6 {
+		-ms-flex: 0 0 50%;
+		flex: 0 0 50%;
+		max-width: 50%;
 	}
 	#Police2 .img-chart{
 		width: 85%;
+	}
+	#Police2 .print.mb-4 br{
+		display: none;
 	}
 
 	/* chart 16 page 30 */
@@ -901,7 +908,7 @@
 	.col-md-6.mb-5.pdis br{
 		display: block !important;
 	}
-	#BriberyVictimization .reference br, #Corruption2 .reference br, #FundamentalFreedoms4 .reference br{
+	#Bribery1 .reference br, #Corruption2 .reference br, #FundamentalFreedoms4 .reference br{
 		display: block;
 	}
 	#FundamentalFreedoms4 .reference.mb-0 {

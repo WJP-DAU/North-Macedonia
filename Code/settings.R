@@ -30,7 +30,7 @@ library(pacman)
 # Notes: ggsankey and ggwaffle need to be installed from Github's developer version. Run the following lines 
 # of code in order to install: 
 # devtools::install_github("davidsjoberg/ggsankey")
-#devtools::install_github("liamgilbey/ggwaffle")
+# devtools::install_github("liamgilbey/ggwaffle")
 
 p_load(char = c(
   # Visualizations
@@ -56,7 +56,7 @@ p_load(char = c(
 # SharePoint path
 if (Sys.info()["user"] == "ctoruno") {
   path2SP <- "/Users/ctoruno/OneDrive - World Justice Project/Data Analytics/"
-
+  
 }
 if (Sys.info()["user"] == "santiagopardo") {
   path2SP <- "/Users/santiagopardo/OneDrive - World Justice Project/Data Analytics/"
@@ -295,81 +295,81 @@ legal_assigment <- function(data_subset) {
     mutate(a2j_consumer    = 
              if_else(
                q19_A1 == 1 |
-               q19_A2 == 1 | 
-               q19_A3 == 1, 1, 0),
+                 q19_A2 == 1 | 
+                 q19_A3 == 1, 1, 0),
            a2j_land        = 
              if_else(
                q19_B1 == 1 | 
-               q19_B2 == 1 | 
-               q19_B3 == 1 | 
-               q19_B4 == 1, 1, 0),
+                 q19_B2 == 1 | 
+                 q19_B3 == 1 | 
+                 q19_B4 == 1, 1, 0),
            a2j_housing     = 
              if_else(
                q19_C1 == 1 | 
-               q19_C2 == 1 |
-               q19_C3 == 1 |
-               q19_C4 == 1, 1, 0),
+                 q19_C2 == 1 |
+                 q19_C3 == 1 |
+                 q19_C4 == 1, 1, 0),
            a2j_family      = 
              if_else(
                q19_D1 == 1  | 
-               q19_D2 == 1  |
-               q19_D3 == 1  | 
-               q19_D4 == 1  | 
-               q19_D5 == 1  | 
-               q19_D6 == 1, 1, 0),
+                 q19_D2 == 1  |
+                 q19_D3 == 1  | 
+                 q19_D4 == 1  | 
+                 q19_D5 == 1  | 
+                 q19_D6 == 1, 1, 0),
            a2j_education   = 
              if_else(
                q19_E1 == 1 |
-               q19_E2 == 1, 1, 0),
+                 q19_E2 == 1, 1, 0),
            a2j_accidental  = 
              if_else(
                q19_F1 == 1 |
-               q19_F2 == 1, 1, 0),
+                 q19_F2 == 1, 1, 0),
            a2j_employment  = 
              if_else(
                q19_G1 == 1 |
-               q19_G2 == 1 |
-               q19_G3 == 1, 1, 0),
+                 q19_G2 == 1 |
+                 q19_G3 == 1, 1, 0),
            a2j_public      = 
              if_else(
                q19_H1 == 1 | 
-               q19_H2 == 1 | 
-               q19_J4 == 1, 1, 0),
+                 q19_H2 == 1 | 
+                 q19_J4 == 1, 1, 0),
            a2j_law         = 
              if_else(
                q19_I1 == 1, 1, 0),
            a2j_id          = 
              if_else(
                q19_J1 == 1 | 
-               q19_J2 == 1 | 
-               q19_J3 == 1, 1, 0),
+                 q19_J2 == 1 | 
+                 q19_J3 == 1, 1, 0),
            a2j_money       = 
              if_else(
                q19_K1 == 1 | 
-               q19_K2 == 1 | 
-               q19_K3 == 1 | 
-               q19_L1 == 1 | 
-               q19_L2 == 1, 1, 0),
+                 q19_K2 == 1 | 
+                 q19_K3 == 1 | 
+                 q19_L1 == 1 | 
+                 q19_L2 == 1, 1, 0),
            a2j_community   = 
              if_else(
                q19_H3 == 1 | 
-               q19_E3 == 1, 1, 0)) %>%
+                 q19_E3 == 1, 1, 0)) %>%
     mutate(
       legal           = 
         if_else(
           a2j_consumer    == 1  | 
-          a2j_land        == 1  | 
-          a2j_housing     == 1  | 
-          a2j_family      == 1  | 
-          a2j_education   == 1  | 
-          a2j_accidental  == 1  |
-          a2j_employment  == 1  | 
-          a2j_public      == 1  | 
-          a2j_law         == 1  | 
-          a2j_id          == 1  | 
-          a2j_money       == 1  | 
-          a2j_community   == 1  | 
-          q19_99          == 1, 1, 0, 0)) %>%
+            a2j_land        == 1  | 
+            a2j_housing     == 1  | 
+            a2j_family      == 1  | 
+            a2j_education   == 1  | 
+            a2j_accidental  == 1  |
+            a2j_employment  == 1  | 
+            a2j_public      == 1  | 
+            a2j_law         == 1  | 
+            a2j_id          == 1  | 
+            a2j_money       == 1  | 
+            a2j_community   == 1  | 
+            q19_99          == 1, 1, 0, 0)) %>%
     group_by(country) %>%
     filter(year == 2023) %>%
     ungroup() %>%

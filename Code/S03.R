@@ -79,8 +79,8 @@ figure_TCEP1.fn <- function(nchart = 13, data = master_data.df)
                                 category == "life_crimes" ~ "Crimes against life and integrity \nof individuals",
                                 category == "corr_crimes" ~ "Corruption, financial, \nand commercial crimes"),
            order_value = case_when(category ==  "Property crimes" ~ 3,
-                                   category == "Crimes against life and integrity \nof individuals" ~ 1,
-                                   category == "Corruption, financial, \nand commercial crimes" ~ 2))
+                                   category == "Crimes against life and integrity \nof individuals" ~ 2,
+                                   category == "Corruption, financial, \nand commercial crimes" ~ 1))
   
   
   crimes <- lollipop_chart(data2plot = data2plot, 
@@ -176,7 +176,6 @@ figure_TCEP2.fn <- function(nchart = 13, data = master_data.df) {
     theme_sankey(base_size = 10, base_rect_size = 10) +
     theme(legend.position = "none",
           panel.background   = element_blank(),
-          plot.background    = element_blank(),
           axis.title.x = element_blank(),
           axis.title.y = element_blank(),
           axis.text.x = element_text(family ="Lato Full", 
@@ -729,14 +728,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelA
   
   a <- horizontal_edgebars (data2plot    = panelA,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);a
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);a
   
   saveIT.fn(chart  = a,
             n      = nchart,
@@ -787,14 +786,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelB
   
   b <- horizontal_edgebars (data2plot    = panelB,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);b
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);b
   
   saveIT.fn(chart  = b,
             n      = nchart,
@@ -846,14 +845,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelC
   
   c <- horizontal_edgebars (data2plot    = panelC,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);c
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);c
   
   saveIT.fn(chart  = c,
             n      = nchart,
@@ -904,14 +903,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelD
   
   d <- horizontal_edgebars (data2plot    = panelD,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);d
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);d
   
   saveIT.fn(chart  = d,
             n      = nchart,
@@ -967,14 +966,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelE
   
   e <- horizontal_edgebars (data2plot    = panelE,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);e
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);e
   
   saveIT.fn(chart  = e,
             n      = nchart,
@@ -1025,14 +1024,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelF
   
   f <- horizontal_edgebars (data2plot    = panelF,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);f
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);f
   
   saveIT.fn(chart  = f,
             n      = nchart,
@@ -1084,14 +1083,14 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     );panelG
   
   g <- horizontal_edgebars (data2plot    = panelG,
-                           y_value      = value,
-                           x_var        = variable,
-                           group_var    = group,
-                           label_var    = label,
-                           x_lab_pos    = x_pos,
-                           y_lab_pos    = 0,
-                           bar_color    = "#2a2a94",
-                           margin_top   = 0);g
+                            y_value      = value,
+                            x_var        = variable,
+                            group_var    = group,
+                            label_var    = label,
+                            x_lab_pos    = x_pos,
+                            y_lab_pos    = 0,
+                            bar_color    = "#2a2a94",
+                            margin_top   = 0);g
   
   saveIT.fn(chart  = g,
             n      = nchart,
@@ -1099,8 +1098,9 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
             w      = 82.59305,
             h      = 59.74817)
   
-
+  
 }
+
 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1138,15 +1138,15 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
       order_value = case_when (
         category == "EXP_q24c_G1" ~ 1,
         category == "EXP_q24d_G1" ~ 2,
-        category == "EXP_q24d_G2" ~ 3,
-        category == "EXP_q24b_G1" ~ 4,
-        category == "EXP_q24a_G1" ~ 5,
-        category == "EXP_q24c_G2" ~ 6,
-        category == "EXP_q23f_G1" ~ 7,
-        category == "EXP_q24b_G2" ~ 8,
-        category == "EXP_q24f_G2" ~ 9,
-        category == "EXP_q24a_G2" ~ 10,
-        category == "EXP_q24g_G2" ~ 11
+        category == "EXP_q24a_G2" ~ 3,
+        category == "EXP_q24b_G2" ~ 4,
+        category == "EXP_q24c_G2" ~ 5,
+        category == "EXP_q24d_G2" ~ 6,
+        category == "EXP_q24f_G2" ~ 7,
+        category == "EXP_q24g_G2" ~ 8,
+        category == "EXP_q23f_G1" ~ 9,
+        category == "EXP_q24a_G1" ~ 10,
+        category == "EXP_q24b_G1" ~ 11
       )) %>%
     arrange(order_value) %>%
     mutate(
