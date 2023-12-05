@@ -79,8 +79,8 @@ figure_TCEP1.fn <- function(nchart = 13, data = master_data.df)
                                 category == "life_crimes" ~ "Crimes against life and integrity \nof individuals",
                                 category == "corr_crimes" ~ "Corruption, financial, \nand commercial crimes"),
            order_value = case_when(category ==  "Property crimes" ~ 3,
-                                   category == "Crimes against life and integrity \nof individuals" ~ 2,
-                                   category == "Corruption, financial, \nand commercial crimes" ~ 1))
+                                   category == "Crimes against life and integrity \nof individuals" ~ 1,
+                                   category == "Corruption, financial, \nand commercial crimes" ~ 2))
   
   
   crimes <- lollipop_chart(data2plot = data2plot, 
@@ -864,12 +864,12 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
   
   panelD <- data %>%
     filter(year == latestYear & country == mainCountry) %>%
-    select(q18b, EXP_q17g, EXP_q17h, EXP_q17i, EXP_q17j) %>%
+    select(q18a, EXP_q17g, q18c, q18d, q18e) %>%
     mutate(
       across(everything(),
              ~ case_when(
-               .x == 0  ~ 1,
-               .x == 1  ~ 0,
+               .x == 0  ~ 0,
+               .x == 1  ~ 1,
                .x == 99 ~ NA_real_,
                is.na(.x) ~ NA_real_
              ))
@@ -885,16 +885,16 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  names_to = "group",
                  values_to = "value") %>%
     mutate(
-      x_pos = if_else(variable %in% "q18b", 1.15,
-                      if_else(variable %in% "EXP_q17g", 2.15,
-                              if_else(variable %in% "EXP_q17h", 3.15, 
-                                      if_else(variable %in% "EXP_q17i", 4.15, 5.15)))),
+      x_pos = if_else(variable %in% "EXP_q17g", 1.15,
+                      if_else(variable %in% "q18d", 2.15,
+                              if_else(variable %in% "q18e", 3.15, 
+                                      if_else(variable %in% "q18c", 4.15, 5.15)))),
       variable = case_when(
-        variable == "q18b"        ~ "Gender",
-        variable == "EXP_q17g"    ~ "Skin color",
-        variable == "EXP_q17h"    ~ "Indigenous identity",
-        variable == "EXP_q17i"    ~ "Tattoos",
-        variable == "EXP_q17j"    ~ "Age"
+        variable == "q18a"     ~ "Economic status",
+        variable == "EXP_q17g" ~ "Skin color",
+        variable == "q18c"     ~ "Ethnic background",
+        variable == "q18d"     ~ "Religion",
+        variable == "q18e"     ~ "Foreigner status"
       ),
       multiplier = if_else(group == "empty_value", 0, 1),
       label      = paste0(format(round(value*100, 0), nsmall = 0),
@@ -1137,15 +1137,15 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
       order_value = case_when (
         category == "EXP_q24c_G1" ~ 1,
         category == "EXP_q24d_G1" ~ 2,
-        category == "EXP_q24a_G2" ~ 3,
-        category == "EXP_q24b_G2" ~ 4,
-        category == "EXP_q24c_G2" ~ 5,
-        category == "EXP_q24d_G2" ~ 6,
-        category == "EXP_q24f_G2" ~ 7,
-        category == "EXP_q24g_G2" ~ 8,
-        category == "EXP_q23f_G1" ~ 9,
-        category == "EXP_q24a_G1" ~ 10,
-        category == "EXP_q24b_G1" ~ 11
+        category == "EXP_q24d_G2" ~ 3,
+        category == "EXP_q24b_G1" ~ 4,
+        category == "EXP_q24a_G1" ~ 5,
+        category == "EXP_q24c_G2" ~ 6,
+        category == "EXP_q23f_G1" ~ 7,
+        category == "EXP_q24b_G2" ~ 8,
+        category == "EXP_q24f_G2" ~ 9,
+        category == "EXP_q24a_G2" ~ 10,
+        category == "EXP_q24g_G2" ~ 11
       )) %>%
     arrange(order_value) %>%
     mutate(

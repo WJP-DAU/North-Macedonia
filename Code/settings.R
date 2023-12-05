@@ -30,7 +30,7 @@ library(pacman)
 # Notes: ggsankey and ggwaffle need to be installed from Github's developer version. Run the following lines 
 # of code in order to install: 
 # devtools::install_github("davidsjoberg/ggsankey")
-# devtools::install_github("liamgilbey/ggwaffle")
+#devtools::install_github("liamgilbey/ggwaffle")
 
 p_load(char = c(
   # Visualizations
@@ -153,7 +153,7 @@ rosePalette    <- c("#20204a", "#12006b", "#2e2e95", "#4e43dd", "#756ef9", "#9c9
 ordnung.fn <- function(){
   
   # Listing previous outputs
-  prevOutputs <- list.files("Outputs", 
+  prevOutputs <- list.files(path2SP, "6. Country Reports/North-Macedonia/Data/NMdata.dta", 
                             include.dirs = F, 
                             full.names   = T, 
                             recursive    = T)
@@ -163,7 +163,7 @@ ordnung.fn <- function(){
   
   # Creating folders for each chart output within the country directory
   for (plot in 1:20) {
-    dir.create(file.path("Outputs", 
+    dir.create(file.path(path2SP, "6. Country Reports/North-Macedonia/Data/NMdata.dta", 
                          paste0("imgChart", plot),
                          fsep = "/"), 
                showWarnings = FALSE)
@@ -178,7 +178,9 @@ ordnung.fn <- function(){
 
 saveIT.fn <- function(chart, n, suffix = NULL, w, h) {
   ggsave(plot   = chart,
-         file   = file.path("Outputs", 
+         file   = file.path(path2SP, 
+                            "6. Country Reports/North-Macedonia",
+                            "Outputs", 
                             paste0("imgChart", n),
                             paste0("figure_", n, suffix, ".svg"),
                             fsep = "/"), 
