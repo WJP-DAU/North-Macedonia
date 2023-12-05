@@ -771,7 +771,7 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  names_to = "group",
                  values_to = "value") %>%
     mutate(
-      x_pos = if_else(variable %in% "q48b_G2", 1.1,
+      x_pos = if_else(variable %in% "EXP_q24e_G2", 1.1,
                       if_else(variable %in% "q48b_G1", 2.15,
                               if_else(variable %in% "q48a_G2", 3.15, 4.15))),
       variable = case_when(
@@ -830,9 +830,9 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  names_to = "group",
                  values_to = "value") %>%
     mutate(
-      x_pos = if_else(variable %in% "q48a_G1", 4.15,
-                      if_else(variable %in% "EXP_q22e_G1", 3.15,
-                              if_else(variable %in% "q48c_G1", 2.15, 1.15))),
+      x_pos = if_else(variable %in% "EXP_q22e_G1", 4.15,
+                      if_else(variable %in% "q48d_G2", 3.15,
+                              if_else(variable %in% "q48a_G1", 2.15, 1.15))),
       variable = case_when(
         variable == "q48a_G1"     ~ "Act lawfully",
         variable == "EXP_q22e_G1" ~ "Do not use excessive force",
@@ -951,8 +951,8 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  values_to = "value") %>%
     mutate(
       x_pos = if_else(variable %in% "q2d", 4.15,
-                      if_else(variable %in% "q48e_G2", 3.15,
-                              if_else(variable %in% "EXP_q22k_G2", 2.15, 
+                      if_else(variable %in% "EXP_q22k_G2", 3.15,
+                              if_else(variable %in% "q48e_G2", 2.15, 
                                       if_else(variable %in% "EXP_q22j_G2", 1.15, NA_real_)))),
       variable = case_when(
         variable == "q2d"         ~ "Are not involved in corrupt practices",
@@ -1010,9 +1010,9 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  names_to = "group",
                  values_to = "value") %>%
     mutate(
-      x_pos = if_else(variable %in% "q1d", 3.15,
-                      if_else(variable %in% "EXP_q8d", 2.15,
-                              if_else(variable %in% "q9", 1.15, NA_real_))),
+      x_pos = if_else(variable %in% "q9", 3.15,
+                      if_else(variable %in% "q1d", 2.15,
+                              if_else(variable %in% "EXP_q8d", 1.15, NA_real_))),
       variable = case_when(
         variable == "q1d"     ~ "Trust the police",
         variable == "EXP_q8d" ~ "Report a crime when they are a victim",
@@ -1068,9 +1068,9 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  values_to = "value") %>%
     mutate(
       x_pos = if_else(variable %in% "q48d_G1", 4.15,
-                      if_else(variable %in% "EXP_q22f_G1", 3.15,
+                      if_else(variable %in% "EXP_q22h_G1", 3.15,
                               if_else(variable %in% "EXP_q22g_G1", 2.15, 
-                                      if_else(variable %in% "EXP_q22h_G1", 1.15, NA_real_)))),
+                                      if_else(variable %in% "EXP_q22f_G1", 1.15, NA_real_)))),
       variable = case_when(
         variable == "q48d_G1"         ~ "Are held accountable for violating laws",
         variable == "EXP_q22f_G1"     ~ "Are held accountable for seeking bribes",

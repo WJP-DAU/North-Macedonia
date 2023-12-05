@@ -153,7 +153,7 @@ rosePalette    <- c("#20204a", "#12006b", "#2e2e95", "#4e43dd", "#756ef9", "#9c9
 ordnung.fn <- function(){
   
   # Listing previous outputs
-  prevOutputs <- list.files(path2SP, "6. Country Reports/North-Macedonia/Data/NMdata.dta", 
+  prevOutputs <- list.files(path2SP, "6. Country Reports/North-Macedonia/Outputs/", 
                             include.dirs = F, 
                             full.names   = T, 
                             recursive    = T)
@@ -163,7 +163,7 @@ ordnung.fn <- function(){
   
   # Creating folders for each chart output within the country directory
   for (plot in 1:20) {
-    dir.create(file.path(path2SP, "6. Country Reports/North-Macedonia/Data/NMdata.dta", 
+    dir.create(file.path(path2SP, "6. Country Reports/North-Macedonia/Outputs/", 
                          paste0("imgChart", plot),
                          fsep = "/"), 
                showWarnings = FALSE)
