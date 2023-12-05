@@ -528,7 +528,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
   # Saving panels
   saveIT.fn(chart  = chart,
             n      = nchart,
-            suffix = NA,
+            suffix = NULL,
             w      = 189.7883,
             h      = 183.1106)
 }
