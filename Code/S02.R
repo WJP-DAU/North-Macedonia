@@ -367,13 +367,13 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
       value2plot = if_else(direction == "Positive", perc*100, perc*-100),
       value_label = to_percentage.fn(round(abs(value2plot), 0)),
       labels = case_when(
-        variable == "CAR_q8a" ~ "POLICE OFFICERS",
-        variable == "CAR_q8b" ~ "JUDGES AND MAGISTRATES",
-        variable == "CAR_q8c" ~ "PROSECUTORS",
-        variable == "CAR_q8e" ~ "CUSTOMS OFFICERS",
-        variable == "CAR_q8i" ~ "CAR REGISTRATION AGENCY OFFICERS",
-        variable == "CAR_q8k" ~ "ELECTED REPRESENTATIVES",
-        variable == "NM_q5_2d" ~ "PUBLIC DEFENCE ATTORNEYS"
+        variable == "CAR_q8a"  ~ "Police Officers",
+        variable == "CAR_q8b"  ~ "Judges and Magistrates",
+        variable == "CAR_q8c"  ~ "Prosecutors",
+        variable == "CAR_q8e"  ~ "Customs Officers",
+        variable == "CAR_q8i"  ~ "Car Registration Agency Officers",
+        variable == "CAR_q8k"  ~ "Elected Representatives",
+        variable == "NM_q5_2d" ~ "Public Defence Attorneys"
       ),
       order_value = case_when(
         variable == "CAR_q8a"  ~ 5,
@@ -411,7 +411,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
             n   = nchart,
             suffix = NULL,
             w   = 189.7883,
-            h   = 112.4671)  
+            h   = 98.4671)  
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -509,130 +509,100 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of Corruption and Trust, by Ethnicity (PCTE)                                              ----
+##    Perceptions of Corruption and Trust, by Cultural Group (PCTE)                                              ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
 figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
   
-  alpha <- 0.05
-  
-  # Variables to plot
+  # Defining variables to use in the plot
   vars4plot <- list("Corruption" = c("q2a","q2d","q2b", "q2c","q2e", "q2f", "q2g"),
                     "Trust"      = c("q1a","q1d","q1b", "q1c","q1e", "q1f", "q1g"))
   
-  imap(c("ethnigroup" = "Macedonian",
-         "relgroup"   = "Christian"),
-       function(blue_category, target) {
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry & year == latestYear) %>%
+    select(relig, 
+           unlist(vars4plot, 
+                  use.names = F)) %>%
+    mutate(
+      religr = case_when(
+        relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
+        relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
+      ),
+      across(!c(relig, religr),
+             ~if_else(.x == 1 | .x == 2, 1,
+                      if_else(!is.na(.x) & .x != 99, 0, 
+                              NA_real_)))
+    ) %>%
+    group_by(religr) %>%
+    select(-relig) %>%
+    filter(!is.na(religr)) %>%
+    summarise(across(everything(),
+                     \(x) mean(x, na.rm = TRUE))) %>%
+    pivot_longer(!religr,
+                 names_to   = "category",
+                 values_to  = "value2plot") %>%
+    mutate(
+      labels = case_when(
+        category == "q2a" ~ "Members of congress",
+        category == "q2d" ~ "Police officers",
+        category == "q2b" ~ "Local government officers",
+        category == "q2c" ~ "National government officers",
+        category == "q2e" ~ "Prosecutors",
+        category == "q2f" ~ "Public defense attorneys",
+        category == "q2g" ~ "Judges and magistrates",
+        category == "q1a" ~ "People living in their country",
+        category == "q1d" ~ "Police officers",
+        category == "q1b" ~ "Local government officers",
+        category == "q1c" ~ "National government officers",
+        category == "q1e" ~ "Prosecutors",
+        category == "q1f" ~ "Public defense attorneys",
+        category == "q1g" ~ "Judges and magistrates"
+      ),
+      value2plot = round(value2plot*100,1),
+      
+      order_value =
+        case_when(
+          category %in% c("q1a", "q2a") ~ 1,
+          category %in% c("q1d", "q2d") ~ 2,
+          category %in% c("q1b", "q2b") ~ 3,
+          category %in% c("q1c", "q2c") ~ 4,
+          category %in% c("q1e", "q2e") ~ 5,
+          category %in% c("q1g", "q2g") ~ 1,
+          category %in% c("q1f", "q2f") ~ 6
+        )
+    )
+  
+  # Defining color palette
+  colors4plot <- c("Orthodox Christian" = "#a90099", 
+                   "Sunni Muslim"       = "#3273ff")
+  
+  # Plotting each panel of Figure 12
+  imap(c("A" = "Corruption", 
+         "B" = "Trust"),
+       function(varSet, panelName) {
          
-         # Defining data frame for plot
-         data2plot <- data %>%
-           filter(country == mainCountry) %>%
-           filter(year == latestYear) %>%
-           rename(targetvar = all_of(target)) %>%
-           select(targetvar, all_of(unlist(vars4plot, 
-                                           use.names = F))) %>%
-           mutate(
-             across(starts_with("q2"),
-                    ~if_else(.x == 3 | .x == 4, 1,
-                             if_else(!is.na(.x)  & .x != 99, 0, 
-                                     NA_real_))),
-             across(starts_with("q1"),
-                    ~if_else(.x == 1 | .x == 2, 1,
-                             if_else(!is.na(.x) & .x != 99, 0, 
-                                     NA_real_)))
-           ) %>%
-           group_by(targetvar) %>%
-           mutate(obs = n()) %>%
-           ungroup() %>%
-           group_by(targetvar) %>%
-           summarise(
-             across(c(all_of(unlist(vars4plot, 
-                                    use.names = F))),
-                    mean, 
-                    na.rm = T,
-                    .names = "{col}_mean"),
-             across(c(all_of(unlist(vars4plot, 
-                                    use.names = F))),
-                    sd,
-                    na.rm = T,
-                    .names = "{col}_sd"),
-             n_obs = mean(obs, na.rm = T),
-             n_obs = as.character(n_obs)
-           ) %>%
-           drop_na() %>%
-           pivot_longer(!c(targetvar,n_obs),
-                        names_to      = c("category", "stat"),
-                        names_pattern = "(.*)_(.*)",
-                        values_to     = "value") %>%
-           pivot_wider(c(category, targetvar, n_obs),
-                       names_from  = stat,
-                       values_from = value) %>%
-           mutate(
-             n_obs  = as.numeric(n_obs),
-             labels = case_when(
-               category == "q2a" ~ "Members of congress",
-               category == "q2d" ~ "Police officers",
-               category == "q2b" ~ "Local government officers",
-               category == "q2c" ~ "National government officers",
-               category == "q2e" ~ "Prosecutors",
-               category == "q2f" ~ "Public defense attorneys",
-               category == "q2g" ~ "Judges and magistrates",
-               category == "q1a" ~ "People living in their country",
-               category == "q1d" ~ "Police officers",
-               category == "q1b" ~ "Local government officers",
-               category == "q1c" ~ "National government officers",
-               category == "q1e" ~ "Prosecutors",
-               category == "q1f" ~ "Public defense attorneys",
-               category == "q1g" ~ "Judges and magistrates"
-             ),
-             lower = mean - qt(1- alpha/2, (n() - 1))*sd/sqrt(n_obs),
-             upper = mean + qt(1- alpha/2, (n() - 1))*sd/sqrt(n_obs)
-           ) %>%
-           rename(values = mean) %>%
-           mutate(batch = if_else(str_detect(category, "q1"), "trust", "corruption")) %>%
-           mutate(order_values =
-                    case_when(
-                      category %in% c("q1a", "q2a") ~ 1,
-                      category %in% c("q1d", "q2d") ~ 2,
-                      category %in% c("q1b", "q2b") ~ 3,
-                      category %in% c("q1c", "q2c") ~ 4,
-                      category %in% c("q1e", "q2e") ~ 5,
-                      category %in% c("q1g", "q2g") ~ 1,
-                      category %in% c("q1f", "q2f") ~ 6
-                    ))
+         # Filtering data2plot to leave the variable for each panel
+         data2plot <- data2plot %>%
+           filter(category %in% vars4plot[[varSet]])
          
-         # Defining color palette
-         colors4plot <- binPalette
-         names(colors4plot) <- c(blue_category, "Other")
+         # Applying plotting function
+         chart <- NM_dotsChart(data         = data2plot,
+                               target_var   = "value2plot",
+                               grouping_var = "religr",
+                               labels_var   = "labels",
+                               colors       = colors4plot,
+                               order_var    = "order_value")
          
-         # Looping
-         imap(c("A" = "corruption",
-                "B" = "trust"),
-              function(varSet, panelName) {
-                
-                # Filtering data2plot to leave the variable for each panel
-                data2plot <- data2plot %>%
-                  filter(batch %in% varSet)
-                
-                # Applying plotting function
-                chart <- errorDotsChart(data2plot    = data2plot,
-                                        labels       = "labels",
-                                        group        = "targetvar",
-                                        category     = "category",
-                                        values       = values,
-                                        lower        = lower,
-                                        upper        = upper, 
-                                        colors4plot  = colors4plot, 
-                                        custom_order = F, 
-                                        order_values = order_values)
-                # Saving panels
-                saveIT.fn(chart  = chart,
-                          n      = nchart,
-                          suffix = panelName,
-                          w      = 189.7883,
-                          h      = 54.12481)
-                
-              })
+         
+         # Saving panels
+         saveIT.fn(chart  = chart,
+                   n      = nchart,
+                   suffix = panelName,
+                   w      = 189.7883,
+                   h      = 54.12481)
+         
        })
 }
