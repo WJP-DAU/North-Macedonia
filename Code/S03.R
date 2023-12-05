@@ -480,10 +480,10 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df) {
   data2plot <- data %>%
     filter(country == mainCountry) %>%
     filter(year == latestYear) %>%
-    select(ethni, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1, EXP_q23d_G1, q49c_G1, q49b_G1) %>%
-    mutate(ethnicity = case_when(
-      ethni == "Macedonian" ~ "Macedonian",
-      TRUE ~ "Other"
+    select(relig, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1, EXP_q23d_G1, q49c_G1, q49b_G1) %>%
+    mutate(religr = case_when(
+      relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
+      relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
     )) %>%
     mutate(
       
@@ -493,16 +493,16 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df) {
       q49d_G1_merge = if_else(is.na(q49d_G1) & is.na(EXP_q23d_G1), NA_real_, q49d_G1_merge),
       
       # Transforming everything into binary variables
-      across(!c(ethnicity),
+      across(!c(religr),
              ~if_else(.x == 1 | .x == 2, 1,
                       if_else(!is.na(.x) & .x != 99, 0, NA_real_)))
     ) %>%
-    select(ethnicity, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1_merge, q49c_G1, q49b_G1) %>%
-    group_by(ethnicity) %>%
+    select(religr, q49a, q49b_G2, q49e_G2, q49c_G2, q49e_G1, q49d_G1_merge, q49c_G1, q49b_G1) %>%
+    group_by(religr) %>%
     summarise(across(everything(),
                      mean,
                      na.rm = T)) %>%
-    pivot_longer(!c(ethnicity),
+    pivot_longer(!c(religr),
                  names_to  = "category",
                  values_to = "value4radar") %>%
     mutate(
@@ -540,14 +540,12 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df) {
                      "</span>"))
     ) %>%
     drop_na() %>%
-    rename(year = ethnicity) 
+    rename(year = religr) 
   
   
   # Defining color palette
-  colors4plot <- c("#a90099", "#3273ff")
-  names(colors4plot) <- data2plot %>% distinct(year) %>% arrange(year) %>% pull(year)
-  
-  latestYear <- "Macedonian"
+  colors4plot <- c("Orthodox Christian" = "#a90099", 
+                   "Sunni Muslim"       = "#3273ff")
   
   chart <- LAC_radarChart(data          = data2plot,
                           axis_var      = "category",         
@@ -555,7 +553,7 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df) {
                           label_var     = "label", 
                           order_var     = "order_value",
                           colors        = colors4plot,
-                          latestYear    = "Macedonian")
+                          latestYear    = "Orthodox Christian")
   
   # Saving panels
   saveIT.fn(chart  = chart,
