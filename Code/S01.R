@@ -541,7 +541,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
 # 
 
 
-figure_PAOT1.fn <- function(nchart = 6, data = master_data.df) {
+figure_PAOT.fn <- function(nchart = 6, data = master_data.df) {
 
 # Defining data frame for plot
 data2plot <- data %>%
@@ -589,80 +589,61 @@ data2plot <- data %>%
   saveIT.fn(chart  = chart,
             n      = nchart,
             suffix = "A",
-            w      = 189.7883,
-            h      = 149.7219)
+            w   = 189.7883,
+            h   = 98.4671)
 }
 
-
-# figure_PAOT2.fn <- function(nchart = 6, data = master_data.df) {
-#   
-#   # Defining variables to include in plot
-#   vars4plot <- "q43_G2"
-#   
-#   # Defining data frame for plot
-#   data2plot <- data %>%
-#     filter(country == mainCountry & year == latestYear) %>%
-#     select(relig, 
-#            unlist(vars4plot, 
-#                   use.names = F)) %>%
-#     mutate(
-#       religr = case_when(
-#         relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
-#         relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
-#       ),
-#       across(!c(relig, religr),
-#              ~if_else(.x == 1 | .x == 2, 1,
-#                       if_else(!is.na(.x) & .x != 99, 0, 
-#                               NA_real_)))
-#     ) %>%
-#     group_by(religr) %>%
-#     select(-relig) %>%
-#     filter(!is.na(religr)) %>%
-#     summarise(across(everything(),
-#                      \(x) mean(x, na.rm = TRUE))) %>%
-#     pivot_longer(!religr,
-#                  names_to   = "category",
-#                  values_to  = "value2plot") %>%
-#     mutate(
-#       value2plot  = value2plot*100,
-#       highlighted = if_else(year == latestYear, 
-#                             "Highlighted", 
-#                             "Regular"),
-#       labels      = to_percentage.fn(value2plot),
-#       year        = factor(as.character(year), 
-#                            levels = c("2017", "2023"))
-#     )
-#   
-#   # Defining colors
-#   colors4plot <- barsPalette
-#   names(colors4plot) <- c("Highlighted", "Regular")
-#   
-#   # Plotting each panel of Figure 5
-#   panelVector <- c("A" = vars4plot)
-#   
-#   imap(panelVector,
-#        function(tvar, panelName) {
-#          
-#          # Filtering data2plot to leave the variable for each panel
-#          data2plot_panel <- data2plot %>%
-#            filter(category %in% tvar)
-#          
-#          # Applying plotting function
-#          chart <- LAC_barsChart(data           = data2plot_panel,
-#                                 target_var     = "value2plot",
-#                                 grouping_var   = "year",
-#                                 labels_var     = "labels",
-#                                 colors_var     = "highlighted",
-#                                 colors         = colors4plot,
-#                                 direction      = "horizontal")
-#          
-#          # Saving panels
-#          saveIT.fn(chart  = chart,
-#                    n      = nchart,
-#                    suffix = "B",
-#                    w      = 86.81057,
-#                    h      = 22.60219)
-#          
-#        })
-# }
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of Accountability by Cultural Group(PACG)                                                        ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 
+figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
+  
+  # Defining variables to include in plot
+  vars4plot <- c("q43_G2")
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    select(relig,all_of(unlist(vars4plot, use.names = F))) %>%
+    mutate(
+      religr = case_when(
+        relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
+        relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim",
+        TRUE                                    ~ NA_character_
+      ),
+      q43_G2 = if_else(q43_G2 == 3, 1,
+                       if_else(!is.na(q43_G2) & q43_G2 != 99, 0,
+                               NA_real_))
+    ) %>%
+    filter(!is.na(religr)) %>%
+    group_by(religr) %>%
+    summarise(value2plot = mean(q43_G2, na.rm = TRUE)) %>%
+    mutate(
+      value2plot  = value2plot * 100,
+      highlighted = if_else(religr == "Sunni Muslim", "Highlighted", "Regular"),
+      labels      = to_percentage.fn(value2plot),
+      religr      = factor(religr, levels = c("Orthodox Christian", "Sunni Muslim"))
+    )
+  
+  # Defining colors
+  colors4plot <- barsPalette
+  names(colors4plot) <- c("Highlighted", "Regular")
+  
+  # Applying plotting function
+  chart <- LAC_barsChart(data           = data2plot,
+                         target_var     = "value2plot",
+                         grouping_var   = "religr",  
+                         labels_var     = "labels",
+                         colors_var     = "highlighted",
+                         colors         = colors4plot,
+                         direction      = "horizontal")
+  
+  # Saving the chart
+  saveIT.fn(chart  = chart,
+            n      = nchart,
+            suffix = "B",
+            w   = 189.7883,
+            h   = 98.4671)
+}

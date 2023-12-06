@@ -79,10 +79,11 @@ figure_FFOT.fn()
 # Figure 5
 figure_FFD.fn()
 
-# Figure 6
-figure_PAOT1.fn()
+# Figure 6.1
+figure_PAOT.fn()
 
-#figure_PAOT2.fn()
+# Figure 6.2
+figure_PACG.fn()
 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
