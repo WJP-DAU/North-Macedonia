@@ -249,8 +249,8 @@ a2j_tables.fn <- function(a2j_section) {
     dir.create(file.path("Outputs", 
                          paste0("tables")))
   } 
-  openxlsx::write.xlsx(list_of_datasets, 
-                       file = paste0("Outputs/tables/A2J_tables.xlsx"))
+  openxlsx::write.xlsx(list_of_datasets,
+                       file = paste0("Outputs/A2J_tables.xlsx"))
   
 }
 
