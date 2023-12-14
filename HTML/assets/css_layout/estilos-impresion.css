@@ -922,6 +922,12 @@
 		margin-top: 25px !important;
 		line-height: 18px;
 	}
-
+	#A2JJourney2 {
+		display : none;
+	}
+	#AccessJusticeJourney2{
+		display: block;
+	}
+	
 }
 

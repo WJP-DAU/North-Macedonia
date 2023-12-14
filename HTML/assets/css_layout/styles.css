@@ -1063,7 +1063,7 @@ iframe#embedMenu{
 	display: none;
 }
 #AccessJusticeJourney .reference{
-	display: none;
+	display: block;
 }
 #FundamentalFreedoms .reference, #FundamentalFreedoms3 .reference{
 	display: none;
@@ -1075,6 +1075,9 @@ iframe#embedMenu{
 	display: none;
 }
 #BriberyVictimization .reference br, #Corruption2 .reference br, #FundamentalFreedoms4 .reference br{
+	display: none;
+}
+#AccessJusticeJourney2{
 	display: none;
 }
 
