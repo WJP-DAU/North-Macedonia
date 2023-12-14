@@ -306,7 +306,7 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
     )
   
   # Defining colors for plot
-  colors4plot <- c("#003B8A","#d9d9d9", "#fa4d57")
+  colors4plot <- c("#003B88","#B5B5B5", "#fa4d57")
   names(colors4plot) <- c("Positive", "Neutral/No answer", "Negative")
   
   # Plotting each figure panel
@@ -316,35 +316,56 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
          
          # Filtering data2plot to leave the variable for each panel
          data2plot <- data2plot %>%
-           rename(category = all_of(var))
+           rename(category = all_of(var)) %>%
+           group_by(category) %>%
+           summarise(count = n()) %>%
+           ungroup() %>%
+           mutate(
+             n          = sum(count),
+             value2plot = (count/n) *100,
+             ymax       = cumsum(value2plot),
+             ymin       = ymax-value2plot,
+             label      = to_percentage.fn(value2plot),
+             labpos     = ymin  + ((ymax-ymin)/2)
+           )
          
-         # Preparing waffle data
-         waffle_data <- waffle_iron(data2plot, 
-                                    aes_d(group = category),
-                                    sample_size = 0.25,
-                                    rows = 12)
-         
-         # Plotting waffle
-         chart <- ggplot(waffle_data, 
-                         aes(x, y, fill = group),
-                         color = "white",
-                         size = 0.75) + 
-           geom_waffle() + 
-           coord_equal() + 
-           scale_fill_manual(values = colors4plot) + 
-           theme_waffle() +
+         chart <- ggplot(data2plot, 
+                         aes(fill = category, 
+                             ymax = ymax, 
+                             ymin = ymin, 
+                             xmax = 2, 
+                             xmin = 1)) + 
+           geom_rect() + 
+           geom_text(aes(label = label,
+                         y     = labpos,
+                         x     = 1.5),
+                     color     = "white",
+                     size      = 0.866058*.pt,
+                     family    = "Lato Full",
+                     fontface  = "bold") +
+           scale_x_continuous(limits = c(0,2)) +
+           scale_y_continuous(limits = c(0,200)) +
+           scale_fill_manual(values  = colors4plot) +
+           coord_polar(theta = "y",
+                       start = -pi/2) +
+           WJP_theme() +
+           labs(y = "",
+                x = "") +
            theme(
-             axis.title.x      = element_blank(),
-             axis.title.y      = element_blank(),
-             legend.position   = "none"
+             legend.position  = "none",
+             panel.grid.major = element_blank(),
+             axis.title.x     = element_blank(),
+             # axis.title.y     = element_blank(),
+             axis.text.x      = element_blank(),
+             axis.text.y      = element_blank()
            )
          
          # Saving panels
          saveIT.fn(chart  = chart,
                    n      = nchart,
                    suffix = panelName,
-                   w      = 403.4756,         # Idk why, but I have to multiply the dimensions by 4
-                   h      = 119.4963)         # Idk why, but I have to multiply the dimensions by 4
+                   w      = 63.26276, 
+                   h      = 63.26276)
        })
 }
 
