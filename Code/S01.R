@@ -50,18 +50,16 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
                  names_to   = "variable",
                  values_to  = "statement") %>%
     group_by(variable, statement) %>%
-    summarise(count = n()) %>%
-    mutate(count     = if_else(statement == "DK/NA", count/2, count),
-           statement = if_else(statement == "DK/NA", "Don't know (positive)", statement))
+    summarise(count = n())
   
   # Splitting DK/NA
-  data2plot <- data2plot %>%
-    bind_rows(
-      data2plot %>%
-        filter(statement %in% c("Don't know (positive)")) %>%
-        mutate(statement = "Don't know (negative)")
-    ) %>%
-    arrange(variable, statement)
+  # data2plot <- data2plot %>%
+  #   bind_rows(
+  #     data2plot %>%
+  #       filter(statement %in% c("Don't know (positive)")) %>%
+  #       mutate(statement = "Don't know (negative)")
+  #   ) %>%
+  #   arrange(variable, statement)
   
   # Labeling and percentages
   data2plot <- data2plot %>%
@@ -70,11 +68,8 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
     mutate(
       n = sum(count),
       perc = count / n,
-      direction = if_else(statement %in% c("Agree", "Strongly agree", "Don't know (positive)"),
-                          "Positive",
-                          "Negative"),
-      value2plot  = if_else(direction == "Positive", perc * 100, perc * -100),
-      value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      value2plot  = perc * 100,
+      value_label = "",
       labels = case_when(
         variable == "CAR_q60_G1" ~ "Censor information that comes \nfrom abroad",
         variable == "CAR_q61_G1" ~ "Censor opinions from opposition \ngroups",
@@ -101,11 +96,8 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
         variable == "CAR_q68_G1" ~ 1,
         variable == "CAR_q65_G1" ~ 3
       ),
-      statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
-                          "Don't know",
-                          statement),
       statement = factor(statement,
-                         levels = c("Strongly agree", "Agree", "Strongly disagree", "Disagree", "Don't know"))
+                         levels = c("Strongly agree", "Agree", "DK/NA", "Disagree", "Strongly disagree"))
     )
   
   data2plot <- data2plot %>%
@@ -113,8 +105,11 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
     mutate(stack_y = cumsum(value2plot) - (value2plot/2))
   
   # Defining color palette
-  colors4plot <- lickertPalette
-  names(colors4plot) <- c("Strongly agree", "Agree", "Don't know", "Disagree", "Strongly disagree")
+  colors4plot <- c("Strongly agree"    = "#003B88", 
+                   "Agree"             = "#6783B7", 
+                   "DK/NA"             = "#E2E2E2", 
+                   "Disagree"          = "#FC9096", 
+                   "Strongly disagree" = "#FA4D57")
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Independent",
