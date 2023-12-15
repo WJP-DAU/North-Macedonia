@@ -23,8 +23,7 @@
 ##    Perceptions of Authoritarian Behaviors (PAB)                                                          ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-figure_PAB.fn <- function(nchart = 1, data = master_data.df){
+figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
   
   # Defining variables to use in the plot
   vars4plot <- list(
@@ -33,15 +32,13 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
     "Media"       = c("CAR_q64_G2", "CAR_q60_G2", "CAR_q65_G2", "CAR_q60_G1")
   )
   
-  
   # Defining data frame for plot
   data2plot <- data %>%
     filter(year == latestYear & country == mainCountry) %>%
-    select(unlist(vars4plot, 
-                  use.names = F)) %>%
+    select(unlist(vars4plot, use.names = FALSE)) %>%
     mutate(
       across(everything(),
-             ~case_when(
+             ~ case_when(
                .x == 1  ~ "Strongly agree",
                .x == 2  ~ "Agree",
                .x == 3  ~ "Disagree",
@@ -54,12 +51,8 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
                  values_to  = "statement") %>%
     group_by(variable, statement) %>%
     summarise(count = n()) %>%
-    mutate(count     = if_else(statement == "DK/NA", 
-                               count/2, 
-                               count),
-           statement = if_else(statement == "DK/NA", 
-                               "Don't know (positive)", 
-                               statement))
+    mutate(count     = if_else(statement == "DK/NA", count/2, count),
+           statement = if_else(statement == "DK/NA", "Don't know (positive)", statement))
   
   # Splitting DK/NA
   data2plot <- data2plot %>%
@@ -76,11 +69,11 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
     group_by(variable) %>%
     mutate(
       n = sum(count),
-      perc = count/n,
+      perc = count / n,
       direction = if_else(statement %in% c("Agree", "Strongly agree", "Don't know (positive)"),
                           "Positive",
                           "Negative"),
-      value2plot  = if_else(direction == "Positive", perc*100, perc*-100),
+      value2plot  = if_else(direction == "Positive", perc * 100, perc * -100),
       value_label = to_percentage.fn(round(abs(value2plot), 0)),
       labels = case_when(
         variable == "CAR_q60_G1" ~ "Censor information that comes \nfrom abroad",
@@ -88,11 +81,11 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
         variable == "CAR_q60_G2" ~ "Resort to misinformation to shape \npublic opinion in their favor",
         variable == "CAR_q64_G2" ~ "Attack or attempt to discredit the \nmedia and civil society organizations\nthat criticize them",
         variable == "CAR_q67_G1" ~ "Attack or attempt to discredit \nopposition parties",
-        variable == "CAR_q67_G2" ~ "Attack or attempt to discredit the \nelectoral system and other \nsupervisory organs", 
+        variable == "CAR_q67_G2" ~ "Attack or attempt to discredit the \nelectoral system and other \nsupervisory organs",
         variable == "CAR_q64_G1" ~ "Seek to limit the courts' competencies \nand freedom to interpret the law",
         variable == "CAR_q66_G1" ~ "Seek to influence the promotion and \nremoval of judges",
-        variable == "CAR_q65_G2" ~ "Prosecute and convict journalists and \nleaders of civil society organizations     ",
-        variable == "CAR_q68_G1" ~ "Prosecute and convict members of\nopposition parties                                   ",
+        variable == "CAR_q65_G2" ~ "Prosecute and convict journalists and \nleaders of civil society organizations",
+        variable == "CAR_q68_G1" ~ "Prosecute and convict members of\nopposition parties",
         variable == "CAR_q65_G1" ~ "Refuse to comply with court rulings \nthat are not in their favor"
       ),
       order_value = case_when(
@@ -101,7 +94,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
         variable == "CAR_q60_G2" ~ 3,
         variable == "CAR_q64_G2" ~ 2,
         variable == "CAR_q67_G1" ~ 3,
-        variable == "CAR_q67_G2" ~ 4, 
+        variable == "CAR_q67_G2" ~ 4,
         variable == "CAR_q64_G1" ~ 1,
         variable == "CAR_q66_G1" ~ 2,
         variable == "CAR_q65_G2" ~ 1,
@@ -115,13 +108,17 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
                          levels = c("Strongly agree", "Agree", "Strongly disagree", "Disagree", "Don't know"))
     )
   
+  data2plot <- data2plot %>%
+    group_by(variable) %>%
+    mutate(stack_y = cumsum(value2plot) - (value2plot/2))
+  
   # Defining color palette
   colors4plot <- lickertPalette
   names(colors4plot) <- c("Strongly agree", "Agree", "Don't know", "Disagree", "Strongly disagree")
-
+  
   # Plotting each panel of Figure 12
-  imap(c("A" = "Independent", 
-         "B" = "Judiciary", 
+  imap(c("A" = "Independent",
+         "B" = "Judiciary",
          "C" = "Media"),
        function(varSet, panelName) {
          
@@ -130,15 +127,17 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
            filter(variable %in% vars4plot[[varSet]])
          
          # Applying plotting function
-         chart <- NM_divBars(data           = data2plot,
-                             target_var     = "value2plot",
-                             rows_var       = "labels",
-                             grouping_var   = "statement",
-                             negative_value = "Negative",
-                             colors         = colors4plot,
-                             labels_var     = "value_label",
-                             custom_order   = TRUE,
-                             order_var      = "order_value")
+         chart <- LAC_barsChart(data           = data2plot,
+                                target_var     = "value2plot",
+                                grouping_var   = "labels",
+                                labels_var     = "value_label",
+                                colors_var     = "statement",
+                                colors         = colors4plot,
+                                direction      = "horizontal",
+                                stacked        = TRUE,
+                                lab_pos        = "stack_y",
+                                custom_order   = TRUE,
+                                order_var      = "order_value")
          
          # Defining height
          if (length(vars4plot[[varSet]]) == 3 ) {
@@ -157,6 +156,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df){
                    h      = h)
        })
 }
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
