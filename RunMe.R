@@ -28,6 +28,7 @@
 source("Code/settings.R")
 
 # Loading functions for sections
+source("Code/S00.R")
 source("Code/S01.R")
 source("Code/S02.R")
 source("Code/S03.R")
@@ -52,11 +53,27 @@ master_data.df <-
     )
   )
 
+roli_balcans <- roli %>%
+  filter(country %in% c("Albania", "Bosnia and Herzegovina", "Bulgaria", "Croatia", "Greece", "Kosovo", 
+                        "Montenegro", "North Macedonia", "Romania", "Serbia"))
+  
 # Cleaning the Outputs directory for this country
 ordnung.fn()
 
 # Defining Main Country
 mainCountry <- "North Macedonia"
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##  Section 0: Country Overview                                                                             ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Overview - Factor Scores (Rose Chart)
+roli_fs.fn()
+
+# Overview - Subfactor Scores (Dots Chart)
+roli_sfs.fn()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##

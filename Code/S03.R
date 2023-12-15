@@ -1163,8 +1163,7 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
                               NA_real_)))
     ) %>%
     summarise(across(everything(),
-                     mean, 
-                     na.rm = T)) %>%
+                     \(x) mean(x, na.rm = TRUE))) %>%
     pivot_longer(everything(),
                  names_to  = "category",
                  values_to = "avg") %>%

@@ -31,6 +31,7 @@ library(pacman)
 # of code in order to install: 
 # devtools::install_github("davidsjoberg/ggsankey")
 # devtools::install_github("liamgilbey/ggwaffle")
+# devtools::install_github("ctoruno/WJPr")
 
 p_load(char = c(
   # Visualizations
@@ -40,7 +41,7 @@ p_load(char = c(
   "haven", "readxl", "writexl", "openxlsx",
   
   # Utilities
-  "margins", "quarto", "kableExtra",
+  "margins", "quarto", "kableExtra", "WJPr",
   
   # Good 'ol Tidyverse
   "tidyverse"
@@ -162,7 +163,7 @@ ordnung.fn <- function(){
   file.remove(prevOutputs)
   
   # Creating folders for each chart output within the country directory
-  for (plot in 1:20) {
+  for (plot in 1:22) {
     dir.create(file.path("Outputs", 
                          paste0("imgChart", plot),
                          fsep = "/"), 
