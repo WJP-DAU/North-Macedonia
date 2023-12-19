@@ -17,34 +17,6 @@
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-
-security.universe <- function(master_data) {
-  
-  security.universe <- master_data %>%
-    filter(country %in% mainCountry) %>%
-    filter(year == latestYear) %>%
-    select(country,
-           # All variables related with security
-           starts_with("EXP_q8"), starts_with("q8"), CAR_q47a_12, CAR_q47b_5,
-           # Security perception
-           q9, 
-           # Sociodemographics 
-           COLOR, fin, gend, disability2, disability, Urban, age, edu, ethni,
-           # Variables related to institutions performance
-           q48b_G1, q48f_G1, q49a, CAR_q58_G1, q48f_G2, q48g_G2, 
-           # Trust in institutions
-           q1c, q1d, q1e, q1g, q1i, q41d) %>%
-    # This variable assigns the victim condition to each observation
-    mutate(victim = if_else(EXP_q8a_1 == 1 | EXP_q8a_2 == 1 | EXP_q8a_3 == 1 | EXP_q8a_4 == 1 | EXP_q8a_5 == 1 | EXP_q8a_6 == 1 | EXP_q8a_7 == 1 |
-                              EXP_q8a_8 == 1 | EXP_q8a_9 == 1 | EXP_q8a_10 == 1 | EXP_q8a_11 == 1 | EXP_q8a_12 == 1 | EXP_q8a_13 == 1|
-                              EXP_q8b_1 == 1 | EXP_q8b_2 == 1 | EXP_q8b_3 == 1 | EXP_q8b_4 == 1 |  CAR_q47a_12 == 1 | CAR_q47b_5 == 1|
-                              q8b_1 == 1 | q8b_2 == 1 | q8b_3 == 1 | q8b_4 == 1 | q8b_5 == 1 | q8b_6 == 1 | q8b_7 == 1 | q8b_8 == 1 | q8b_9 == 1 |
-                              q8b_10 == 1 | q8b_11 == 1 | q8b_12 == 1 | q8b_13 == 1 | q8b_14 == 1 | q8b_15 == 1 | q8b_16 == 1 | q8b_17 == 1, 1, 0, 0))
-  
-  return(security.universe)
-}
-
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
 ##    Types of Crimes Experienced by People (TCEP)                                                          ----
@@ -324,10 +296,12 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
              area          =  if_else(Urban == 1, "Urban", "Rural", NA_character_),
              gender        =  if_else(gend == 1, "Male", "Female", NA_character_),
              diploma       =  if_else(edu == 4 | edu == 5 | edu == 6| edu == 7, "High Education Level", 
-                                      if_else(edu < 4, "No High Education Level", NA_character_))) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
+                                      if_else(edu < 4, "No High Education Level", NA_character_)),
+             religion      =  if_else(relig %in% "C57 - Orthodox Christian", "Orthodox Christian", "No Christian")
+             ) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
     
   condition <- perception %>%
-    select(victim, white, young, poor, area, gender, diploma) %>%
+    select(victim, white, young, poor, area, gender, diploma, religion) %>%
     mutate(counter = 1)
   
   victim  <- condition_categories(main_data = condition, group_var = victim, name_var = "victim")
@@ -337,8 +311,9 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
   area    <- condition_categories(main_data = condition, group_var = area, name_var = "area")
   gender  <- condition_categories(main_data = condition, group_var = gender, name_var = "gender")
   diploma <- condition_categories(main_data = condition, group_var = diploma, name_var = "diploma")
+  religion <- condition_categories(main_data = condition, group_var = religion, name_var = "religion")
   
-  selectables <- rbind(victim, color, age, income, area, gender, diploma) %>%
+  selectables <- rbind(victim, color, age, income, area, gender, diploma, religion) %>%
     group_by(variable) %>%
     summarise(min_group = min(N_obs, na.rm = T),
               total_group = sum(N_obs, na.rm = T)) %>%
@@ -357,7 +332,7 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
         pivot_wider(id_cols = c(unsafe_bin, id), names_from = categories, values_from = values)
       
     
-    logit_data<- logit_data %>%
+    logit_data <- logit_data %>%
       select(all_of(selectables),
              unsafe_bin) # We didn't include the non answer
     
@@ -381,7 +356,7 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
     data2plot <- margEff
     data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
                                  "areaUrban" = "Urban", "whiteWhite" = "Light skin \ntone", "youngLess than 30 years" = "Younger than 30",
-                                 "diplomaNo High Education Level" = "No high school \ndiploma") 
+                                 "diplomaNo High Education Level" = "No high school \ndiploma", "religionOrthodox Christian" = "Orthodox Christian") 
     
     data2plot <- data2plot %>%
       mutate(category = mainCountry,
@@ -390,7 +365,8 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
                                               if_else(factor %in% "Poor", 3,
                                                       if_else(factor %in% "Victim", 4,
                                                               if_else(factor %in% "Urban", 5, 
-                                                                      if_else(factor %in% "Young", 6, 7)))))))
+                                                                      if_else(factor %in% "Young", 6, 
+                                                                              if_else(factor %in% "No high school \ndiploma", 7, 8))))))))
   }
   
   data2plot <- logit_demo(mainData = perception, Yvar = 'unsafe_bin')
@@ -402,7 +378,7 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
             n      = nchart,
             suffix = "B",
             w      = 175.027,
-            h      = 81.89012)
+            h      = 84)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
