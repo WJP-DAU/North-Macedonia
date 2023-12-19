@@ -168,7 +168,7 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
+figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
   
   # Defining variables to use in the plot
   vars4plot <- list(
@@ -177,30 +177,28 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
     "Media"       = c("CAR_q64_G2", "CAR_q60_G2", "CAR_q65_G2", "CAR_q60_G1")
   )
   
-  # Defining data frame for plot
+  #Defining data
   data2plot <- data %>%
     filter(country == mainCountry & year == latestYear) %>%
-    select(relig, 
-           unlist(vars4plot, 
-                  use.names = F)) %>%
+    select(relig, unlist(vars4plot, use.names = FALSE)) %>%
     mutate(
       religr = case_when(
         relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
         relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
       ),
       across(!c(relig, religr),
-             ~if_else(.x == 1 | .x == 2, 1,
-                      if_else(!is.na(.x) & .x != 99, 0, 
-                              NA_real_)))
+             ~ if_else(.x == 1 | .x == 2, 1,
+                       if_else(!is.na(.x) & .x != 99, 0, 
+                               NA_real_)))
     ) %>%
-    group_by(religr) %>%
-    select(-relig) %>%
     filter(!is.na(religr)) %>%
-    summarise(across(everything(),
-                     \(x) mean(x, na.rm = TRUE))) %>%
-    pivot_longer(!religr,
-                 names_to   = "category",
-                 values_to  = "value2plot") %>%
+    pivot_longer(!c(relig, religr), names_to = "category", values_to = "value") %>%
+    group_by(religr, category) %>%
+    summarise(
+      mean_value = mean(value, na.rm = TRUE),
+      sd_value = sd(value, na.rm = TRUE)
+    ) %>%
+    ungroup() %>%
     mutate(
       labels = case_when(
         category == "CAR_q60_G1" ~ "Censor information that comes \nfrom abroad",
@@ -214,8 +212,9 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
         category == "CAR_q65_G2" ~ "Prosecute and convict journalists and \nleaders of civil society organizations     ",
         category == "CAR_q68_G1" ~ "Prosecute and convict members of\nopposition parties                                   ",
         category == "CAR_q65_G1" ~ "Refuse to comply with court rulings \nthat are not in their favor"
+        
       ),
-      value2plot = round(value2plot*100,1),
+      mean_value = round(mean_value * 100, 1),
       order_value = case_when(
         category == "CAR_q60_G1" ~ 4,
         category == "CAR_q61_G1" ~ 2,
@@ -228,7 +227,6 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
         category == "CAR_q65_G2" ~ 1,
         category == "CAR_q68_G1" ~ 1,
         category == "CAR_q65_G1" ~ 3
-        
       )
     )
   
@@ -236,7 +234,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
   colors4plot <- c("Orthodox Christian" = "#a90099", 
                    "Sunni Muslim"       = "#3273ff")
   
-  # Plotting each panel of Figure 12
+  # Plotting each panel of Figure
   imap(c("A" = "Independent", 
          "B" = "Judiciary", 
          "C" = "Media"),
@@ -248,11 +246,12 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
          
          # Applying plotting function
          chart <- NM_dotsChart(data         = data2plot,
-                                target_var   = "value2plot",
-                                grouping_var = "religr",
-                                labels_var   = "labels",
-                                colors       = colors4plot,
-                                order_var    = "order_value")
+                               target_var   = "mean_value",
+                               sd_var       = "sd_value",
+                               grouping_var = "religr",
+                               labels_var   = "labels",
+                               colors       = colors4plot,
+                               order_var    = "order_value")
          
          # Defining height
          if (length(vars4plot[[varSet]]) == 3 ) {
@@ -269,9 +268,10 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
                    suffix = panelName,
                    w      = 189.7883,
                    h      = h)
-         
        })
 }
+
+
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
