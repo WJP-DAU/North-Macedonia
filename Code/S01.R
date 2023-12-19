@@ -196,7 +196,8 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
     group_by(religr, category) %>%
     summarise(
       mean_value = mean(value, na.rm = TRUE),
-      sd_value = sd(value, na.rm = TRUE)
+      sd_value = sd(value, na.rm = TRUE),
+      n_obs = n()
     ) %>%
     ungroup() %>%
     mutate(
@@ -214,19 +215,20 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
         category == "CAR_q65_G1" ~ "Refuse to comply with court rulings \nthat are not in their favor"
         
       ),
-      mean_value = round(mean_value * 100, 1),
+      mean_value = mean_value * 100,
+      sd_value = sd_value*100,
       order_value = case_when(
         category == "CAR_q60_G1" ~ 4,
-        category == "CAR_q61_G1" ~ 2,
-        category == "CAR_q60_G2" ~ 3,
+        category == "CAR_q61_G1" ~ 4,
+        category == "CAR_q60_G2" ~ 1,
         category == "CAR_q64_G2" ~ 2,
-        category == "CAR_q67_G1" ~ 3,
-        category == "CAR_q67_G2" ~ 4, 
-        category == "CAR_q64_G1" ~ 1,
-        category == "CAR_q66_G1" ~ 2,
-        category == "CAR_q65_G2" ~ 1,
-        category == "CAR_q68_G1" ~ 1,
-        category == "CAR_q65_G1" ~ 3
+        category == "CAR_q67_G1" ~ 1,
+        category == "CAR_q67_G2" ~ 3, 
+        category == "CAR_q64_G1" ~ 3,
+        category == "CAR_q66_G1" ~ 1,
+        category == "CAR_q65_G2" ~ 3,
+        category == "CAR_q68_G1" ~ 2,
+        category == "CAR_q65_G1" ~ 2
       )
     )
   
@@ -248,6 +250,8 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
          chart <- NM_dotsChart(data         = data2plot,
                                target_var   = "mean_value",
                                sd_var       = "sd_value",
+                               n_obs        = "n_obs", 
+                               alpha        = 0.05,
                                grouping_var = "religr",
                                labels_var   = "labels",
                                colors       = colors4plot,

@@ -536,14 +536,15 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
                       if_else(!is.na(.x) & .x != 99, 0, 
                               NA_real_)))
     ) %>%
-    group_by(religr) %>%
-    select(-relig) %>%
     filter(!is.na(religr)) %>%
-    summarise(across(everything(),
-                     \(x) mean(x, na.rm = TRUE))) %>%
-    pivot_longer(!religr,
-                 names_to   = "category",
-                 values_to  = "value2plot") %>%
+    pivot_longer(!c(relig, religr), names_to = "category", values_to = "value") %>%
+    group_by(religr, category) %>%
+    summarise(
+      mean_value = mean(value, na.rm = TRUE),
+      sd_value = sd(value, na.rm = TRUE),
+      n_obs = n()
+    ) %>%
+    ungroup() %>%
     mutate(
       labels = case_when(
         category == "q2a" ~ "Members of congress",
@@ -561,8 +562,8 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
         category == "q1f" ~ "Public defense attorneys",
         category == "q1g" ~ "Judges and magistrates"
       ),
-      value2plot = round(value2plot*100,1),
-      
+      value2plot = mean_value*100,
+      sd_value = sd_value*100,
       order_value =
         case_when(
           category %in% c("q1a", "q2a") ~ 1,
@@ -591,6 +592,9 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
          # Applying plotting function
          chart <- NM_dotsChart(data         = data2plot,
                                target_var   = "value2plot",
+                               sd_var       = "sd_value",
+                               n_obs        = "n_obs", 
+                               alpha        = 0.05,
                                grouping_var = "religr",
                                labels_var   = "labels",
                                colors       = colors4plot,
