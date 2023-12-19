@@ -182,12 +182,12 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
         variable == "CAR_q2e" ~ "An elected official using stolen public \nfunds to assist his or her community"
       ),
       order_value = case_when(
-        variable == "CAR_q2b"  ~ 2,
-        variable == "CAR_q2f"  ~ 3,
-        variable == "CAR_q2g"  ~ 1,
+        variable == "CAR_q2b"  ~ 3,
+        variable == "CAR_q2f"  ~ 1,
+        variable == "CAR_q2g"  ~ 2,
         variable == "CAR_q2c"  ~ 1,
-        variable == "CAR_q2a"  ~ 1,
-        variable == "CAR_q2d"  ~ 3,
+        variable == "CAR_q2a"  ~ 3,
+        variable == "CAR_q2d"  ~ 1,
         variable == "CAR_q2e"  ~ 2
       ),
       statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),

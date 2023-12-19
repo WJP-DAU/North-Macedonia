@@ -78,9 +78,9 @@ figure_TCEP1.fn <- function(nchart = 13, data = master_data.df)
     mutate(category = case_when(category == "prop_crimes" ~ "Property crimes",
                                 category == "life_crimes" ~ "Crimes against life and integrity \nof individuals",
                                 category == "corr_crimes" ~ "Corruption, financial, \nand commercial crimes"),
-           order_value = case_when(category ==  "Property crimes" ~ 3,
-                                   category == "Crimes against life and integrity \nof individuals" ~ 2,
-                                   category == "Corruption, financial, \nand commercial crimes" ~ 1))
+           order_value = case_when(category ==  "Property crimes" ~ 2,
+                                   category == "Crimes against life and integrity \nof individuals" ~ 1,
+                                   category == "Corruption, financial, \nand commercial crimes" ~ 3))
   
   
   crimes <- lollipop_chart(data2plot = data2plot, 
@@ -1173,15 +1173,15 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
       order_value = case_when (
         category == "EXP_q24c_G1" ~ 1,
         category == "EXP_q24d_G1" ~ 2,
-        category == "EXP_q24a_G2" ~ 3,
-        category == "EXP_q24b_G2" ~ 4,
-        category == "EXP_q24c_G2" ~ 5,
-        category == "EXP_q24d_G2" ~ 6,
-        category == "EXP_q24f_G2" ~ 7,
-        category == "EXP_q24g_G2" ~ 8,
-        category == "EXP_q23f_G1" ~ 9,
-        category == "EXP_q24a_G1" ~ 10,
-        category == "EXP_q24b_G1" ~ 11
+        category == "EXP_q24a_G2" ~ 10,
+        category == "EXP_q24b_G2" ~ 8,
+        category == "EXP_q24c_G2" ~ 7,
+        category == "EXP_q24d_G2" ~ 3,
+        category == "EXP_q24f_G2" ~ 9,
+        category == "EXP_q24g_G2" ~ 11,
+        category == "EXP_q23f_G1" ~ 6,
+        category == "EXP_q24a_G1" ~ 4,
+        category == "EXP_q24b_G1" ~ 5
       )) %>%
     arrange(order_value) %>%
     mutate(

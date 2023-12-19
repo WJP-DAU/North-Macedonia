@@ -76,31 +76,40 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
         variable == "CAR_q60_G2" ~ "Resort to misinformation to shape \npublic opinion in their favor",
         variable == "CAR_q64_G2" ~ "Attack or attempt to discredit the \nmedia and civil society organizations\nthat criticize them",
         variable == "CAR_q67_G1" ~ "Attack or attempt to discredit \nopposition parties",
-        variable == "CAR_q67_G2" ~ "Attack or attempt to discredit the \nelectoral system and other \nsupervisory organs",
+        variable == "CAR_q67_G2" ~ "Attack or attempt to discredit the \nelectoral system and other \nsupervisory organs", 
         variable == "CAR_q64_G1" ~ "Seek to limit the courts' competencies \nand freedom to interpret the law",
         variable == "CAR_q66_G1" ~ "Seek to influence the promotion and \nremoval of judges",
-        variable == "CAR_q65_G2" ~ "Prosecute and convict journalists and \nleaders of civil society organizations",
-        variable == "CAR_q68_G1" ~ "Prosecute and convict members of\nopposition parties",
+        variable == "CAR_q65_G2" ~ "Prosecute and convict journalists and \nleaders of civil society organizations     ",
+        variable == "CAR_q68_G1" ~ "Prosecute and convict members of\nopposition parties                                   ",
         variable == "CAR_q65_G1" ~ "Refuse to comply with court rulings \nthat are not in their favor"
       ),
-      order_value = case_when(
-        variable == "CAR_q60_G1" ~ 4,
-        variable == "CAR_q61_G1" ~ 2,
-        variable == "CAR_q60_G2" ~ 3,
-        variable == "CAR_q64_G2" ~ 2,
-        variable == "CAR_q67_G1" ~ 3,
-        variable == "CAR_q67_G2" ~ 4,
-        variable == "CAR_q64_G1" ~ 1,
-        variable == "CAR_q66_G1" ~ 2,
-        variable == "CAR_q65_G2" ~ 1,
-        variable == "CAR_q68_G1" ~ 1,
-        variable == "CAR_q65_G1" ~ 3
-      ),
+      # order_value = case_when(
+      #   variable == "CAR_q60_G1" ~ 1,
+      #   variable == "CAR_q61_G1" ~ 1,
+      #   variable == "CAR_q60_G2" ~ 1,
+      #   variable == "CAR_q64_G2" ~ 2,
+      #   variable == "CAR_q67_G1" ~ 2,
+      #   variable == "CAR_q67_G2" ~ 2,
+      #   variable == "CAR_q64_G1" ~ 3,
+      #   variable == "CAR_q66_G1" ~ 3,
+      #   variable == "CAR_q65_G2" ~ 3,
+      #   variable == "CAR_q68_G1" ~ 4,
+      #   variable == "CAR_q65_G1" ~ 4
+      # ),
       statement = factor(statement,
-                         levels = c("Strongly agree", "Agree", "DK/NA", "Disagree", "Strongly disagree"))
-    )
+                         levels = c("Strongly agree", "Agree", "DK/NA", "Disagree", "Strongly disagree")),
+      order = if_else(statement %in% c("Strongly agree", "Agree"), 1, 0)
+      )
+  
+  order_value <- data2plot %>%
+    group_by(variable, order) %>%
+    summarise(order_value = sum(perc, na.rm = T)) %>%
+    filter(order == 1) %>%
+    select(!order) %>%
+    mutate(order_value = 1 - order_value)
   
   data2plot <- data2plot %>%
+    left_join(y = order_value, by = "variable") %>%
     group_by(variable) %>%
     mutate(stack_y = cumsum(value2plot) - (value2plot/2))
   
@@ -207,7 +216,6 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df){
         category == "CAR_q65_G1" ~ "Refuse to comply with court rulings \nthat are not in their favor"
       ),
       value2plot = round(value2plot*100,1),
-      
       order_value = case_when(
         category == "CAR_q60_G1" ~ 4,
         category == "CAR_q61_G1" ~ 2,

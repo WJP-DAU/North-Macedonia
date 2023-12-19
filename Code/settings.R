@@ -31,7 +31,7 @@ library(pacman)
 # of code in order to install: 
 # devtools::install_github("davidsjoberg/ggsankey")
 # devtools::install_github("liamgilbey/ggwaffle")
-# devtools::install_github("ctoruno/WJPr")
+#devtools::install_github("ctoruno/WJPr")
 
 p_load(char = c(
   # Visualizations
