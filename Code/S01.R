@@ -634,25 +634,28 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
   
   # Defining data frame for plot
   data2plot <- data %>%
-    select(relig,all_of(unlist(vars4plot, use.names = F))) %>%
+    select(CAR_q59_G1, CAR_q59_G2, all_of(unlist(vars4plot, use.names = F))) %>%
     mutate(
-      religr = case_when(
-        relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
-        relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim",
-        TRUE                                    ~ NA_character_
-      ),
+      govSupp = 
+        case_when(
+          !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
+          CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
+          CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+          CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
+          is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
+          ),
       q43_G2 = if_else(q43_G2 == 3, 1,
                        if_else(!is.na(q43_G2) & q43_G2 != 99, 0,
                                NA_real_))
     ) %>%
-    filter(!is.na(religr)) %>%
-    group_by(religr) %>%
+    filter(!is.na(govSupp)) %>%
+    group_by(govSupp) %>%
     summarise(value2plot = mean(q43_G2, na.rm = TRUE)) %>%
     mutate(
       value2plot  = value2plot * 100,
-      highlighted = if_else(religr == "Sunni Muslim", "Highlighted", "Regular"),
+      highlighted = if_else(govSupp == "Gov. Supporter", "Highlighted", "Regular"),
       labels      = to_percentage.fn(value2plot),
-      religr      = factor(religr, levels = c("Orthodox Christian", "Sunni Muslim"))
+      govSupp      = factor(govSupp, levels = c("Non Gov. Supporter", "Gov. Supporter"))
     )
   
   # Defining colors
@@ -662,7 +665,7 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
   # Applying plotting function
   chart <- LAC_barsChart(data           = data2plot,
                          target_var     = "value2plot",
-                         grouping_var   = "religr",  
+                         grouping_var   = "govSupp",  
                          labels_var     = "labels",
                          colors_var     = "highlighted",
                          colors         = colors4plot,
