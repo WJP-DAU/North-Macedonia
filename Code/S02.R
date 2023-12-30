@@ -509,12 +509,12 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of Corruption and Trust, by Cultural Group (PCTE)                                              ----
+##    Perceptions of Corruption and Trust, by Support for the Current Administration and religion (PCTE)                                              ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
+figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion") {
   
   # Defining variables to use in the plot
   vars4plot <- list("Corruption" = c("q2a","q2d","q2b", "q2c","q2e", "q2f", "q2g"),
@@ -523,7 +523,7 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
   # Defining data frame for plot
   data2plot <- data %>%
     filter(country == mainCountry & year == latestYear) %>%
-    select(relig, 
+    select(relig, CAR_q59_G1, CAR_q59_G2,
            unlist(vars4plot, 
                   use.names = F)) %>%
     mutate(
@@ -531,20 +531,53 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
         relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
         relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
       ),
-      across(!c(relig, religr),
-             ~if_else(.x == 1 | .x == 2, 1,
-                      if_else(!is.na(.x) & .x != 99, 0, 
+      govSupp = case_when(
+        !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
+        CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
+        is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
+      ),
+      across(!c(relig, religr, govSupp, all_of(vars4plot[["Corruption"]])),
+             ~ if_else(.x == 1 | .x == 2, 1,
+                       if_else(!is.na(.x) & .x != 99, 0, 
+                               NA_real_))),
+      across(!c(relig, religr, govSupp, all_of(vars4plot[["Trust"]])),
+             ~if_else(.x == 3 | .x == 4, 1,
+                      if_else(!is.na(.x)  & .x != 99, 0, 
                               NA_real_)))
-    ) %>%
-    filter(!is.na(religr)) %>%
-    pivot_longer(!c(relig, religr), names_to = "category", values_to = "value") %>%
-    group_by(religr, category) %>%
-    summarise(
-      mean_value = mean(value, na.rm = TRUE),
-      sd_value = sd(value, na.rm = TRUE),
-      n_obs = n()
-    ) %>%
-    ungroup() %>%
+    ) 
+  
+  if(group == "religion") {
+    
+    data2plot <- data2plot %>%
+      select(!c(CAR_q59_G1, CAR_q59_G2, relig, govSupp)) %>%
+      filter(!is.na(religr)) %>%
+      pivot_longer(!c(religr), names_to = "category", values_to = "value") %>%
+      group_by(religr, category) %>%
+      summarise(
+        mean_value = mean(value, na.rm = TRUE),
+        sd_value = sd(value, na.rm = TRUE),
+        n_obs = n()
+      ) %>%
+      ungroup()
+    
+  } else {
+    
+    data2plot <- data2plot %>%
+      select(!c(CAR_q59_G1, CAR_q59_G2, relig, religr)) %>%
+      filter(!is.na(govSupp)) %>%
+      pivot_longer(!c(govSupp), names_to = "category", values_to = "value") %>%
+      group_by(govSupp, category) %>%
+      summarise(
+        mean_value = mean(value, na.rm = TRUE),
+        sd_value = sd(value, na.rm = TRUE),
+        n_obs = n()
+      ) %>%
+      ungroup()
+  }
+  
+  data2plot <- data2plot %>%
     mutate(
       labels = case_when(
         category == "q2a" ~ "Members of congress",
@@ -576,9 +609,16 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
         )
     )
   
-  # Defining color palette
-  colors4plot <- c("Orthodox Christian" = "#a90099", 
-                   "Sunni Muslim"       = "#3273ff")
+  if(group == "religion") {
+    
+    # Defining color palette
+    colors4plot <- c("Orthodox Christian" = "#a90099", 
+                     "Sunni Muslim"       = "#3273ff")
+  } else{
+    # Defining color palette
+    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+                     "Gov. Supporter"       = "#3273ff")
+  }
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Corruption", 
@@ -588,6 +628,8 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
          # Filtering data2plot to leave the variable for each panel
          data2plot <- data2plot %>%
            filter(category %in% vars4plot[[varSet]])
+         
+         if(group == "religion") {
          
          # Applying plotting function
          chart <- NM_dotsChart(data         = data2plot,
@@ -599,12 +641,25 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df) {
                                labels_var   = "labels",
                                colors       = colors4plot,
                                order_var    = "order_value")
-         
+         } else {
+           
+          # Applying plotting function
+          chart <- NM_dotsChart(data         = data2plot,
+                                target_var   = "value2plot",
+                                sd_var       = "sd_value",
+                                n_obs        = "n_obs", 
+                                alpha        = 0.05,
+                                grouping_var = "govSupp",
+                                labels_var   = "labels",
+                                colors       = colors4plot,
+                                order_var    = "order_value")
+          
+         }
          
          # Saving panels
          saveIT.fn(chart  = chart,
                    n      = nchart,
-                   suffix = panelName,
+                   suffix = paste0(panelName,"_",group),
                    w      = 189.7883,
                    h      = 54.12481)
          

@@ -26,7 +26,7 @@ diferencia_medias_significativa <- function(datos, var_grupo, vars_resultados, m
       # Calcular la diferencia de medias y el p-valor usando una prueba t de Student
       resultado_prueba <- t.test(grupo1[[var_resultado]], grupo2[[var_resultado]], na.rm = TRUE)
       p_valor <- resultado_prueba$p.value
-      significance <- ifelse(p_valor < 0.01, "YES", "NO")
+      significance <- ifelse(p_valor < 0.1, "YES", "NO")
     }
     
     # Agregar los resultados al data frame de resultados

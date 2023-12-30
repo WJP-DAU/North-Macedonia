@@ -86,6 +86,7 @@ figure_PAB.fn()
 
 # Figure 2
 figure_PABGS.fn()
+figure_PABGS.fn(group = "govSupp")
 
 # Figure 3
 figure_AROL.fn()
@@ -95,6 +96,7 @@ figure_FFOT.fn()
 
 # Figure 5
 figure_FFD.fn()
+figure_FFD.fn(group = "govSupp")
 
 # Figure 6.1
 figure_PAOT.fn()
@@ -126,6 +128,7 @@ figure_TIOT.fn()
 
 # Figure 12
 figure_PCTE.fn()
+figure_PCTE.fn(group = "govSupp")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -150,6 +153,7 @@ figurePCJS_1.fn()
 
 # Figure 15_2
 figurePCJS_2.fn()
+figurePCJS_2.fn(group = "govSupp")
 
 # Figure 16
 figure_TCJA.fn()

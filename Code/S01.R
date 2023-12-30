@@ -164,11 +164,11 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of Authoritarian Behavior, by Support for the Current Administration (PABGS)              ----
+##    Perceptions of Authoritarian Behavior, by Support for the Current Administration and religion (PABGS) ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
+figure_PABGS.fn <- function(nchart = 2, data = master_data.df, group = "religion") {
   
   # Defining variables to use in the plot
   vars4plot <- list(
@@ -180,26 +180,55 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
   #Defining data
   data2plot <- data %>%
     filter(country == mainCountry & year == latestYear) %>%
-    select(relig, unlist(vars4plot, use.names = FALSE)) %>%
+    select(relig, CAR_q59_G1, CAR_q59_G2, unlist(vars4plot, use.names = FALSE)) %>%
     mutate(
       religr = case_when(
         relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
         relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
       ),
-      across(!c(relig, religr),
+      govSupp = case_when(
+        !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
+        CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
+        is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
+      ),
+      across(!c(relig, religr, govSupp),
              ~ if_else(.x == 1 | .x == 2, 1,
                        if_else(!is.na(.x) & .x != 99, 0, 
                                NA_real_)))
-    ) %>%
-    filter(!is.na(religr)) %>%
-    pivot_longer(!c(relig, religr), names_to = "category", values_to = "value") %>%
-    group_by(religr, category) %>%
-    summarise(
-      mean_value = mean(value, na.rm = TRUE),
-      sd_value = sd(value, na.rm = TRUE),
-      n_obs = n()
-    ) %>%
-    ungroup() %>%
+    ) 
+    
+  if(group == "religion") {
+      
+      data2plot <- data2plot %>%
+        select(!c(CAR_q59_G1, CAR_q59_G2, relig, govSupp)) %>%
+        filter(!is.na(religr)) %>%
+        pivot_longer(!c(religr), names_to = "category", values_to = "value") %>%
+        group_by(religr, category) %>%
+        summarise(
+          mean_value = mean(value, na.rm = TRUE),
+          sd_value = sd(value, na.rm = TRUE),
+          n_obs = n()
+        ) %>%
+        ungroup()
+        
+    } else {
+      
+      data2plot <- data2plot %>%
+        select(!c(CAR_q59_G1, CAR_q59_G2, relig, religr)) %>%
+        filter(!is.na(govSupp)) %>%
+        pivot_longer(!c(govSupp), names_to = "category", values_to = "value") %>%
+        group_by(govSupp, category) %>%
+        summarise(
+          mean_value = mean(value, na.rm = TRUE),
+          sd_value = sd(value, na.rm = TRUE),
+          n_obs = n()
+        ) %>%
+        ungroup()
+    }
+    
+  data2plot <- data2plot %>%
     mutate(
       labels = case_when(
         category == "CAR_q60_G1" ~ "Censor information that comes \nfrom abroad",
@@ -232,9 +261,16 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
       )
     )
   
-  # Defining color palette
-  colors4plot <- c("Orthodox Christian" = "#a90099", 
-                   "Sunni Muslim"       = "#3273ff")
+  if(group == "religion") {
+    
+    # Defining color palette
+    colors4plot <- c("Orthodox Christian" = "#a90099", 
+                     "Sunni Muslim"       = "#3273ff")
+  } else{
+    # Defining color palette
+    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+                     "Gov. Supporter"       = "#3273ff")
+  }
   
   # Plotting each panel of Figure
   imap(c("A" = "Independent", 
@@ -246,16 +282,32 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
          data2plot <- data2plot %>%
            filter(category %in% vars4plot[[varSet]])
          
-         # Applying plotting function
-         chart <- NM_dotsChart(data         = data2plot,
-                               target_var   = "mean_value",
-                               sd_var       = "sd_value",
-                               n_obs        = "n_obs", 
-                               alpha        = 0.05,
-                               grouping_var = "religr",
-                               labels_var   = "labels",
-                               colors       = colors4plot,
-                               order_var    = "order_value")
+         if(group == "religion") {
+           
+           # Applying plotting function
+           chart <- NM_dotsChart(data         = data2plot,
+                                 target_var   = "mean_value",
+                                 sd_var       = "sd_value",
+                                 n_obs        = "n_obs", 
+                                 alpha        = 0.05,
+                                 grouping_var = "religr",
+                                 labels_var   = "labels",
+                                 colors       = colors4plot,
+                                 order_var    = "order_value")
+         } else {
+           
+           # Applying plotting function
+           chart <- NM_dotsChart(data         = data2plot,
+                                 target_var   = "mean_value",
+                                 sd_var       = "sd_value",
+                                 n_obs        = "n_obs", 
+                                 alpha        = 0.05,
+                                 grouping_var = "govSupp",
+                                 labels_var   = "labels",
+                                 colors       = colors4plot,
+                                 order_var    = "order_value")
+           
+         }
          
          # Defining height
          if (length(vars4plot[[varSet]]) == 3 ) {
@@ -269,7 +321,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df) {
          # Saving panels
          saveIT.fn(chart  = chart,
                    n      = nchart,
-                   suffix = panelName,
+                   suffix = paste0(panelName, "_", group),
                    w      = 189.7883,
                    h      = h)
        })
@@ -463,14 +515,16 @@ figure_FFOT.fn <- function(nchart = 4, data = master_data.df) {
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Fundamental Freedoms, by DEMOGRAPHIC (FFD)                                                              ----
+##    Fundamental Freedoms, by Support for the Current Administration and religion (FFD)                                                              ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   
 
 c("ethnigroup" = "Macedonian",
   "relgroup"   = "Christian")
 
-figure_FFD.fn <- function(nchart = 5, data = master_data.df){
+figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion"){
+  
+ "%!in%" <- compose("!", "%in%")
   
   # Defining variables to include in plot
   vars4plot <- list("Expression"    = c("q46c_G2", "q46f_G2", "q46g_G2", "q46c_G1", "q46e_G2"),
@@ -480,11 +534,29 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
   
   # Defining data frame for plot
   data2plot <- data %>%
-    mutate(religr = case_when(
-      relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
-      relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
-    )) %>%
-    rename(gvar = religr) %>%
+    mutate(
+      religr = case_when(
+        relig %in% c("C57 - Orthodox Christian") ~ "Orthodox Christian",
+        relig %in% c("G6 - Sunni Muslim")        ~ "Sunni Muslim"
+    ),
+    govSupp = case_when(
+      !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
+      CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
+      CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+      CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
+      is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
+    ))
+  
+  if(group == "religion"){
+    data2plot <- data2plot %>%
+      rename(gvar = religr)
+    
+  } else {
+    data2plot <- data2plot %>%
+      rename(gvar = govSupp)
+  }
+  
+  data2plot <- data2plot %>%
     filter(year == latestYear & country == mainCountry) %>%
     select(gvar, all_of(unlist(vars4plot, use.names = F))) %>%
     mutate(
@@ -534,16 +606,34 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
              ~paste0("<span style='color:#524F4C;font-size:3.514598mm;font-weight:bold'>",
                      label,
                      "</span>")),
-      label = if_else(gvar != "Orthodox Christian", 
+      label = if_else(gvar %!in% c("Orthodox Christian", "Non Gov. Supporter"),
                       NA_character_, 
-                      label),
-      latestYear = "Orthodox Christian"
-    ) %>%
+                      label)
+      ) %>%
     rename(year = gvar)
   
   # Defining color palette
-  colors4plot <- c("Orthodox Christian" = "#a90099", 
-                   "Sunni Muslim"       = "#3273ff")
+  if(group == "religion") {
+    
+    data2plot <- data2plot %>%
+      mutate(
+        latestYear = "Orthodox Christian"
+        )
+    
+    colors4plot <- c("Orthodox Christian" = "#a90099", 
+                     "Sunni Muslim"       = "#3273ff")
+    
+  } else {
+    
+    data2plot <- data2plot %>%
+      mutate(
+        latestYear = "Non Gov. Supporter"
+      )
+    
+    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+                     "Gov. Supporter"       = "#3273ff")
+    
+  }
   
   # Plotting chart
   chart <- LAC_radarChart(data          = data2plot,
@@ -556,7 +646,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df){
   # Saving panels
   saveIT.fn(chart  = chart,
             n      = nchart,
-            suffix = NULL,
+            suffix = paste0("_",group),
             w      = 189.7883,
             h      = 183.1106)
 }
