@@ -8,7 +8,7 @@
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      November 14th, 2023
+## This version:      January 9th, 2023
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -33,6 +33,7 @@ source("Code/S01.R")
 source("Code/S02.R")
 source("Code/S03.R")
 source("Code/S04.R")
+source("Code/S05.R")
 
 # Loading plotting functions from GitHub
 source("https://raw.githubusercontent.com/ctoruno/WJP-Data-Viz/main/loading.R")
@@ -177,3 +178,25 @@ a2j_tables.fn(a2j_section = a2j_section)
 a2j_plot1.fn(a2j_section = a2j_section)
 
 a2j_plot2.fn(a2j_section = a2j_section)
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##  Section 5:Socio Demographics                                                                ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Figure 22
+figure_PFFCG.fn()
+
+# Figure 23
+figure_POPCG.fn()
+
+# Figure 24
+figure_PABFS.fn()
+
+# Figure 25
+figure_PCTFS.fn()
+
+# Figure 26
+figure_PCJSI.fn()
+

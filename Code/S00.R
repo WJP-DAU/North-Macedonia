@@ -1,6 +1,6 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-## Script:            LAC Country Reports - Country Overview Functions
+## Script:            North Macedonia Country Report - Country Overview Functions
 ##
 ## Author(s):         Carlos A. Toruño Paniagua   (ctoruno@worldjusticeproject.org)
 ##                    Artha Pillai                (apillai@worldjusticeproject.org)

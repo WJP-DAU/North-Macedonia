@@ -63,6 +63,15 @@ figure_PCOT.fn <- function(nchart = 7, data = master_data.df) {
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
+  
   # Plotting each panel of Figure 8
   imap(c("A" = "Legislative", 
          "B" = "Police", 
@@ -201,6 +210,15 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
   colors4plot <- c("#003B8A", "#d9d9d9","#FAE5D3", "#FC8F72", "#FA4D57")
   names(colors4plot) <- c("Not Acceptable","Don't know", "Sometimes Acceptable",  "Usually Acceptable", "Always Acceptable")
   
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
+  
   # Plotting each panel of Figure 12
   imap(c("A" = "Offered", 
          "B" = "Requested", 
@@ -276,6 +294,15 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
   # Defining colors
   colors4plot <- barsPalette
   names(colors4plot) <- c("Highlighted", "Regular")
+  
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
   
   # Plotting each panel of Figure 5
   panelVector <- c("A" = vars4plot[1], 
@@ -395,6 +422,15 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
   colors4plot <- c("#fa4d57","#d9d9d9", "#003b8a")
   names(colors4plot) <- c("Yes","Don't know", "No")
   
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
+  
   # Applying plotting function
   chart <- NM_divBars(data      = data2plot,
                       target_var   = "value2plot",
@@ -460,6 +496,14 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
   sec.ticks     <- seq(minyear, maxyear, by = 1)
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Community", 
@@ -619,6 +663,15 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion
     colors4plot <- c("Non Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
+  
+  # Saving data points
+  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
+                       file      = file.path("Outputs",
+                                             "dataPoints.xlsx",
+                                             fsep = "/"), 
+                       sheetName = paste0("Chart_", nchart), 
+                       append    = T,
+                       row.names = T)
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Corruption", 
