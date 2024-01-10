@@ -156,7 +156,13 @@ diferencia_medias_significativa <- function(datos,
       # Filtrar los datos para el grupo 1 y el grupo 2
       grupo1 <- datos %>% filter({{ var_grupo }} == "Darker Skin")
       grupo2 <- datos %>% filter({{ var_grupo }} == "Lighter Skin")
-      
+  
+  } else if (demographics == "ethnicity") {
+    
+    # Filtrar los datos para el grupo 1 y el grupo 2
+    grupo1 <- datos %>% filter({{ var_grupo }} == "Macedonian")
+    grupo2 <- datos %>% filter({{ var_grupo }} == "Albanian")
+    
   } else {
     
     print("No hay un argumento valido")
@@ -218,11 +224,18 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
   police         <- c("q48c_G2",
                       "q48a_G2", "q48b_G2", "q48b_G1",
                       "q48a_G1", "q48c_G1", "q48d_G2",
+                      "q48e_G2",
                       "q48d_G1")
+  police_new     <- c("EXP_q22i_G2", "EXP_q22h_G2",
+                      "EXP_q24e_G2",
+                      "EXP_q22e_G1",
+                      "EXP_q22k_G2", "EXP_q22j_G2",
+                      "EXP_q22f_G1", "EXP_q22g_G1", "EXP_q22h_G1")
+  police_discrimination <- c("q18a","q18c","q18d","q18e", "EXP_q17g")
   A2J            <- c("legal", "sources_help", "fully_resolved", "problem_persist", "fair", "difficult_cost", "financial_difficulty", "time", "hardships")
   victimization <- c("victim", "prop_crimes", "life_crimes", "corr_crimes")
-  VIP_vars <- c(ffreedoms, accountability,corruption, trust, security, cjustice, A2J,
-                effectiveness, police, constraints, bribery, bribery_attitudes, authoritarianism)
+  VIP_vars <- c(ffreedoms, accountability,corruption, trust, security, cjustice, A2J, effectiveness, 
+                police, police_new, police_discrimination, constraints, bribery, bribery_attitudes, authoritarianism)
   
   # Subsetting for variables of interest
   data_subset.df <- data.df %>%
@@ -266,7 +279,7 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
              ~if_else(.x == 3 | .x == 4, 1,
                       if_else(!is.na(.x)  & .x != 99, 0, 
                               NA_real_))),
-      across(all_of(bribery),
+      across(all_of(c(bribery, police_discrimination)),
              ~if_else(.x == 99, NA_real_, as.double(.x))),
       across(all_of(trust),
              ~if_else(.x == 1 | .x == 2, 1,
@@ -284,7 +297,7 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
              ~if_else(.x == 1 | .x == 2, 1,
                       if_else(!is.na(.x) & .x != 99, 0, 
                               NA_real_))),
-      across(all_of(police),
+      across(all_of(c(police, police_new)),
              ~case_when(
                .x == 1  ~ 1,
                .x == 2  ~ 1,
@@ -317,8 +330,28 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
         case_when(
           COLOR == 1 | COLOR == 2 | COLOR == 3 | COLOR == 4 ~ "Lighter Skin",
           COLOR == 5 | COLOR == 6 | COLOR == 7 | COLOR == 8 | COLOR == 9 | COLOR == 10 ~ "Darker Skin"
-        )
-      )
+        ),
+      ethnicity = 
+        case_when(
+          ethni == "Macedonian" ~ "Macedonian",
+          ethni == "Albanian"   ~ "Albanian",
+          TRUE ~ "Other"
+          )
+    )
+  
+  # Test for constant columns excluding NA values
+  constant_cols <- sapply(data_subset.df, function(col) {
+    unique_vals <- unique(col[!is.na(col)])
+    length(unique_vals) == 1
+  })
+  constant_cols <- names(constant_cols[constant_cols])
+  
+  # Print constant columns excluding NA (for testing purposes)
+  if (length(constant_cols) > 0) {
+    cat("Constant columns found (excluding NA values): ", paste(constant_cols, collapse = ", "), "\n")
+  } else {
+    cat("No constant columns found (excluding NA values).\n")
+  }
   
   if(section == "govSupp"){
     
@@ -392,6 +425,17 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
                                                     var_grupo = skin_tone, 
                                                     vars_resultados = VIP_vars,
                                                     mainCountry = mainCountry)  
+    } else if (section == "ethnicity"){
+      
+      # Filtrar los datos para el grupo 1 y el grupo 2
+      data2table <- data_subset.df %>%
+        filter(ethnicity %in% c("Macedonian", "Albanian")) 
+      
+      diffmeans.df <- diferencia_medias_significativa(datos = data2table, 
+                                                      demographics = "ethnicity", 
+                                                      var_grupo = ethnicity, 
+                                                      vars_resultados = VIP_vars,
+                                                      mainCountry = mainCountry)  
     
   } else {
     
@@ -438,15 +482,34 @@ ttest_dem_gpp.fn <- function(data.df = master_data.df,
       variable == "q48f_G2" ~ "Institutional Perfomance - Prosecutors prosecute crimes committed in an independent manner",
       variable == "q48h_G1" ~ "Institutional Perfomance - The public defenders do everything they can to defend poor people that are accused of committing a crime",
       variable == "q48g_G2" ~ "Institutional Perfomance - The judges decide cases in an independent manner and are not subject to any sort of pressure",
-      variable == "q48c_G2" ~ "Police - The police be available to help you when you need it",
-      variable == "q48a_G2" ~ "Police - The police resolve security problems in your community",
-      variable == "q48b_G1" ~ "Police - Police investigators perform serious and law-abiding investigations to find the perpetrators of a crime",
-      variable == "q48b_G2" ~ "Police - The police help you and your family to feel safe within and outside of your house",
-      variable == "q48a_G1" ~ "Police - The police act according to the law",
-      variable == "q48c_G1" ~ "Police - The basic rights of suspects are respected by the police",
-      variable == "q48d_G2" ~ "Police - The police treat all people with kindness and respect",
-      variable == "q48d_G1" ~ "Police - If members of the police violate the law, they are punished for these violations",
-      variable == "q50_neg" ~ "variableGovernment efficiency is more important than citizen influence",
+      variable == "q48c_G2" ~ "Police - Are available to help when needed",
+      variable == "EXP_q22i_G2" ~ "Police - Serve the interests of the community",
+      variable == "EXP_q22h_G2" ~ "Police - Serve the interests of regular citizens",
+      variable == "q48b_G2"     ~ "Police - Help them feel safe",
+      variable == "q48a_G2"     ~ "Police - Resolve security problems in  the community",
+      variable == "q48b_G1"     ~ "Police - Perform effective and lawful investigations",
+      variable == "EXP_q24e_G2" ~ "Police - Respond to crime reports",
+      variable == "q48a_G1"     ~ "Police - Act lawfully",
+      variable == "EXP_q22e_G1" ~ "Police - Do not use excessive force",
+      variable == "q48c_G1"     ~ "Police - Respect the rights of suspects",
+      variable == "q48d_G2"     ~ "Police - Treat all people with respect",
+      variable == "q18a"     ~ "Police - Economic status",
+      variable == "EXP_q17g" ~ "Police - Skin color",
+      variable == "q18c"     ~ "Police - Ethnic background",
+      variable == "q18d"     ~ "Police - Religion",
+      variable == "q18e"     ~ "Police - Foreigner status",
+      variable == "q2d"         ~ "Police - Are not involved in corrupt practices",
+      variable == "q48e_G2"     ~ "Police - Investigate crimes in an independent manner",
+      variable == "EXP_q22k_G2" ~ "Police - Do not serve the interests of gangs",
+      variable == "EXP_q22j_G2" ~ "Police - Do not serve the interests of politicians",
+      variable == "q1d"     ~ "Police - Trust the police",
+      variable == "EXP_q8d" ~ "Police - Report a crime when they are a victim",
+      variable == "q9"      ~ "Police - Feel safe in their neighborhoods",
+      variable == "q48d_G1"         ~ "Police - Are held accountable for violating laws",
+      variable == "EXP_q22f_G1"     ~ "Police - Are held accountable for seeking bribes",
+      variable == "EXP_q22g_G1"     ~ "Police - Are held accountable for accepting bribes",
+      variable == "EXP_q22h_G1"     ~ "Police - Are investigated for misconduct",
+      variable == "q50_neg" ~ "Authoritarianism - Government efficiency is more important than citizen influence",
       variable == "q50_pos" ~ "Authoritarianism - It is important that citizens have a say in government matters, even at the expense of efficiency",
       variable == "q51_neg" ~ "Authoritarianism - The president should not be bound by the laws or courts",
       variable == "q51_pos" ~ "Authoritarianism - The president must always obey the law and the courts",
@@ -524,6 +587,7 @@ gender.df    <- ttest_dem_gpp.fn(section = "gender")
 area.df      <- ttest_dem_gpp.fn(section = "area")
 financial.df <- ttest_dem_gpp.fn(section = "financial")
 skin_tone.df <- ttest_dem_gpp.fn(section = "skin_tone")
+ethnicity.df <- ttest_dem_gpp.fn(section = "ethnicity")
 
 diffmeans.list <- list(
   "GovSupp"    = govSupp.df,
@@ -531,8 +595,9 @@ diffmeans.list <- list(
   "Gender"     = gender.df,
   "Area"       = area.df,
   "Income"     = financial.df,
-  "Skin Tone"  = skin_tone.df
+  "Skin Tone"  = skin_tone.df,
+  "Ethnicity"  = ethnicity.df
 )
 
-openxlsx::write.xlsx(diffmeans.list, file = "Outputs/ttest_differences.xlsx")
+openxlsx::write.xlsx(diffmeans.list, file = paste0("Outputs/ttest_differences_",latestYear,"_.xlsx"))
   
