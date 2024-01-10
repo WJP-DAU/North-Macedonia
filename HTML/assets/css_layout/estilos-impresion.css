@@ -81,7 +81,7 @@
 	#Acknowledgements .epty-space{
 		margin-top: 11cm;
 	}
-	#AboutThisReport, #ExecutiveFindings, #ExecutiveFindingsPage2, #ExecutiveFindingsPage3, #ExecutiveFindingsPage4, #Authoritarianism, section{
+	#AboutThisReport, #ExecutiveFindings, #ExecutiveFindingsPage2, #ExecutiveFindingsPage3, #ExecutiveFindingsPage4, #Authoritarianism, #AuthoritarianismI, section{
 		height:100vh;
 	}
 	#AboutThisReport .container{
@@ -286,7 +286,7 @@
 		max-width: 1100px;
 	}
 	*/
-	#Authoritarianism2, #Authoritarianism3, #FundamentalFreedoms2, #Corruption3{
+	#Authoritarianism2, #Authoritarianism3, #FundamentalFreedoms2, #Corruption3, #PoliceR{
 		padding-top: 3rem;
 	}
 	#FundamentalFreedoms3, #FundamentalFreedoms4, #FundamentalFreedoms5{
@@ -793,6 +793,40 @@
 	#AccessJusticeJourney2 .row.justify-content-center .col-md-11.mb-4{
 		text-align: center;
 	}
+
+	/* chart 23 page 40 */
+	#PoliceR{
+		height: 34.47cm;
+	}
+	#PoliceR .col-md-6 {
+		-ms-flex: 0 0 50%;
+		flex: 0 0 50%;
+		max-width: 50%;
+	}
+	#PoliceR .img-chart{
+		width: 80%;
+	}
+
+	/* chart 24 page 41 */
+	#AuthoritarianismI{
+		height: 34.47cm;
+	}
+	#AuthoritarianismI .justify-content-center:nth-child(3){
+		margin-bottom: 15px !important;
+	}
+	#AuthoritarianismI .row.justify-content-center .col-md-11.mb-4{
+		margin-bottom: 2rem !important;
+	}
+	#AuthoritarianismI .row.justify-content-center.mt-4{
+		margin-top: 0rem !important;
+	}
+	#AuthoritarianismI .row.justify-content-center.mt-5{
+		margin-top: 0rem !important;
+	}
+	#AuthoritarianismI .img-chart{
+		width: 85%;
+	}
+
 	/* Methodology page 36 */
 	#Methodology{
 		height: 34.47cm;
