@@ -190,6 +190,8 @@ data_PFFCG <- figure_PFFCG.fn()
 
 # Figure 23
 data_POPCG <- figure_POPCG.fn()
+figure_POPCG.fn()
+figure_POPCG_bars.fn()
 
 # Figure 24
 data_PABFS <- figure_PABFS.fn()
