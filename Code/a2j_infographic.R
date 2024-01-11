@@ -239,6 +239,8 @@ a2j_tables.fn <- function(a2j_section) {
               interpersonal  = mean(q42b, na.rm = T),
               economic       = mean(q42c, na.rm = T),
               drugs          = mean(q42d, na.rm = T)) %>%
+    ungroup() %>%
+    drop_na() %>%
     mutate(health         = paste0(round(health*100,0), "%"),
            interpersonal  = paste0(round(interpersonal*100,0), "%"),
            economic       = paste0(round(economic*100,0), "%"),
