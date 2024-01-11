@@ -190,6 +190,7 @@ figure_PFFCG.fn()
 
 # Figure 23
 figure_POPCG.fn()
+figure_POPCG_bars.fn()
 
 # Figure 24
 figure_PABFS.fn()
@@ -199,4 +200,3 @@ figure_PCTFS.fn()
 
 # Figure 26
 figure_PCJSI.fn()
-

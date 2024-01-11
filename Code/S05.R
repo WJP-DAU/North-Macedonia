@@ -230,10 +230,10 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of Police by Cultural Group(POPCG)                                                        ----
+##    Perceptions of Police by Cultural Group (POPCG)                                                       ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 
+
 figure_POPCG.fn <- function(nchart = 23, data = master_data.df) {
   
   # Defining variables to include in plot
@@ -536,7 +536,7 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of Corruption and Trust, by Financial Security (PCTFS)                                              ----
+##    Perceptions of Corruption and Trust, by Financial Security (PCTFS)                                   ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -738,9 +738,108 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
-##    Perceptions of the Criminal Justice System by Income (PCJSI)                                                            ----
+##    Perceptions of Corruption and Trust, by Financial Security (PCTFS)                                   ----
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
+  
+  # Defining variables to use in the plot
+  vars4plot <- list("q2c","q2e", "q2f", "q2g","q1c","q1e", "q1f", "q1g")
+  
+  # Defining data frame for plot
+  data2plot <- data %>%
+    filter(country == mainCountry & year == latestYear) %>%
+    select(fin,
+           unlist(vars4plot, 
+                  use.names = F)) %>%
+    mutate(
+      incomeGroup = case_when(
+        fin == 1 | fin == 2                  ~ "Low Income",
+        fin == 3 | fin == 4 | fin == 5       ~ "High Income",
+        TRUE                                 ~ NA_character_
+      ),
+      across(!c(fin, incomeGroup, all_of(c("q2c", "q2e", "q2f", "q2g"))),
+             ~ if_else(.x == 1 | .x == 2, 1,
+                       if_else(!is.na(.x) & .x != 99, 0, 
+                               NA_real_))),
+      across(!c(fin, incomeGroup, all_of(c("q1c","q1e", "q1f", "q1g"))),
+             ~if_else(.x == 3 | .x == 4, 1,
+                      if_else(!is.na(.x)  & .x != 99, 0, 
+                              NA_real_)))
+    ) %>%
+    select(!fin)
+  
+  data2plot <- data2plot %>%
+    filter(!is.na(incomeGroup)) %>%
+    pivot_longer(!c(incomeGroup), names_to = "category", values_to = "value") %>%
+    group_by(incomeGroup, category) %>%
+    summarise(
+      mean_value = mean(value, na.rm = TRUE),
+      sd_value = sd(value, na.rm = TRUE),
+      n_obs = n()
+    ) %>%
+    ungroup()
+  
+  data2plot <- data2plot %>%
+    mutate(
+      value2plot = mean_value*100,
+      sd_value = sd_value*100,
+      order_value =
+        case_when(
+          category %in% c("q1c", "q2c") ~ 4,
+          category %in% c("q1e", "q2e") ~ 5,
+          category %in% c("q1g", "q2g") ~ 1,
+          category %in% c("q1f", "q2f") ~ 6
+        ),
+      highlighted = if_else(incomeGroup == "Low Income", "Highlighted", "Regular"),
+      labels = paste0(round(value2plot, 0), "%")
+    )
+  
+  # Plotting each panel of Figure 5
+  panelVector <- c("A" = vars4plot[1], 
+                   "B" = vars4plot[2], 
+                   "C" = vars4plot[3], 
+                   "D" = vars4plot[4],
+                   "E" = vars4plot[5], 
+                   "F" = vars4plot[6], 
+                   "G" = vars4plot[7], 
+                   "H" = vars4plot[8])
+  # Defining colors
+  colors4plot <- barsPalette
+  names(colors4plot) <- c("Highlighted", "Regular")
+  
+  imap(panelVector,
+       function(tvar, panelName) {
+         
+         # Filtering data2plot to leave the variable for each panel
+         data2plot <- data2plot %>%
+           filter(category %in% tvar)
+         
+         # Applying plotting function
+         chart <- LAC_barsChart(data           = data2plot,
+                                target_var     = "value2plot",
+                                grouping_var   = "incomeGroup",
+                                labels_var     = "labels",
+                                colors_var     = "highlighted",
+                                colors         = colors4plot,
+                                direction      = "horizontal")
+         # Saving panels
+         saveIT.fn(chart  = chart,
+                   n      = nchart,
+                   suffix = panelName,
+                   w      = 86.81057,
+                   h      = 22.60219)
+       })
+  
+}
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+##
+##    Perceptions of the Criminal Justice System by Income (PCJSI)                                          ----
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 figure_PCJSI.fn <- function(nchart = 26, data = master_data.df, group = "income") {
   
   # Defining variables to use in the plot
