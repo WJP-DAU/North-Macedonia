@@ -114,20 +114,14 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
     mutate(stack_y = cumsum(value2plot) - (value2plot/2))
   
   # Defining color palette
-  colors4plot <- c("Strongly agree"    = "#003B88", 
-                   "Agree"             = "#6783B7", 
+  colors4plot <- c("Strongly agree"    = "#FA4D57", 
+                   "Agree"             = "#FC9096", 
                    "DK/NA"             = "#E2E2E2", 
-                   "Disagree"          = "#FC9096", 
-                   "Strongly disagree" = "#FA4D57")
+                   "Disagree"          = "#6783B7", 
+                   "Strongly disagree" = "#003B88")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PAB = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Independent",
@@ -168,6 +162,8 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
                    w      = 189.7883,
                    h      = h)
        })
+  
+  return(data_PAB)
 }
 
 
@@ -282,13 +278,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df, group = "religion
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PABGS = data2plot %>% ungroup()
   
   # Plotting each panel of Figure
   imap(c("A" = "Independent", 
@@ -343,6 +333,8 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df, group = "religion
                    w      = 189.7883,
                    h      = h)
        })
+  
+  return(data_PABGS)
 }
 
 
@@ -386,14 +378,6 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
   colors4plot <- c("#003B88","#B5B5B5", "#fa4d57")
   names(colors4plot) <- c("Positive", "Neutral/No answer", "Negative")
   
-  # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
   
   # Plotting each figure panel
   names(vars4plot) <- c("A", "B", "C", "D", "E")
@@ -452,7 +436,10 @@ figure_AROL.fn <- function(nchart = 3, data = master_data.df) {
                    suffix = panelName,
                    w      = 63.26276, 
                    h      = 63.26276)
+         
+         return(data2plot)
        })
+
 }
 
 
@@ -502,13 +489,7 @@ figure_FFOT.fn <- function(nchart = 4, data = master_data.df) {
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_FFOT = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 5
   imap(c("A" = "q46c_G2", "B" = "q46f_G2", "C" = "q46g_G2", "D" = "q46c_G1", "E" = "q46e_G2",
@@ -547,6 +528,8 @@ figure_FFOT.fn <- function(nchart = 4, data = master_data.df) {
                    h      = 45.68977)
          
        })
+  
+  return(data_FFOT)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -672,13 +655,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion")
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_FFD = data2plot %>% ungroup()
   
   # Plotting chart
   chart <- LAC_radarChart(data          = data2plot,
@@ -694,6 +671,8 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion")
             suffix = paste0("_",group),
             w      = 189.7883,
             h      = 183.1106)
+  
+  return(data_FFD)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -733,13 +712,7 @@ data2plot <- data %>%
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PAOT = data2plot %>% ungroup()
 
   # Applying plotting function
   chart <- LAC_lineChart(data           = data2plot,
@@ -763,6 +736,8 @@ data2plot <- data %>%
             suffix = "A",
             w   = 189.7883,
             h   = 98.4671)
+  
+  return(data_PAOT)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -807,13 +782,7 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
   names(colors4plot) <- c("Highlighted", "Regular")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PACG = data2plot %>% ungroup()
   
   # Applying plotting function
   chart <- LAC_barsChart(data           = data2plot,
@@ -830,4 +799,6 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
             suffix = "B",
             w   = 189.7883,
             h   = 98.4671)
+  
+  return(data_PACG)
 }

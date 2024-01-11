@@ -83,27 +83,27 @@ mainCountry <- "North Macedonia"
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Figure 1
-figure_PAB.fn()
+data_PAB <- figure_PAB.fn()
 
 # Figure 2
 figure_PABGS.fn()
-figure_PABGS.fn(group = "govSupp")
+data_PABGS <- figure_PABGS.fn(group = "govSupp")
 
 # Figure 3
-figure_AROL.fn()
+data_AROL <- figure_AROL.fn()
 
 # Figure 4
-figure_FFOT.fn()
+data_FFOT <- figure_FFOT.fn()
 
 # Figure 5
 figure_FFD.fn()
-figure_FFD.fn(group = "govSupp")
+data_FFD <- figure_FFD.fn(group = "govSupp")
 
 # Figure 6.1
-figure_PAOT.fn()
+data_PAOT <- figure_PAOT.fn()
 
 # Figure 6.2
-figure_PACG.fn()
+data_PACG <- figure_PACG.fn()
 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -113,23 +113,23 @@ figure_PACG.fn()
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Figure 7
-figure_PCOT.fn()
+data_PCOT <- figure_PCOT.fn()
 
 # Figure 8
-figure_ACB.fn()
+data_ACB <- figure_ACB.fn()
 
 # Figure 9
-figure_BVOT.fn()
+data_BVOT <- figure_BVOT.fn()
 
 # Figure 10
-figure_BVAG.fn()
+data_BVAG <- figure_BVAG.fn()
 
 # Figure 11
-figure_TIOT.fn()
+data_TIOT <- figure_TIOT.fn()
 
 # Figure 12
 figure_PCTE.fn()
-figure_PCTE.fn(group = "govSupp")
+data_PCTE <- figure_PCTE.fn(group = "govSupp")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -138,32 +138,32 @@ figure_PCTE.fn(group = "govSupp")
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Figure 13_1
-figure_TCEP1.fn()
+data_TCEP1 <- figure_TCEP1.fn()
 
 # Figure 13_2
-figure_TCEP2.fn()
+data_TCEP2 <- figure_TCEP2.fn()
 
 # Figure 14_1
-figure_PSOT1.fn()
+data_PSOT1 <- figure_PSOT1.fn()
 
 # Figure 14_2
-figure_PSOT2.fn()
+data_PSOT2 <- figure_PSOT2.fn()
 
 # Figure 15_1
-figurePCJS_1.fn()
+data_PCJS1 <- figurePCJS_1.fn()
 
 # Figure 15_2
 figurePCJS_2.fn()
-figurePCJS_2.fn(group = "govSupp")
+data_PCJS2 <- figurePCJS_2.fn(group = "govSupp")
 
 # Figure 16
-figure_TCJA.fn()
+data_TCJA <- figure_TCJA.fn()
 
 # Figure 17
-figure_POP.fn()
+data_POP <- figure_POP.fn()
 
 # Figure 18
-figure_PTCV.fn()
+data_PTCV <- figure_PTCV.fn()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -186,17 +186,49 @@ a2j_plot2.fn(a2j_section = a2j_section)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Figure 22
-figure_PFFCG.fn()
+data_PFFCG <- figure_PFFCG.fn()
 
 # Figure 23
-figure_POPCG.fn()
+data_POPCG <- figure_POPCG.fn()
 
 # Figure 24
-figure_PABFS.fn()
+data_PABFS <- figure_PABFS.fn()
 
 # Figure 25
-figure_PCTFS.fn()
+data_PCTFS <- figure_PCTFS.fn()
 
 # Figure 26
 figure_PCJSI.fn()
 
+
+list_of_dataPoints <- list(
+                           "Chart 1"    = data_PAB, 
+                           "Chart 2"    = data_PABGS,
+                           "Chart 3"    = data_AROL,
+                           "Chart 4"    = data_FFOT,
+                           "Chart 5"    = data_FFD, 
+                           "Chart 6.1"  = data_PAOT,
+                           "Chart 6.2"  = data_PACG, 
+                           "Chart 7"    = data_PCOT,
+                           "Chart 8"    = data_ACB, 
+                           "Chart 9.1"  = data_BVOT,
+                           "Chart 9.2"  = data_BVAG, 
+                           "Chart 10"   = data_TIOT,
+                           "Chart 11"   = data_PCTE, 
+                           "Chart 12.1" = data_TCEP1,
+                           "Chart 12.2" = data_TCEP2, 
+                           "Chart 13.1" = data_PSOT1,
+                           "Chart 13.2" = data_PSOT2, 
+                           "Chart 14.1" = data_PCJS1,
+                           "Chart 14.2" = data_PCJS2, 
+                           "Chart 15"   = data_TCJA,
+                           "Chart 16"   = data_POP, 
+                           "Chart 17"   = data_PTCV,
+                           "Chart 19"   = data_PFFCG, 
+                           "Chart 20"   = data_POPCG,
+                           "Chart 21"   = data_PABFS, 
+                           "Chart 22"   = data_PCTFS
+                           )
+
+openxlsx::write.xlsx(list_of_dataPoints,
+                     file = paste0("Outputs/dataPoints.xlsx"))

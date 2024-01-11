@@ -64,13 +64,7 @@ figure_PCOT.fn <- function(nchart = 7, data = master_data.df) {
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PCOT = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 8
   imap(c("A" = "Legislative", 
@@ -115,6 +109,8 @@ figure_PCOT.fn <- function(nchart = 7, data = master_data.df) {
                    w      = 91.37955,
                    h      = 76.9697)
        })
+  
+  return(data_PCOT)
 }
 
 
@@ -211,13 +207,7 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
   names(colors4plot) <- c("Not Acceptable","Don't know", "Sometimes Acceptable",  "Usually Acceptable", "Always Acceptable")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_ACB = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Offered", 
@@ -256,6 +246,8 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
                    w      = 189.7883,
                    h      = h)
        })
+  
+  return(data_ACB)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -296,13 +288,7 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
   names(colors4plot) <- c("Highlighted", "Regular")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_BVOT = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 5
   panelVector <- c("A" = vars4plot[1], 
@@ -335,6 +321,8 @@ figure_BVOT.fn <- function(nchart = 9, data = master_data.df) {
                    h      = 22.60219)
          
        })
+  
+  return(data_BVOT)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -423,13 +411,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
   names(colors4plot) <- c("Yes","Don't know", "No")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_BVAG = data2plot %>% ungroup()
   
   # Applying plotting function
   chart <- NM_divBars(data      = data2plot,
@@ -448,6 +430,8 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
             suffix = NULL,
             w   = 189.7883,
             h   = 98.4671)  
+  
+  return(data_BVAG)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -497,13 +481,7 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_TIOT = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Community", 
@@ -549,6 +527,8 @@ figure_TIOT.fn <- function(nchart = 11, data = master_data.df) {
                    h      = 76.9697)
          
        })
+  
+  return(data_TIOT)
 } 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -665,13 +645,7 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PCTE = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Corruption", 
@@ -717,4 +691,6 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion
                    h      = 54.12481)
          
        })
+  
+  return(data_PCTE)
 }

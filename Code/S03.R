@@ -55,13 +55,7 @@ figure_TCEP1.fn <- function(nchart = 13, data = master_data.df)
                                    category == "Corruption, financial, \nand commercial crimes" ~ 3))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart, "A"), 
-                       append    = T,
-                       row.names = T)
+  data_TCEP1 = data2plot %>% ungroup()
   
   crimes <- lollipop_chart(data2plot = data2plot, 
                            categories = category,
@@ -72,6 +66,8 @@ figure_TCEP1.fn <- function(nchart = 13, data = master_data.df)
             suffix = "A",
             w      = 175.027,
             h      = 46.74415)
+  
+  return(data_TCEP1)
 }
 
 
@@ -120,6 +116,9 @@ figure_TCEP2.fn <- function(nchart = 13, data = master_data.df) {
   
   data2plot <- df %>%
     make_long(Victim, Report, `Official Crime Report`)
+  
+  # Saving data points
+  data_TCEP2 = data2plot
   
   y <- c(1, 900, -300, 600, 75)
   x <- c(0.7, 2, 2.3, 3.3, 3.3)
@@ -208,6 +207,8 @@ figure_TCEP2.fn <- function(nchart = 13, data = master_data.df) {
                                    fsep = "/"),
              row.names = T)
   
+  return(data_TCEP2)
+  
 }
 
 
@@ -264,13 +265,7 @@ figure_PSOT1.fn <- function(nchart = 14, data = master_data.df) {
   names(colors4plot) <- mainCountry
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart,"A"), 
-                       append    = T,
-                       row.names = T)
+  data_PSOT1 = data2plot %>% ungroup()
   
   # Applying plotting function
   chart <- LAC_lineChart(data           = data2plot,
@@ -293,6 +288,9 @@ figure_PSOT1.fn <- function(nchart = 14, data = master_data.df) {
             suffix = "A",
             w      = 189.7883,
             h      = 68.88612)
+  
+  
+  return(data_PSOT1)
 } 
 
 # Lower Panel
@@ -392,19 +390,16 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
   logit_plot <- logit_demo_panel(mainData = data2plot, line_size = 1.5)
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart,"B"), 
-                       append    = T,
-                       row.names = T)
+  data_PSOT2 = data2plot %>% ungroup()
   
   saveIT.fn(chart  = logit_plot,
             n      = nchart,
             suffix = "B",
             w      = 175.027,
             h      = 84)
+  
+  
+  return(data_PSOT2)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -498,13 +493,7 @@ figurePCJS_1.fn <- function(nchart = 15, data = master_data.df) {
   names(colors4plot) <- yrs
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart,"A"), 
-                       append    = T,
-                       row.names = T)
+  data_PCJS1 = data2plot %>% ungroup()
   
   chart <- LAC_radarChart(data          = data2plot,
                           axis_var      = "category",         
@@ -519,6 +508,8 @@ figurePCJS_1.fn <- function(nchart = 15, data = master_data.df) {
             suffix = "A",
             w      = 189.7883,
             h      = 183.1106)
+  
+  return(data_PCJS1)
 }
 
 # Lower Panel
@@ -616,6 +607,9 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df, group = "religio
     ) %>%
     drop_na()
   
+  # Saving data points
+  data_PCJS2 = data2plot %>% ungroup()
+  
   # Defining color palette
   if(group == "religion") {
     
@@ -626,14 +620,6 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df, group = "religio
     colors4plot <- c("Orthodox Christian" = "#a90099", 
                      "Sunni Muslim"       = "#3273ff") 
     
-    # Saving data points
-    openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                         file      = file.path("Outputs",
-                                               "dataPoints.xlsx",
-                                               fsep = "/"), 
-                         sheetName = paste0("Chart_", nchart,"B"), 
-                         append    = T,
-                         row.names = T)
     
     chart <- LAC_radarChart(data          = data2plot,
                             axis_var      = "category",         
@@ -668,6 +654,8 @@ figurePCJS_2.fn <- function(nchart = 15, data = master_data.df, group = "religio
             suffix = paste0("B_", group),
             w      = 189.7883,
             h      = 183.1106)
+  
+  return(data_PCJS2)
 }
 
 
@@ -728,13 +716,7 @@ figure_TCJA.fn <- function(nchart = 16, data = master_data.df) {
   x.axis.labels <- paste0("'", str_sub(x.axis.values, start = -2))
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_TCJA = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 16
   imap(c("A" = "Trust", 
@@ -779,6 +761,8 @@ figure_TCJA.fn <- function(nchart = 16, data = master_data.df) {
                    h      = 49.90729)
          
        })
+  
+  return(data_TCJA)
 } 
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1212,14 +1196,8 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
             h      = 59.74817)
   
   # Saving data points
-  write.xlsx(as.data.frame(bind_rows(panelA, panelB, panelC, panelD, panelE, panelF, panelG) %>% ungroup()), 
-             file      = file.path("Outputs",
-                                   "dataPoints.xlsx",
-                                   fsep = "/"), 
-             sheetName = paste0("Chart_", nchart),
-             append    = T,
-             row.names = T)
-  
+  data_POP = bind_rows(panelA, panelB, panelC, panelD, panelE, panelF, panelG) %>% ungroup()
+  return(data_POP)
   
 }
 
@@ -1307,13 +1285,7 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
   names(colors4plot) <- data2plot %>% arrange(order_value) %>% pull(category)
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-                       file      = file.path("Outputs",
-                                             "dataPoints.xlsx",
-                                             fsep = "/"), 
-                       sheetName = paste0("Chart_", nchart), 
-                       append    = T,
-                       row.names = T)
+  data_PTCV = data2plot %>% ungroup()
   
   # Applying plotting function
   chart <- LAC_roseChart(data = data2plot,
@@ -1330,4 +1302,6 @@ figure_PTCV.fn <- function(nchart = 18, data = master_data.df) {
             suffix = NULL,
             w      = 189.7883,
             h      = 168.7007)
+  
+  return(data_PTCV)
 }

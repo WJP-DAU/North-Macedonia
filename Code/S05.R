@@ -153,13 +153,7 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-             file      = file.path("Outputs",
-                                   "dataPoints.xlsx",
-                                   fsep = "/"), 
-             sheetName = paste0("Chart_", nchart), 
-             append    = T,
-             row.names = T)
+  data_PFFCG = data2plot %>% ungroup()
   
   # Plotting each panel of Figure
   imap(c("A" = "Expression", 
@@ -226,6 +220,8 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
                    w      = 195,
                    h      = h)
        })
+        
+  return(data_PFFCG)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -281,13 +277,7 @@ figure_POPCG.fn <- function(nchart = 23, data = master_data.df) {
   names(colors4plot) <- c("Highlighted", "Regular")
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-             file      = file.path("Outputs", 
-                                   "dataPoints.xlsx",
-                                   fsep = "/"), 
-             sheetName = paste0("Chart_", nchart), 
-             append    = T,
-             row.names = T)
+  data_POPCG = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 5
   panelVector <- c("A" = vars4plot[1], 
@@ -324,6 +314,8 @@ figure_POPCG.fn <- function(nchart = 23, data = master_data.df) {
                    h      = 22.60219)
          
        })
+  
+  return(data_POPCG)
 }
   
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -458,13 +450,7 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-             file      = file.path("Outputs",
-                                   "dataPoints.xlsx",
-                                   fsep = "/"), 
-             sheetName = paste0("Chart_", nchart), 
-             append    = T,
-             row.names = T)
+  data_PABFS = data2plot %>% ungroup()
   
   # Plotting each panel of Figure
   imap(c("A" = "Independent", 
@@ -531,6 +517,8 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
                    w      = 189.7883,
                    h      = h)
        })
+  
+  return(data_PABFS)
 }
 
 
@@ -670,13 +658,7 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
   }
   
   # Saving data points
-  openxlsx::write.xlsx(as.data.frame(data2plot %>% ungroup()), 
-             file      = file.path("Outputs",
-                                   "dataPoints.xlsx",
-                                   fsep = "/"), 
-             sheetName = paste0("Chart_", nchart), 
-             append    = T,
-             row.names = T)
+  data_PCTFS = data2plot %>% ungroup()
   
   # Plotting each panel of Figure 12
   imap(c("A" = "Corruption", 
@@ -734,6 +716,8 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
                    h      = 54.12481)
          
        })
+  
+  return(data_PCTFS)
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
