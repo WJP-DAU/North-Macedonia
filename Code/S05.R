@@ -144,8 +144,8 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
   } else if(group == "ethnicity") {
     
     # Defining color palette
-    colors4plot <- c("Macedonian" = "#a90099", 
-                     "Albanian"       = "#3273ff")
+    colors4plot <- c("Macedonian" = "#1a2589", 
+                     "Albanian"       = "#855af0")
   } else{
     # Defining color palette
     colors4plot <- c("Non Gov. Supporter" = "#a90099", 
@@ -269,12 +269,13 @@ figure_POPCG.fn <- function(nchart = 23, data = master_data.df) {
       value2plot  = value2plot * 100,
       highlighted = if_else(ethnicity == "Albanian", "Highlighted", "Regular"),
       labels      = to_percentage.fn(value2plot),
-      ethnicity      = factor(ethnicity, levels = c("Macedonian", "Albanian"))
+      ethnicity      = factor(ethnicity, levels = c("Macedonian","Albanian"))
     )
   
   # Defining colors
-  colors4plot <- barsPalette
-  names(colors4plot) <- c("Highlighted", "Regular")
+  colors4plot <- c("Macedonian" = "#1a2589",
+                   "Albanian"   = "#b299ff")  
+  names(colors4plot) <- c("Regular","Highlighted")
   
   # Saving data points
   data_POPCG = data2plot %>% ungroup()
@@ -435,9 +436,11 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
     )
   
   if(group == "income") {
+    
     # Defining color palette for income group
-    colors4plot <- c("Low Income" = "#a90099", 
-                     "High Income" = "#3273ff")
+    colors4plot <- c("Low Income" = "#25408b", 
+                     "High Income" = "#de3956")
+    
   }else if(group == "religion") {
     
     # Defining color palette
@@ -643,8 +646,8 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
   
   if(group == "income") {
     # Defining color palette for income group
-    colors4plot <- c("Low Income" = "#a90099", 
-                     "High Income" = "#3273ff")
+    colors4plot <- c("Low Income" = "#25408b", 
+                     "High Income" = "#de3956")
     
   }else if(group == "religion") {
     
@@ -739,8 +742,8 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
                   use.names = F)) %>%
     mutate(
       incomeGroup = case_when(
-        fin == 1 | fin == 2                  ~ "Low Income",
-        fin == 3 | fin == 4 | fin == 5       ~ "High Income",
+        fin == 1 | fin == 2                  ~ "Financially Insecure",
+        fin == 3 | fin == 4 | fin == 5       ~ "Financially Secure",
         TRUE                                 ~ NA_character_
       ),
       across(!c(fin, incomeGroup, all_of(c("q2c", "q2e", "q2f", "q2g"))),
@@ -771,13 +774,13 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
       sd_value = sd_value*100,
       order_value =
         case_when(
-          category %in% c("q1c", "q2c") ~ 4,
-          category %in% c("q1e", "q2e") ~ 5,
-          category %in% c("q1g", "q2g") ~ 1,
-          category %in% c("q1f", "q2f") ~ 6
+          incomeGroup %in% c("Financially Insecure") ~ 2,
+          incomeGroup %in% c("Financially Secure") ~ 1,
         ),
-      highlighted = if_else(incomeGroup == "Low Income", "Highlighted", "Regular"),
-      labels = paste0(round(value2plot, 0), "%")
+      highlighted = if_else(incomeGroup == "Financially Secure", "Highlighted", "Regular"),
+      labels = paste0(round(value2plot, 0), "%"),
+      incomeGroup = factor(incomeGroup, levels = c("Financially Secure","Financially Insecure"))
+      
     )
   
   # Plotting each panel of Figure 5
@@ -789,8 +792,12 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
                    "F" = vars4plot[6], 
                    "G" = vars4plot[7], 
                    "H" = vars4plot[8])
-  # Defining colors
-  colors4plot <- barsPalette
+  
+  # Defining color palette for income group
+  
+  colors4plot <- c("High Income" = "#25408b", 
+                   "Low Income" = "#FA4D57") 
+  
   names(colors4plot) <- c("Highlighted", "Regular")
   
   imap(panelVector,
@@ -807,7 +814,8 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
                                 labels_var     = "labels",
                                 colors_var     = "highlighted",
                                 colors         = colors4plot,
-                                direction      = "horizontal")
+                                direction      = "horizontal", 
+                                order_var      = "order_value")
          # Saving panels
          saveIT.fn(chart  = chart,
                    n      = nchart,
@@ -936,8 +944,8 @@ figure_PCJSI.fn <- function(nchart = 26, data = master_data.df, group = "income"
       
       if(group == "income") {
         # Defining color palette for income group
-        colors4plot <- c("Low Income" = "#a90099", 
-                         "High Income" = "#3273ff")
+        colors4plot <- c("Low Income" = "#25408b", 
+                         "High Income" = "#de3956")
         
       }else if(group == "religion") {
         

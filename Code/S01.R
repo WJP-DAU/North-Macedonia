@@ -774,11 +774,13 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
       value2plot  = value2plot * 100,
       highlighted = if_else(govSupp == "Gov. Supporter", "Highlighted", "Regular"),
       labels      = to_percentage.fn(value2plot),
-      govSupp      = factor(govSupp, levels = c("Non Gov. Supporter", "Gov. Supporter"))
+      govSupp      = factor(govSupp, levels = c("Gov. Supporter", "Non Gov. Supporter"))
     )
   
   # Defining colors
-  colors4plot <- barsPalette
+  
+  colors4plot <- c("Gov. Supporter"       = "#3273ff",
+                   "Non Gov. Supporter"   = "#a90099")
   names(colors4plot) <- c("Highlighted", "Regular")
   
   # Saving data points
