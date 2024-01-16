@@ -1,8 +1,7 @@
 mainCountry  <- "North Macedonia"
-latestYear   <- "2017"
 
 data_2017.df <- master_data.df %>%
-  filter(year == latestYear & country == mainCountry) %>%
+  filter(year == 2017 & country == mainCountry) %>%
   mutate(a2j_consumer    = 
            if_else(
              q19_A1 == 1 |
@@ -156,6 +155,12 @@ diferencia_medias_significativa <- function(datos,
     # Filtrar los datos para el grupo 1 y el grupo 2
     grupo1 <- datos %>% filter({{ var_grupo }} == "Darker Skin")
     grupo2 <- datos %>% filter({{ var_grupo }} == "Lighter Skin")
+    
+  }  else if (demographics == "ethnicity") {
+    
+    # Filtrar los datos para el grupo 1 y el grupo 2
+    grupo1 <- datos %>% filter({{ var_grupo }} == "Macedonian")
+    grupo2 <- datos %>% filter({{ var_grupo }} == "Albanian")
     
   } else {
     
@@ -317,6 +322,12 @@ ttest_dem_gpp.fn <- function(data.df = data_2017.df,
         case_when(
           COLOR == 1 | COLOR == 2 | COLOR == 3 | COLOR == 4 ~ "Lighter Skin",
           COLOR == 5 | COLOR == 6 | COLOR == 7 | COLOR == 8 | COLOR == 9 | COLOR == 10 ~ "Darker Skin"
+        ),
+      ethnicity = 
+        case_when(
+          ethni == "Macedonian" ~ "Macedonian",
+          ethni == "Albanian"   ~ "Albanian",
+          TRUE ~ "Other"
         )
     )
   
@@ -391,8 +402,20 @@ ttest_dem_gpp.fn <- function(data.df = data_2017.df,
                                                     demographics = "skin_tone", 
                                                     var_grupo = skin_tone, 
                                                     vars_resultados = VIP_vars,
-                                                    mainCountry = mainCountry)  
+                                                    mainCountry = mainCountry) 
     
+  } else if (section == "ethnicity"){
+      
+      # Filtrar los datos para el grupo 1 y el grupo 2
+      data2table <- data_subset.df %>%
+        filter(ethnicity %in% c("Macedonian", "Albanian")) 
+      
+      diffmeans.df <- diferencia_medias_significativa(datos = data2table, 
+                                                      demographics = "ethnicity", 
+                                                      var_grupo = ethnicity, 
+                                                      vars_resultados = VIP_vars,
+                                                      mainCountry = mainCountry)  
+      
   } else {
     
     print("No se insertó un argumento válido")
@@ -519,10 +542,14 @@ ttest_dem_gpp.fn <- function(data.df = data_2017.df,
 }
 
 gender.df    <- ttest_dem_gpp.fn(section = "gender")
+ethnicity.df <- ttest_dem_gpp.fn(section = "ethnicity")
+financial.df <- ttest_dem_gpp.fn(section = "financial")
 
 
 diffmeans.list <- list(
-  "Gender"     = gender.df
+  "Gender"     = gender.df,
+  "Ethnicity"  = ethnicity.df,
+  "Income"     = financial.df
 )
 
 openxlsx::write.xlsx(diffmeans.list, file = "Outputs/2017ttest_differences.xlsx")

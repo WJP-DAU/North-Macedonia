@@ -783,6 +783,17 @@
 	#AccessJusticeJourney .row.justify-content-center .col-md-11.mb-4{
 		text-align: center;
 	}
+
+	#AccessJusticeJourney3{
+		height: 34.47cm;
+	}
+	#AccessJusticeJourney3 .img-chart{
+		width: 95%;
+	}
+	#AccessJusticeJourney3 .row.justify-content-center .col-md-11.mb-4{
+		text-align: center;
+	}
+
 	/* chart 18 page 34 */
 	#AccessJusticeJourney2{
 		height: 34.47cm;
@@ -791,6 +802,16 @@
 		width: 95%;
 	}
 	#AccessJusticeJourney2 .row.justify-content-center .col-md-11.mb-4{
+		text-align: center;
+	}
+
+	#AccessJusticeJourney4{
+		height: 34.47cm;
+	}
+	#AccessJusticeJourney4 .img-chart{
+		width: 95%;
+	}
+	#AccessJusticeJourney4 .row.justify-content-center .col-md-11.mb-4{
 		text-align: center;
 	}
 
