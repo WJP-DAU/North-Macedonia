@@ -5,3 +5,6 @@
 *.svg
 Data/NMdata.dta
 .DS_Store
+WJP North Macedonia 2023 _AM.pdf
+Data/Dataset for replication.dta
+Outputs/Security_regressions.smcl
