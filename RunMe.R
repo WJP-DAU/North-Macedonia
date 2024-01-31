@@ -71,10 +71,10 @@ mainCountry <- "North Macedonia"
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Overview - Factor Scores (Rose Chart)
-#roli_fs.fn()
+# roli_fs.fn()
 
 # Overview - Subfactor Scores (Dots Chart)
-#roli_sfs.fn()
+# roli_sfs.fn()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -204,33 +204,33 @@ figure_PCJSI.fn()
 
 
 list_of_dataPoints <- list(
-                           "Chart 1"    = data_PAB, 
-                           "Chart 2"    = data_PABGS,
-                           "Chart 3"    = data_AROL,
-                           "Chart 4"    = data_FFOT,
-                           "Chart 5"    = data_FFD, 
-                           "Chart 6.1"  = data_PAOT,
-                           "Chart 6.2"  = data_PACG, 
-                           "Chart 7"    = data_PCOT,
-                           "Chart 8"    = data_ACB, 
-                           "Chart 9.1"  = data_BVOT,
-                           "Chart 9.2"  = data_BVAG, 
-                           "Chart 10"   = data_TIOT,
-                           "Chart 11"   = data_PCTE, 
-                           "Chart 12.1" = data_TCEP1,
-                           "Chart 12.2" = data_TCEP2, 
-                           "Chart 13.1" = data_PSOT1,
-                           "Chart 13.2" = data_PSOT2, 
-                           "Chart 14.1" = data_PCJS1,
-                           "Chart 14.2" = data_PCJS2, 
-                           "Chart 15"   = data_TCJA,
-                           "Chart 16"   = data_POP, 
-                           "Chart 17"   = data_PTCV,
-                           "Chart 19"   = data_PFFCG, 
-                           "Chart 20"   = data_POPCG,
-                           "Chart 21"   = data_PABFS, 
-                           "Chart 22"   = data_PCTFS
-                           )
+  "Chart 1"    = data_PAB, 
+  "Chart 2"    = data_PABGS,
+  "Chart 3"    = data_AROL,
+  "Chart 4"    = data_FFOT,
+  "Chart 5"    = data_FFD, 
+  "Chart 6.1"  = data_PAOT,
+  "Chart 6.2"  = data_PACG, 
+  "Chart 7"    = data_PCOT,
+  "Chart 8"    = data_ACB, 
+  "Chart 9.1"  = data_BVOT,
+  "Chart 9.2"  = data_BVAG, 
+  "Chart 10"   = data_TIOT,
+  "Chart 11"   = data_PCTE, 
+  "Chart 12.1" = data_TCEP1,
+  "Chart 12.2" = data_TCEP2, 
+  "Chart 13.1" = data_PSOT1,
+  "Chart 13.2" = data_PSOT2, 
+  "Chart 14.1" = data_PCJS1,
+  "Chart 14.2" = data_PCJS2, 
+  "Chart 15"   = data_TCJA,
+  "Chart 16"   = data_POP, 
+  "Chart 17"   = data_PTCV,
+  "Chart 19"   = data_PFFCG, 
+  "Chart 20"   = data_POPCG,
+  "Chart 21"   = data_PABFS, 
+  "Chart 22"   = data_PCTFS
+)
 
 openxlsx::write.xlsx(list_of_dataPoints,
                      file = paste0("Outputs/dataPoints.xlsx"))
