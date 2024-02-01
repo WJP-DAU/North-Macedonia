@@ -455,4 +455,65 @@ a2j_plot2.fn <- function(a2j_section){
 
 jgap.fn <- function(nchart = 28, data = master_data.df){
   
+  legalprobs <- names(table(master_data.df$q21))[3:40]
+  
+  data2plot <- data %>%
+    filter(year == latestYear) %>%
+    select(country, q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
+    mutate(
+      unsatis_fair = case_when(
+        q36a == 0 ~ 1,
+        q36a == 1 ~ 0
+      ),
+      unsatis_info = case_when(
+        q41b == 3 | q41b == 4 ~ 1,
+        q41b == 1 | q41b == 2 ~ 0
+      ),
+      unsatis_profhelp = case_when(  # Remember that case_when() works with a hierarchy system
+        q24 == 1 & q25_2 == 1 ~ 0,
+        q24 == 1 & q25_3 == 1 ~ 0,
+        q24 == 1 & q25_4 == 1 ~ 0,
+        q24 == 1 & q25_8 == 1 ~ 0,
+        (q24 == 1 | q24 == 2 ) & q25_99 != 1 ~ 1
+      ),
+      unsatis_cost = case_when(
+        (q37c != 99) & (q37d == 3 | q37d == 4) ~ 1,
+        (q37c != 99) & q37d != 3 & q37d != 4 & q37d != 99 ~ 1
+      ),
+      unsatis_time = case_when(
+        q37b >= 12 ~ 1,
+        q37b <  12 ~ 1
+      ),
+      unsatis_persistance = case_when(
+        # q34_merge == 1 ~ 0,
+        # q34_merge == 2 ~ 0,
+        q34_merge == 3 ~ 1,
+        q34_merge == 4 ~ 0
+      )
+    ) %>%
+    rowwise() %>%
+    mutate(
+      comp4th = mean(c(unsatis_time, unsatis_cost, unsatis_fair), na.rm = T),
+      a2j_idx = mean(c(unsatis_info, unsatis_profhelp, unsatis_persistance, comp4th), na.rm = T)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      selected_problem = if_else(q21 != "", 
+                                 paste0("q20_", q21), 
+                                 NA_character_)
+    )
+    # rowwise() %>%
+    # mutate(
+    #   severity = if_else(!is.na(selected_problem),
+    #                      get(selected_problem),
+    #                      NA_real_)
+    # )
+  
+  # test <- data2plot %>%
+  #   mutate(
+  #     severity = case_when(
+  #       is.na(selected_problem) ~ NA_real_,
+  #       get(selected_problem)
+  #     )
+  #   )
 }
