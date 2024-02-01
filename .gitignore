@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-Outputs/*.svg
+Outputs/**/*.svg
 Data/NMdata.dta
 .DS_Store
 WJP North Macedonia 2023 _AM.pdf
