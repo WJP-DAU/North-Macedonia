@@ -455,11 +455,12 @@ a2j_plot2.fn <- function(a2j_section){
 
 jgap.fn <- function(nchart = 28, data = master_data.df){
   
-  legalprobs <- names(table(master_data.df$q21))[3:40]
-  
+  # Estimating the Justice Gap
   data2plot <- data %>%
     filter(year == latestYear) %>%
-    select(country, q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
+    select(country, 
+           starts_with("q20_"), 
+           q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
     mutate(
       unsatis_fair = case_when(
         q36a == 0 ~ 1,
@@ -485,8 +486,6 @@ jgap.fn <- function(nchart = 28, data = master_data.df){
         q37b <  12 ~ 1
       ),
       unsatis_persistance = case_when(
-        # q34_merge == 1 ~ 0,
-        # q34_merge == 2 ~ 0,
         q34_merge == 3 ~ 1,
         q34_merge == 4 ~ 0
       )
@@ -500,20 +499,37 @@ jgap.fn <- function(nchart = 28, data = master_data.df){
     mutate(
       selected_problem = if_else(q21 != "", 
                                  paste0("q20_", q21), 
-                                 NA_character_)
+                                 NA_character_),
+      severity = NA_real_ # we need an empty variable for now
     )
-    # rowwise() %>%
-    # mutate(
-    #   severity = if_else(!is.na(selected_problem),
-    #                      get(selected_problem),
-    #                      NA_real_)
-    # )
   
-  # test <- data2plot %>%
-  #   mutate(
-  #     severity = case_when(
-  #       is.na(selected_problem) ~ NA_real_,
-  #       get(selected_problem)
-  #     )
-  #   )
+  # Severity is created dynamically depending on which legal problem was selected
+  for (i in 1:nrow(data2plot)) {
+    if (!is.na(data2plot$selected_problem[i])){
+      data2plot$severity[i] <- data2plot[i, data2plot$selected_problem[i]]
+    }
+  }
+  
+  # Wrangling the data
+  data2plot <- data2plot %>%
+    select(country, selected_problem, starts_with("unsatis_"), comp4th, a2j_idx, severity) %>%
+    mutate(
+      across(
+        c(comp4th, a2j_idx),
+        ~if_else(severity < 4, NA_real_, .x)
+      ),
+      nbarriers = case_when(
+        a2j_idx <= 0.25  ~ "0-1 Barriers",
+        a2j_idx >  0.25 & a2j_idx <= 0.50  ~ "1-2 Barriers",
+        a2j_idx >  0.50 & a2j_idx <= 0.75  ~ "2-3 Barriers",
+        a2j_idx >  0.75 ~ "3-4 Barriers"
+      ),
+      within_jgap = case_when(
+        a2j_idx >  0.65 ~ 1,
+        a2j_idx <= 0.65 ~ 0
+      )
+    )
 }
+
+
+
