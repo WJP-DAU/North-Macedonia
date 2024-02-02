@@ -453,7 +453,7 @@ a2j_plot2.fn <- function(a2j_section){
 ###
 ### +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-jgap.fn <- function(nchart = 28, data = master_data.df){
+jgap.fn <- function(data = master_data.df){
   
   # Estimating the Justice Gap
   data2plot <- data %>%
