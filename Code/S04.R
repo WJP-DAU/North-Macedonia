@@ -459,7 +459,8 @@ jgap.fn <- function(data = master_data.df){
   data2plot <- data %>%
     filter(year == latestYear) %>%
     select(country, 
-           starts_with("q20_"), 
+           starts_with("q20_"),
+           age, gend, fin, COLOR, relig, ethni, edu,
            q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
     mutate(
       unsatis_fair = case_when(
@@ -512,7 +513,11 @@ jgap.fn <- function(data = master_data.df){
   
   # Wrangling the data
   data2plot <- data2plot %>%
-    select(country, selected_problem, starts_with("unsatis_"), comp4th, a2j_idx, severity) %>%
+    select(
+      country, 
+      age, gend, fin, COLOR, relig, ethni, edu,
+      selected_problem, starts_with("unsatis_"), comp4th, a2j_idx, severity
+    ) %>%
     mutate(
       across(
         c(comp4th, a2j_idx),
