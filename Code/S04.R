@@ -538,8 +538,82 @@ jgap.fn <- function(data = master_data.df){
   return(data2plot)
 }
 
-jgap_bars.fn <- function(data){
+jgap_bars.fn <- function(data, nchart = 28){
   
+  # Preparing the data
+  data2plot_1 <- data %>%
+    group_by(country, within_jgap) %>%
+    summarise(
+      count = n()
+    ) %>%
+    rename(category = within_jgap) %>%
+    mutate(
+      category = case_when(
+        category == 0 ~ "No",
+        category == 1 ~ "Yes"
+      )
+    ) %>%
+    filter(!is.na(category)) %>%
+    mutate(ntotal = sum(count, na.rm = T))
+  
+  data2plot_2 <- data %>%
+    group_by(country, nbarriers) %>%
+    summarise(
+      count = n()
+    ) %>%
+    rename(category = nbarriers) %>%
+    filter(!is.na(category)) %>%
+    mutate(ntotal = sum(count, na.rm = T))
+  
+  data2plot <- bind_rows(data2plot_1, data2plot_2) %>%
+    mutate(
+      group = case_when(
+        category %in% c("No", "Yes") ~ "Within\nJustice Gap",
+        TRUE ~ "Number of\nBarriers",
+      ),
+      value2plot = count/ntotal,
+      category = factor(category,
+                        c("Yes", "No",
+                          "3-4 Barriers", "2-3 Barriers", "1-2 Barriers", "0-1 Barriers"))
+    )
+  
+  # Drawing chart
+  chart <- ggplot(data = data2plot) +
+    geom_col(aes(x    = group,
+                 y    = value2plot,
+                 fill = category),
+             width    = 0.75, 
+             position = "stack") +
+    scale_fill_manual(values = c("Yes" = "#fa4d57",
+                                 "No"  = "#003B88",
+                                 "0-1 Barriers" = "#dfdeff",
+                                 "1-2 Barriers" = "#9b9bd3",
+                                 "2-3 Barriers" = "#5d61ad",
+                                 "3-4 Barriers" = "#000066")) +
+    scale_y_continuous(position = "right",
+                       limits = c(0, 1.05),
+                       breaks = seq(0, 1.05, 0.2),
+                       labels = paste0(seq(0, 1.05, 0.2)*100, "%"),
+                       expand = c(0,0)) +
+    coord_flip() +
+    WJP_theme() +
+    theme(
+      axis.title.x       = element_blank(),
+      axis.title.y       = element_blank(),
+      axis.line.x        = element_line(size     = 0.25,
+                                        colour   = "#5e5c5a",
+                                        linetype = "solid"),
+      legend.position    = "none",
+      panel.grid.major.y = element_blank()
+    )
+  
+  # Saving the chart
+  saveIT.fn(chart  = chart,
+            n      = nchart,
+            suffix = "B",
+            w   = 189.7883,
+            h   = 98.4671)
+    
 }
 
 jgap_logit.fn <- function(data){
