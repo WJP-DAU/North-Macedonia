@@ -244,14 +244,8 @@ figure_PSOT1.fn <- function(nchart = 14, data = master_data.df) {
     filter(year >= 2014)
   
   # Pulling minimum and maximum available year
-  minyear <- min(data2plot %>% pull(year))
-  if (minyear %% 2 != 0) {
-    minyear <- minyear - 1
-  }
-  maxyear <- max(data2plot %>% pull(year))
-  if (maxyear %% 2 != 0) {
-    maxyear <- maxyear + 1
-  }
+  minyear <- 2013
+  maxyear <- 2023
   
   
   # Creating a vector for yearly axis
@@ -700,14 +694,8 @@ figure_TCJA.fn <- function(nchart = 16, data = master_data.df) {
     filter(year >= 2014)
   
   # Pulling minimum and maximum available year
-  minyear <- min(data2plot %>% pull(year))
-  if (minyear %% 2 != 0) {
-    minyear <- minyear - 1
-  }
-  maxyear <- max(data2plot %>% pull(year))
-  if (maxyear %% 2 != 0) {
-    maxyear <- maxyear + 1
-  }
+  minyear <- 2013
+  maxyear <- 2023
   
   
   # Creating a vector for yearly axis
@@ -991,7 +979,7 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
         variable == "EXP_q17g" ~ "Skin color",
         variable == "q18c"     ~ "Ethnic background",
         variable == "q18d"     ~ "Religion",
-        variable == "q18e"     ~ "Foreigner status"
+        variable == "q18e"     ~ "Citizenship"
       ),
       multiplier = if_else(group == "empty_value", 0, 1),
       label      = paste0(format(round(value*100, 0), nsmall = 0),
