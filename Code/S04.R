@@ -529,6 +529,16 @@ jgap.fn <- function(nchart = 28, data = master_data.df){
         a2j_idx <= 0.65 ~ 0
       )
     )
+  
+  return(data2plot)
+}
+
+jgap_bars.fn <- function(data){
+  
+}
+
+jgap_logit.fn <- function(data){
+  
 }
 
 
