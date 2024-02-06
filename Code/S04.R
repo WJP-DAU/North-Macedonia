@@ -663,12 +663,10 @@ jgap_logit.fn <- function(data, nchart = 28){
         ),
       etnhicity = 
         if_else(
-          ethni == "Macedonian", "ZMacedonian",
-          if_else(
-          ethni == "Albanian", "Albanian", NA_character_)
+          ethni == "Macedonian", "ZMacedonian", "Other", NA_character_
+          )
         )
-    )
-  
+
   condition <-  data_subset.df %>%
     select(skinColor, ageUnder30, economicStatus, areaType, gender, education, etnhicity) %>%
     mutate(counter = 1)
@@ -727,9 +725,10 @@ jgap_logit.fn <- function(data, nchart = 28){
                factor == "Urban"                               ~ 2,
                factor == "No high school \ndiploma"            ~ 3,
                factor == "Younger than 30"                     ~ 4,
-               factor == "Ethnic Macedonian \nbackground"      ~ 5,
-               factor == "Light skin tone"                     ~ 6,
-               factor == "Low economic \nstatus"               ~ 7
+               factor == "Light skin tone"                     ~ 5,
+               factor == "Low economic \nstatus"               ~ 6,
+               factor == "Ethnic Macedonian \nbackground"      ~ 7,
+               
              ),
            dependent_var  = depVar
     )

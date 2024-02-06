@@ -306,23 +306,23 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
              gender        =  if_else(gend == 1, "Male", "Female", NA_character_),
              diploma       =  if_else(edu == 4 | edu == 5 | edu == 6| edu == 7, "High Education Level", 
                                       if_else(edu < 4, "No High Education Level", NA_character_)),
-             religion      =  if_else(relig %in% "C57 - Orthodox Christian", "Orthodox Christian", "No Christian")
+             etnhicity     = if_else(ethni == "Macedonian", "ZMacedonian", "Other", NA_character_)
              ) # We transform the variable of security perception in a dummy variable, the values 3 and 4 reference to unsafe people feeling
     
   condition <- perception %>%
-    select(victim, white, young, poor, area, gender, diploma, religion) %>%
+    select(victim, white, young, poor, area, gender, diploma, etnhicity) %>%
     mutate(counter = 1)
   
-  victim  <- condition_categories(main_data = condition, group_var = victim, name_var = "victim")
-  color   <- condition_categories(main_data = condition, group_var = white, name_var = "white")
-  age     <- condition_categories(main_data = condition, group_var = young, name_var = "young")
-  income  <- condition_categories(main_data = condition, group_var = poor, name_var = "poor")
-  area    <- condition_categories(main_data = condition, group_var = area, name_var = "area")
-  gender  <- condition_categories(main_data = condition, group_var = gender, name_var = "gender")
-  diploma <- condition_categories(main_data = condition, group_var = diploma, name_var = "diploma")
-  religion <- condition_categories(main_data = condition, group_var = religion, name_var = "religion")
+  victim    <- condition_categories(main_data = condition, group_var = victim, name_var = "victim")
+  color     <- condition_categories(main_data = condition, group_var = white, name_var = "white")
+  age       <- condition_categories(main_data = condition, group_var = young, name_var = "young")
+  income    <- condition_categories(main_data = condition, group_var = poor, name_var = "poor")
+  area      <- condition_categories(main_data = condition, group_var = area, name_var = "area")
+  gender    <- condition_categories(main_data = condition, group_var = gender, name_var = "gender")
+  diploma   <- condition_categories(main_data = condition, group_var = diploma, name_var = "diploma")
+  etnhicity <- condition_categories(main_data = condition, group_var = etnhicity, name_var = "etnhicity")
   
-  selectables <- rbind(victim, color, age, income, area, gender, diploma, religion) %>%
+  selectables <- rbind(victim, color, age, income, area, gender, diploma, etnhicity) %>%
     group_by(variable) %>%
     summarise(min_group = min(N_obs, na.rm = T),
               total_group = sum(N_obs, na.rm = T)) %>%
@@ -365,7 +365,7 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
     data2plot <- margEff
     data2plot$factor <- recode(data2plot$factor, "genderFemale" = "Female", "poorPoor" = "Financially \ninsecure", "victimVictim" = "Previous crime \nvictimization",
                                  "areaUrban" = "Urban", "whiteWhite" = "Light skin \ntone", "youngLess than 30 years" = "Younger than 30",
-                                 "diplomaNo High Education Level" = "No high school \ndiploma", "religionOrthodox Christian" = "Orthodox Christian") 
+                                 "diplomaNo High Education Level" = "No high school \ndiploma", "etnhicityZMacedonian"= "Ethnic Macedonian \nbackground",) 
     
     data2plot <- data2plot %>%
       mutate(category = mainCountry,
