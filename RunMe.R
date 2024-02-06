@@ -8,7 +8,7 @@
 ##
 ## Creation date:     November 13th, 2023
 ##
-## This version:      January 9th, 2023
+## This version:      February 5th, 2024
 ##
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##
@@ -180,8 +180,9 @@ a2j_plot1.fn(a2j_section = a2j_section)
 a2j_plot2.fn(a2j_section = a2j_section)
 
 # Justice Gap
-jgap_data.df <- jgap.fn(master_data.df)
-jgap_bars.fn(data = jgap_data)
+
+jgap_data.df <- jgap.fn(data = master_data.df)
+jgap_bars.fn(data = jgap_data.df)
 jgap_logit.fn(data = jgap_data.df)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

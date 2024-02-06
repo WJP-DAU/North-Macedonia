@@ -460,7 +460,7 @@ jgap.fn <- function(data = master_data.df){
     filter(year == latestYear) %>%
     select(country, 
            starts_with("q20_"),
-           age, gend, fin, COLOR, relig, ethni, edu,
+           age, gend, fin, COLOR, relig, ethni, edu, Urban,
            q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
     mutate(
       unsatis_fair = case_when(
@@ -515,7 +515,7 @@ jgap.fn <- function(data = master_data.df){
   data2plot <- data2plot %>%
     select(
       country, 
-      age, gend, fin, COLOR, relig, ethni, edu,
+      age, gend, fin, COLOR, relig, ethni, edu, Urban,
       selected_problem, starts_with("unsatis_"), comp4th, a2j_idx, severity
     ) %>%
     mutate(
@@ -584,6 +584,14 @@ jgap_bars.fn <- function(data, nchart = 28){
                  fill = category),
              width    = 0.75, 
              position = "stack") +
+    geom_text(aes(x    = group,
+                  y    = value2plot,
+                  label = paste0(round(value2plot,2)*100,"%")),
+              position = position_stack(vjust = .5),
+              color    = "white",
+              family   = "Lato Full",
+              fontface = "bold", 
+              size = 3.514598) +
     scale_fill_manual(values = c("Yes" = "#fa4d57",
                                  "No"  = "#003B88",
                                  "0-1 Barriers" = "#dfdeff",
@@ -600,9 +608,7 @@ jgap_bars.fn <- function(data, nchart = 28){
     theme(
       axis.title.x       = element_blank(),
       axis.title.y       = element_blank(),
-      axis.line.x        = element_line(size     = 0.25,
-                                        colour   = "#5e5c5a",
-                                        linetype = "solid"),
+      axis.line.x        = element_blank(),
       legend.position    = "none",
       panel.grid.major.y = element_blank()
     )
@@ -610,15 +616,133 @@ jgap_bars.fn <- function(data, nchart = 28){
   # Saving the chart
   saveIT.fn(chart  = chart,
             n      = nchart,
-            suffix = "B",
+            suffix = "A",
             w   = 189.7883,
-            h   = 98.4671)
+            h   = 64)
     
 }
 
-jgap_logit.fn <- function(data){
+jgap_logit.fn <- function(data, nchart = 28){
   
-}
+  data_subset.df <- jgap_data.df %>%
+    mutate(
+      skinColor  =
+        case_when(
+          COLOR == 1 | COLOR == 2 | COLOR == 3 | COLOR == 4 ~ "ZWhite",
+          COLOR == 5 | COLOR == 6 | COLOR == 7 | COLOR == 8 | COLOR == 9 | COLOR == 10 | COLOR == 11 ~ "No White",
+          T ~ NA_character_
+        ),
+      ageUnder30 =
+        case_when(
+          age < 30 & age >= 18 ~ "ZLess than 30 years",
+          age >= 30            ~ "More than 30 years",
+          T ~ NA_character_
+        ),
+      economicStatus = 
+        case_when(
+          fin == 1 | fin == 2 ~ "ZLow Economic Status",
+          fin == 3 | fin == 4 | fin == 5 ~ "High Economic Status"
+        ),
+      areaType =
+          case_when(
+            Urban == 1 ~ "ZUrban",
+            Urban == 2 ~ "Rural",
+            T ~ NA_character_
+          ),
+      gender = 
+        case_when(
+          gend == 1 ~ "Male",
+          gend == 2 ~ "ZFemale",
+          T ~ NA_character_
+        ),
+      education =
+        case_when(
+          edu == 4 | edu == 5 | edu == 6| edu == 7 ~ "High Education Level",
+          edu == 3 | edu == 2 | edu == 1 ~ "ZLow Education Level",
+          T ~ NA_character_
+        ),
+      etnhicity = 
+        if_else(
+          ethni == "Macedonian", "ZMacedonian",
+          if_else(
+          ethni == "Albanian", "Albanian", NA_character_)
+        )
+    )
+  
+  condition <-  data_subset.df %>%
+    select(skinColor, ageUnder30, economicStatus, areaType, gender, education, etnhicity) %>%
+    mutate(counter = 1)
+  
+  skinColor       <- condition_categories(main_data = condition, group_var = skinColor, name_var = "skinColor")
+  ageUnder30      <- condition_categories(main_data = condition, group_var = ageUnder30, name_var = "ageUnder30")
+  economicStatus  <- condition_categories(main_data = condition, group_var = economicStatus, name_var = "economicStatus")
+  areaType        <- condition_categories(main_data = condition, group_var = areaType, name_var = "areaType")
+  gender          <- condition_categories(main_data = condition, group_var = gender, name_var = "gender")
+  education       <- condition_categories(main_data = condition, group_var = education, name_var = "education")
+  etnhicity       <- condition_categories(main_data = condition, group_var = etnhicity, name_var = "etnhicity")
+  
+  selectables <- bind_rows(skinColor, ageUnder30, economicStatus, areaType, gender, education, etnhicity) %>%
+    group_by(variable) %>%
+    summarise(min_group = min(N_obs, na.rm = T),
+              total_group = sum(N_obs, na.rm = T)) %>%
+    filter(min_group > 30) %>%
+    filter(min_group != total_group) %>%
+    pull(variable)
+  
+  formula <- selectables %>%
+    t() %>%
+    as.data.frame() %>%
+    unite(., formula, sep = "+") %>%
+    as.character()
+  
+  depVar <- "within_jgap"
+  
+  formula  <- as.formula(paste(depVar, "~", formula))
+  
+  logit    <- glm(formula,
+                  data   = data_subset.df, 
+                  family = "binomial")
+  
+  summaryLogit <- bind_rows(
+    as.data.frame(coef(logit))
+  )
+  
+  margEff      <- as.data.frame(
+    margins_summary(logit, data = logit$data)
+  )
+  
+  margEff$factor <-recode(margEff$factor,
+                          "genderZFemale"                                = "Female",
+                          "areaTypeZUrban"                               = "Urban",
+                          "educationZLow Education Level"                = "No high school \ndiploma",
+                          "ageUnder30ZLess than 30 years"                = "Younger than 30",
+                          "etnhicityZMacedonian"                         = "Ethnic Macedonian \nbackground",
+                          "skinColorZWhite"                              = "Light skin tone",
+                          "economicStatusZLow Economic Status"           = "Low economic \nstatus")
+
+  data2plot <- margEff %>%
+    mutate(order_variable =
+             case_when(
+               factor == "Female"                              ~ 1,
+               factor == "Urban"                               ~ 2,
+               factor == "No high school \ndiploma"            ~ 3,
+               factor == "Younger than 30"                     ~ 4,
+               factor == "Ethnic Macedonian \nbackground"      ~ 5,
+               factor == "Light skin tone"                     ~ 6,
+               factor == "Low economic \nstatus"               ~ 7
+             ),
+           dependent_var  = depVar
+    )
+  
+  logit_plot <- logit_demo_panel(mainData = data2plot, line_size = 1.5)
+  
+  saveIT.fn(chart  = logit_plot,
+            n      = nchart,
+            suffix = "B",
+            w      = 175.027,
+            h      = 80)
+  
+  }
 
 
 
