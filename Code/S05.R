@@ -742,8 +742,8 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
                   use.names = F)) %>%
     mutate(
       incomeGroup = case_when(
-        fin == 1 | fin == 2                  ~ "Financially Insecure",
-        fin == 3 | fin == 4 | fin == 5       ~ "Financially Secure",
+        fin == 1 | fin == 2                  ~ "Low Economic Status",
+        fin == 3 | fin == 4 | fin == 5       ~ "High Economic Status",
         TRUE                                 ~ NA_character_
       ),
       across(!c(fin, incomeGroup, all_of(c("q2c", "q2e", "q2f", "q2g"))),
@@ -774,12 +774,12 @@ figure_POPCG_bars.fn <- function(nchart = 27, data = master_data.df) {
       sd_value = sd_value*100,
       order_value =
         case_when(
-          incomeGroup %in% c("Financially Insecure") ~ 2,
-          incomeGroup %in% c("Financially Secure") ~ 1,
+          incomeGroup %in% c("Low Economic Status") ~ 2,
+          incomeGroup %in% c("High Economic Status") ~ 1,
         ),
-      highlighted = if_else(incomeGroup == "Financially Secure", "Highlighted", "Regular"),
+      highlighted = if_else(incomeGroup == "High Economic Status", "Highlighted", "Regular"),
       labels = paste0(round(value2plot, 0), "%"),
-      incomeGroup = factor(incomeGroup, levels = c("Financially Secure","Financially Insecure"))
+      incomeGroup = factor(incomeGroup, levels = c("High Economic Status", "Low Economic Status"))
       
     )
   
