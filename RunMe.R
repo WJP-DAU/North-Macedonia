@@ -74,7 +74,7 @@ mainCountry <- "North Macedonia"
 # roli_fs.fn()
 
 # Overview - Subfactor Scores (Dots Chart)
-# roli_sfs.fn()
+ roli_sfs.fn()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ##

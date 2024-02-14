@@ -102,7 +102,6 @@ roli_sfs.fn <- function(nchart = 22, data = roli_balcans){
   data2plot <- roli_balcans %>%
     filter(year == 2023) %>%
     select(country, starts_with("sf")) %>%
-    select(-sf52) %>%
     mutate(
       country = if_else(country != mainCountry,
                         "Balcan region",
@@ -120,10 +119,10 @@ roli_sfs.fn <- function(nchart = 22, data = roli_balcans){
       order_var = str_extract(category, "(?<=sf\\d{1})\\d{1}"),
       order_var = as.integer(order_var),
       category = case_when(
-        category == "sf11" ~ "1.1 Limits by legislature     ",
-        category == "sf12" ~ "1.2 Limits by judiciary       ",
+        category == "sf11" ~ "1.1 Limits by the legislature ",
+        category == "sf12" ~ "1.2 Limits by the judiciary   ",
         category == "sf13" ~ "1.3 Independent auditing      ",
-        category == "sf14" ~ "1.4 Government sanctions      ",
+        category == "sf14" ~ "1.4 Sanctions against the \ngoverment",
         category == "sf15" ~ "1.5 Non-governmental checks   ",
         category == "sf16" ~ "1.6 Lawful transition of power",
         
@@ -141,12 +140,13 @@ roli_sfs.fn <- function(nchart = 22, data = roli_balcans){
         category == "sf42" ~ "4.2 Right to life and security",
         category == "sf43" ~ "4.3 Due process of law        ",
         category == "sf44" ~ "4.4 Freedom of expression     ",
-        category == "sf45" ~ "4.5 Freedom ofreligion        ",
+        category == "sf45" ~ "4.5 Freedom of religion       ",
         category == "sf46" ~ "4.6 Right to privacy          ",
         category == "sf47" ~ "4.7 Freedom of association    ",
         category == "sf48" ~ "4.8 Labor rights",
         
         category == "sf51" ~ "5.1 Absence of crime          ",
+        category == "sf52" ~ "5.2 Limit of civil conflict   ",
         category == "sf53" ~ "5.3 Absence of violent redress",
         
         category == "sf61" ~ "6.1 Effective enforcement     ",
@@ -189,6 +189,8 @@ roli_sfs.fn <- function(nchart = 22, data = roli_balcans){
          
          chart <- NM_dotsChart(data         = data2plot,
                                target_var   = "value2plot",
+                               sd_var = NULL,
+                               n_obs  = NULL,
                                grouping_var = "country",
                                labels_var   = "category",
                                colors       = colors4plot,
