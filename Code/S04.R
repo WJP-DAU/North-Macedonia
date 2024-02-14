@@ -463,38 +463,60 @@ jgap.fn <- function(data = master_data.df){
            age, gend, fin, COLOR, relig, ethni, edu, Urban,
            q21, q36a, q41b, q24, starts_with("q25_"), q37c, q37d, q37b, q34_merge) %>%
     mutate(
-      unsatis_fair = case_when(
-        q36a == 0 ~ 1,
-        q36a == 1 ~ 0
+      
+      # The satis_x variables are encoded as binary where 1 means that the legal need was satisfied 
+      # and 0 otherwise
+      
+      satis_fair = case_when(
+        q36a == 0 ~ 0,
+        q36a == 1 ~ 1
       ),
-      unsatis_info = case_when(
-        q41b == 3 | q41b == 4 ~ 1,
-        q41b == 1 | q41b == 2 ~ 0
+      satis_info = case_when(
+        q41b == 3 | q41b == 4 ~ 0,
+        q41b == 1 | q41b == 2 ~ 1
       ),
-      unsatis_profhelp = case_when(  # Remember that case_when() works with a hierarchy system
-        q24 == 1 & q25_2 == 1 ~ 0,
-        q24 == 1 & q25_3 == 1 ~ 0,
-        q24 == 1 & q25_4 == 1 ~ 0,
-        q24 == 1 & q25_8 == 1 ~ 0,
-        (q24 == 1 | q24 == 2 ) & q25_99 != 1 ~ 1
+      satis_profhelp = case_when(  # Remember that case_when() works with a hierarchy system
+        q24 == 1 & q25_2 == 1 ~ 1,
+        q24 == 1 & q25_3 == 1 ~ 1,
+        q24 == 1 & q25_4 == 1 ~ 1,
+        q24 == 1 & q25_8 == 1 ~ 1,
+        (q24 == 1 | q24 == 2 ) & q25_99 == 0 ~ 0
       ),
-      unsatis_cost = case_when(
-        (q37c != 99) & (q37d == 3 | q37d == 4) ~ 1,
+      satis_cost = case_when(
+        (q37c == 1) & (q37d == 3 | q37d == 4) ~ 0,
         (q37c != 99) & q37d != 3 & q37d != 4 & q37d != 99 ~ 1
       ),
-      unsatis_time = case_when(
-        q37b >= 12 ~ 1,
+      satis_time = case_when(
+        q37b >= 12 ~ 0,
         q37b <  12 ~ 1
       ),
-      unsatis_persistance = case_when(
-        q34_merge == 3 ~ 1,
-        q34_merge == 4 ~ 0
+      satis_persistance = case_when(
+        q34_merge == 3 ~ 0,
+        q34_merge == 4 ~ 1
       )
     ) %>%
     rowwise() %>%
     mutate(
-      comp4th = mean(c(unsatis_time, unsatis_cost, unsatis_fair), na.rm = T),
-      a2j_idx = mean(c(unsatis_info, unsatis_profhelp, unsatis_persistance, comp4th), na.rm = T)
+      comp4th  = mean(c(satis_time, satis_cost, satis_fair), 
+                      na.rm = T),
+      a2j_idx  = mean(c(satis_info, satis_profhelp, satis_persistance, comp4th), 
+                      na.rm = T),
+      
+      # Inverting binaries
+      across(
+        starts_with("satis_"),
+        ~1-.x,
+        .names = "inverted_{.col}"
+      ),
+      inverted_comp4th = 1 - comp4th,
+      
+      # Sum of barriers
+      jgap_sum = sum(c(inverted_satis_info, 
+                       inverted_satis_profhelp, 
+                       inverted_satis_persistance, 
+                       inverted_comp4th),
+                     na.rm = T),
+      jgap_sum = if_else(is.na(a2j_idx), NA_real_, jgap_sum)
     ) %>%
     ungroup() %>%
     mutate(
@@ -516,22 +538,31 @@ jgap.fn <- function(data = master_data.df){
     select(
       country, 
       age, gend, fin, COLOR, relig, ethni, edu, Urban,
-      selected_problem, starts_with("unsatis_"), comp4th, a2j_idx, severity
+      selected_problem, starts_with("satis_"), starts_with("inverted_"),
+      comp4th, a2j_idx, jgap_sum, severity
     ) %>%
     mutate(
       across(
-        c(comp4th, a2j_idx),
+        c(comp4th, a2j_idx, jgap_sum),
         ~if_else(severity < 4, NA_real_, .x)
       ),
-      nbarriers = case_when(
-        a2j_idx <= 0.25  ~ "0-1 Barriers",
-        a2j_idx >  0.25 & a2j_idx <= 0.50  ~ "1-2 Barriers",
-        a2j_idx >  0.50 & a2j_idx <= 0.75  ~ "2-3 Barriers",
-        a2j_idx >  0.75 ~ "3-4 Barriers"
+      nbarriers_1 = case_when(
+        jgap_sum >  3                 ~ "3-4 Barriers",
+        jgap_sum >  2 & jgap_sum <= 3 ~ "2-3 Barriers",
+        jgap_sum >  1 & jgap_sum <= 2 ~ "1-2 Barriers",
+        jgap_sum >  0 & jgap_sum <= 1 ~ "0-1 Barriers",
+        jgap_sum == 0                 ~ "No barriers faced"
+      ),
+      nbarriers_2 = case_when(
+        a2j_idx <= 0.25                    ~ "3-4 Barriers",
+        a2j_idx >  0.25 & a2j_idx <= 0.50  ~ "2-3 Barriers",
+        a2j_idx >  0.50 & a2j_idx <= 0.75  ~ "1-2 Barriers",
+        a2j_idx >  0.75 & a2j_idx <  1.00  ~ "0-1 Barriers",
+        a2j_idx ==  1.00                   ~ "No barriers faced"
       ),
       within_jgap = case_when(
-        a2j_idx >  0.65 ~ 1,
-        a2j_idx <= 0.65 ~ 0
+        a2j_idx <  0.65 ~ 1,
+        a2j_idx >= 0.65 ~ 0
       )
     )
   
@@ -554,16 +585,35 @@ jgap_bars.fn <- function(data, nchart = 28){
       )
     ) %>%
     filter(!is.na(category)) %>%
-    mutate(ntotal = sum(count, na.rm = T))
+    mutate(
+      ntotal     = sum(count, na.rm = T),
+      value2plot = count/ntotal,
+      csum       = cumsum(value2plot),
+      labpos     = (csum-value2plot)+(value2plot/2)
+    )
   
   data2plot_2 <- data %>%
-    group_by(country, nbarriers) %>%
+    group_by(country, nbarriers_2) %>%
     summarise(
       count = n()
     ) %>%
-    rename(category = nbarriers) %>%
+    rename(category = nbarriers_2) %>%
     filter(!is.na(category)) %>%
-    mutate(ntotal = sum(count, na.rm = T))
+    mutate(
+      category   = factor(category,
+                          c("No barriers faced",
+                            "0-1 Barriers",
+                            "1-2 Barriers",
+                            "2-3 Barriers",
+                            "3-4 Barriers"))
+    ) %>%
+    arrange(category) %>%
+    mutate(
+      ntotal     = sum(count, na.rm = T),
+      value2plot = count/ntotal,
+      csum       = cumsum(value2plot),
+      labpos     = (csum-value2plot)+(value2plot/2)
+    ) 
   
   data2plot <- bind_rows(data2plot_1, data2plot_2) %>%
     mutate(
@@ -571,10 +621,13 @@ jgap_bars.fn <- function(data, nchart = 28){
         category %in% c("No", "Yes") ~ "Within\nJustice Gap",
         TRUE ~ "Number of\nBarriers",
       ),
-      value2plot = count/ntotal,
-      category = factor(category,
-                        c("Yes", "No",
-                          "3-4 Barriers", "2-3 Barriers", "1-2 Barriers", "0-1 Barriers"))
+      category   = factor(category,
+                          c("Yes", "No",
+                            "3-4 Barriers", 
+                            "2-3 Barriers", 
+                            "1-2 Barriers", 
+                            "0-1 Barriers",
+                            "No barriers faced"))
     )
   
   # Drawing chart
@@ -585,19 +638,20 @@ jgap_bars.fn <- function(data, nchart = 28){
              width    = 0.75, 
              position = "stack") +
     geom_text(aes(x    = group,
-                  y    = value2plot,
+                  y    = labpos,
                   label = paste0(round(value2plot,2)*100,"%")),
-              position = position_stack(vjust = .5),
+              # position = position_stack(vjust = .5),
               color    = "white",
               family   = "Lato Full",
-              fontface = "bold", 
+              fontface = "bold",
               size = 3.514598) +
     scale_fill_manual(values = c("Yes" = "#fa4d57",
                                  "No"  = "#003B88",
-                                 "0-1 Barriers" = "#dfdeff",
-                                 "1-2 Barriers" = "#9b9bd3",
-                                 "2-3 Barriers" = "#5d61ad",
-                                 "3-4 Barriers" = "#000066")) +
+                                 "No barriers faced" = "#dfdeff",
+                                 "0-1 Barriers"      = "#B8B8E0",
+                                 "1-2 Barriers"      = "#7C7EC0",
+                                 "2-3 Barriers"      = "#5d61ad",
+                                 "3-4 Barriers"      = "#000066")) +
     scale_y_continuous(position = "right",
                        limits = c(0, 1.05),
                        breaks = seq(0, 1.05, 0.2),

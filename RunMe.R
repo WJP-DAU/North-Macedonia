@@ -180,7 +180,6 @@ a2j_plot1.fn(a2j_section = a2j_section)
 a2j_plot2.fn(a2j_section = a2j_section)
 
 # Justice Gap
-
 jgap_data.df <- jgap.fn(data = master_data.df)
 jgap_bars.fn(data = jgap_data.df)
 jgap_logit.fn(data = jgap_data.df)
