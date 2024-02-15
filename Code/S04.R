@@ -676,9 +676,9 @@ jgap_bars.fn <- function(data, nchart = 28){
     
 }
 
-jgap_logit.fn <- function(data, nchart = 28){
+jgap_logit.fn <- function(data = jgap_data.df, nchart = 28){
   
-  data_subset.df <- jgap_data.df %>%
+  data_subset.df <- data %>%
     mutate(
       skinColor  =
         case_when(
