@@ -438,8 +438,8 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
   if(group == "income") {
     
     # Defining color palette for income group
-    colors4plot <- c("Low Income" = "#25408b", 
-                     "High Income" = "#de3956")
+    colors4plot <- c("Low Income" = "#de3956", 
+                     "High Income" = "#25408b")
     
   }else if(group == "religion") {
     
