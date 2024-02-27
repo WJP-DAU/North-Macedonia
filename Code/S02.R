@@ -130,7 +130,7 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
   )
   
   # Defining data frame for plot
-  data2plot <- master_data.df %>%
+  data2plot <- data %>%
     filter(year == latestYear & country == mainCountry) %>%
     select(unlist(vars4plot, 
                   use.names = F)) %>%
@@ -141,29 +141,23 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
                .x == 2  ~ "Usually Acceptable",
                .x == 3  ~ "Sometimes Acceptable",
                .x == 4  ~ "Not Acceptable",
-               .x == 99 ~ "DK/NA"
+               .x == 99 ~ "Don't know"
              ))
     ) %>%
     pivot_longer(everything(),
                  names_to   = "variable",
                  values_to  = "statement") %>%
     group_by(variable, statement) %>%
-    summarise(count = n()) %>%
-    mutate(count     = if_else(statement == "DK/NA", 
-                               count/2, 
-                               count),
-           statement = if_else(statement == "DK/NA", 
-                               "Don't know (positive)", 
-                               statement))
+    summarise(count = n())
   
   # Splitting DK/NA
-  data2plot <- data2plot %>%
-    bind_rows(
-      data2plot %>%
-        filter(statement %in% c("Don't know (positive)")) %>%
-        mutate(statement = "Don't know (negative)")
-    ) %>%
-    arrange(variable, statement)
+  # data2plot <- data2plot %>%
+  #   bind_rows(
+  #     data2plot %>%
+  #       filter(statement %in% c("Don't know (positive)")) %>%
+  #       mutate(statement = "Don't know (negative)")
+  #   ) %>%
+  #   arrange(variable, statement)
   
   # Labeling and percentages
   data2plot <- data2plot %>%
@@ -172,11 +166,13 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
     mutate(
       n = sum(count),
       perc = count/n,
-      direction = if_else(statement %in% c("Not Acceptable", "Don't know (positive)"),
-                          "Positive",
-                          "Negative"),
-      value2plot  = if_else(direction == "Positive", perc*100, perc*-100),
-      value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      # direction = if_else(statement %in% c("Not Acceptable", "Don't know (positive)"),
+      #                     "Positive",
+      #                     "Negative"),
+      value2plot  = perc*100,
+      # value2plot  = if_else(direction == "Positive", perc*100, perc*-100),
+      # value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      value_label = "",
       labels = case_when(
         variable == "CAR_q2b" ~ "A public officer asking for a bribe to \nspeed up administrative procedures",
         variable == "CAR_q2f" ~ "A law enforcement officer (police, \ncustoms, immigration, civil guard, \nmilitary police) asking for a bribe",
@@ -195,11 +191,12 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
         variable == "CAR_q2d"  ~ 1,
         variable == "CAR_q2e"  ~ 2
       ),
-      statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
-                          "Don't know",
-                          statement),
+      # statement = if_else(statement %in% c("Don't know (positive)", "Don't know (negative)"),
+      #                     "Don't know",
+      #                     statement),
       statement = factor(statement,
-                         levels = c("Not Acceptable", "Always Acceptable", "Usually Acceptable", "Sometimes Acceptable", "Don't know"))
+                         levels = c("Not Acceptable", "Don't know", "Sometimes Acceptable", "Usually Acceptable", "Always Acceptable")),
+      stack_y   = cumsum(value2plot) - (value2plot/2)
     )
   
   # Defining color palette
@@ -220,15 +217,28 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
            filter(variable %in% vars4plot[[varSet]])
          
          # Applying plotting function
-         chart <- NM_divBars(data           = data2plot,
-                             target_var     = "value2plot",
-                             rows_var       = "labels",
-                             grouping_var   = "statement",
-                             negative_value = "Negative",
-                             colors         = colors4plot,
-                             labels_var     = "value_label",
-                             custom_order   = TRUE,
-                             order_var      = "order_value")
+         # chart <- NM_divBars(data           = data2plot,
+         #                     target_var     = "value2plot",
+         #                     rows_var       = "labels",
+         #                     grouping_var   = "statement",
+         #                     negative_value = "Negative",
+         #                     colors         = colors4plot,
+         #                     labels_var     = "value_label",
+         #                     custom_order   = TRUE,
+         #                     order_var      = "order_value")
+         
+         # Applying plotting function
+         chart <- LAC_barsChart(data           = data2plot,
+                                target_var     = "value2plot",
+                                grouping_var   = "labels",
+                                labels_var     = "value_label",
+                                colors_var     = "statement",
+                                colors         = colors4plot,
+                                direction      = "horizontal",
+                                stacked        = TRUE,
+                                lab_pos        = "stack_y",
+                                custom_order   = TRUE,
+                                order_var      = "order_value")
          
          # Defining height
          if (length(vars4plot[[varSet]]) == 3 ) {
