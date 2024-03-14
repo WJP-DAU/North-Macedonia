@@ -390,7 +390,7 @@ figure_PSOT2.fn <- function(nchart = 14, data = master_data.df) {
   saveIT.fn(chart  = logit_plot,
             n      = nchart,
             suffix = "B",
-            w      = 175.027,
+            w      = 180,
             h      = 84)
   
   
@@ -954,8 +954,8 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
     mutate(
       across(everything(),
              ~ case_when(
-               .x == 0  ~ 0,
-               .x == 1  ~ 1,
+               .x == 1  ~ 0,
+               .x == 0  ~ 1,
                .x == 99 ~ NA_real_,
                is.na(.x) ~ NA_real_
              ))
@@ -971,10 +971,10 @@ figure_POP.fn <- function(nchart = 17, data = master_data.df) {
                  names_to = "group",
                  values_to = "value") %>%
     mutate(
-      x_pos = if_else(variable %in% "EXP_q17g", 1.15,
-                      if_else(variable %in% "q18d", 2.15,
+      x_pos = if_else(variable %in% "EXP_q17g", 5.15,
+                      if_else(variable %in% "q18d", 4.15,
                               if_else(variable %in% "q18e", 3.15, 
-                                      if_else(variable %in% "q18c", 4.15, 5.15)))),
+                                      if_else(variable %in% "q18c", 2.15, 1.15)))),
       variable = case_when(
         variable == "q18a"     ~ "Economic status",
         variable == "EXP_q17g" ~ "Skin color",

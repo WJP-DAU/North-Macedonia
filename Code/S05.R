@@ -254,7 +254,12 @@ figure_POPCG.fn <- function(nchart = 23, data = master_data.df) {
                      .x == 3  ~ 0,
                      .x == 4  ~ 0)),
       across(all_of(c("q18a","q18c")),
-         ~if_else(.x == 99, NA_real_, as.double(.x))),
+             ~ case_when(
+                      .x == 1  ~ 0,
+                      .x == 0  ~ 1,
+                      .x == 99 ~ NA_real_,
+                      is.na(.x) ~ NA_real_
+                    )),
     )
   
   data2plot <- data2plot %>%

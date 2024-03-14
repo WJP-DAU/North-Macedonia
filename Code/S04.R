@@ -792,7 +792,7 @@ jgap_logit.fn <- function(data = jgap_data.df, nchart = 28){
   saveIT.fn(chart  = logit_plot,
             n      = nchart,
             suffix = "B",
-            w      = 175.027,
+            w      = 180,
             h      = 80)
   
   }
