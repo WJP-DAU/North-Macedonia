@@ -172,7 +172,7 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
       value2plot  = perc*100,
       # value2plot  = if_else(direction == "Positive", perc*100, perc*-100),
       # value_label = to_percentage.fn(round(abs(value2plot), 0)),
-      value_label = "",
+      value_label = paste0(round(value2plot, 0), "%"),
       labels = case_when(
         variable == "CAR_q2b" ~ "A public officer asking for a bribe to \nspeed up administrative procedures",
         variable == "CAR_q2f" ~ "A law enforcement officer (police, \ncustoms, immigration, civil guard, \nmilitary police) asking for a bribe",
@@ -196,7 +196,19 @@ figure_ACB.fn <- function(nchart = 8, data = master_data.df){
       #                     statement),
       statement = factor(statement,
                          levels = c("Not Acceptable", "Don't know", "Sometimes Acceptable", "Usually Acceptable", "Always Acceptable")),
-      stack_y   = cumsum(value2plot) - (value2plot/2)
+      value_label = if_else(value2plot > 5,paste0(round(value2plot,0), "%"), ""),
+      order = 
+        case_when(
+          statement %in% "Not Acceptable" ~ 5,
+          statement %in% "Don't know" ~ 4,
+          statement %in% "Sometimes Acceptable" ~ 3,
+          statement %in% "Usually Acceptable" ~ 2,
+          statement %in% "Always Acceptable" ~ 1
+        )
+    ) %>%
+    arrange(variable, order) %>%
+    mutate(
+      stack_y   = cumsum(value2plot) - (value2plot/2),
     )
   
   # Defining color palette

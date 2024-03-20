@@ -69,7 +69,6 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
       n = sum(count),
       perc = count / n,
       value2plot  = perc * 100,
-      value_label = "",
       labels = case_when(
         variable == "CAR_q60_G1" ~ "Censor information that comes \nfrom abroad",
         variable == "CAR_q61_G1" ~ "Censor opinions from opposition \ngroups",
@@ -98,19 +97,29 @@ figure_PAB.fn <- function(nchart = 1, data = master_data.df) {
       # ),
       statement = factor(statement,
                          levels = c("Strongly agree", "Agree", "DK/NA", "Disagree", "Strongly disagree")),
-      order = if_else(statement %in% c("Strongly agree", "Agree"), 1, 0)
+      order = 
+        case_when(
+          statement %in% "Strongly agree" ~ 1,
+          statement %in% "Agree" ~ 2,
+          statement %in% "DK/NA" ~ 3,
+          statement %in% "Disagree" ~ 4,
+          statement %in% "Strongly disagree" ~ 5
+        ),
+      value_label = if_else(value2plot > 5,paste0(round(value2plot,0), "%"), "")
       )
   
   order_value <- data2plot %>%
-    group_by(variable, order) %>%
+    group_by(variable, statement) %>%
     summarise(order_value = sum(perc, na.rm = T)) %>%
-    filter(order == 1) %>%
-    select(!order) %>%
+    filter(statement %in% c("Agree", "Strongly agree")) %>%
+    group_by(variable) %>%
+    summarise(order_value = sum(order_value, na.rm = T)) %>%
     mutate(order_value = 1 - order_value)
   
   data2plot <- data2plot %>%
     left_join(y = order_value, by = "variable") %>%
     group_by(variable) %>%
+    arrange(variable, -order) %>%
     mutate(stack_y = cumsum(value2plot) - (value2plot/2))
   
   # Defining color palette
