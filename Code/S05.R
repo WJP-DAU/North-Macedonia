@@ -47,7 +47,7 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ),
@@ -148,7 +148,7 @@ figure_PFFCG.fn <- function(nchart = 22, data = master_data.df, group = "ethnici
                      "Albanian"       = "#855af0")
   } else{
     # Defining color palette
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
   
@@ -356,7 +356,7 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ),
@@ -453,7 +453,7 @@ figure_PABFS.fn <- function(nchart = 24, data = master_data.df, group = "income"
                      "Sunni Muslim"       = "#3273ff")
   } else{
     # Defining color palette
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
   
@@ -562,7 +562,7 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ),
@@ -661,7 +661,7 @@ figure_PCTFS.fn <- function(nchart = 25, data = master_data.df, group = "income"
                      "Sunni Muslim"       = "#3273ff")
   } else{
     # Defining color palette
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
   
@@ -862,7 +862,7 @@ figure_PCJSI.fn <- function(nchart = 26, data = master_data.df, group = "income"
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ))%>%
@@ -959,7 +959,7 @@ figure_PCJSI.fn <- function(nchart = 26, data = master_data.df, group = "income"
                          "Sunni Muslim"       = "#3273ff")
       } else{
         # Defining color palette
-        colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+        colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                          "Gov. Supporter"       = "#3273ff")
       }
       

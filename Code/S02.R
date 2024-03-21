@@ -402,7 +402,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
                           "Positive",
                           "Negative"),
       value2plot = if_else(direction == "Positive", perc*100, perc*-100),
-      value_label = to_percentage.fn(round(abs(value2plot), 0)),
+      value_label = if_else(abs(value2plot)>5, to_percentage.fn(round(abs(value2plot), 0)), NA_character_),
       labels = case_when(
         variable == "CAR_q8a"  ~ "Police Officers",
         variable == "CAR_q8b"  ~ "Judges and Magistrates",
@@ -580,7 +580,7 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ),
@@ -662,7 +662,7 @@ figure_PCTE.fn <- function(nchart = 12, data = master_data.df, group = "religion
                      "Sunni Muslim"       = "#3273ff")
   } else{
     # Defining color palette
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
   

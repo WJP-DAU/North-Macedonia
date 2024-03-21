@@ -637,7 +637,8 @@ jgap_bars.fn <- function(data, nchart = 28){
                  fill = category),
              width    = 0.75, 
              position = "stack") +
-    geom_text(aes(x    = group,
+  geom_hline(yintercept = 0.5, color = "#fa4d57", size = 1.5) +
+  geom_text(aes(x    = group,
                   y    = labpos,
                   label = paste0(round(value2plot,2)*100,"%")),
               # position = position_stack(vjust = .5),

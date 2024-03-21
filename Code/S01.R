@@ -203,7 +203,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df, group = "religion
       govSupp = case_when(
         !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
         CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+        CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
         CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
         is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
       ),
@@ -282,7 +282,7 @@ figure_PABGS.fn <- function(nchart = 2, data = master_data.df, group = "religion
                      "Sunni Muslim"       = "#3273ff")
   } else{
     # Defining color palette
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
   }
   
@@ -570,7 +570,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion")
     govSupp = case_when(
       !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
       CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-      CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+      CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
       CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
       is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
     ))
@@ -634,7 +634,7 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion")
              ~paste0("<span style='color:#524F4C;font-size:3.514598mm;font-weight:bold'>",
                      label,
                      "</span>")),
-      label = if_else(gvar %!in% c("Orthodox Christian", "Non Gov. Supporter"),
+      label = if_else(gvar %!in% c("Orthodox Christian", "Non-Gov. Supporter"),
                       NA_character_, 
                       label)
       ) %>%
@@ -655,10 +655,10 @@ figure_FFD.fn <- function(nchart = 5, data = master_data.df, group = "religion")
     
     data2plot <- data2plot %>%
       mutate(
-        latestYear = "Non Gov. Supporter"
+        latestYear = "Non-Gov. Supporter"
       )
     
-    colors4plot <- c("Non Gov. Supporter" = "#a90099", 
+    colors4plot <- c("Non-Gov. Supporter" = "#a90099", 
                      "Gov. Supporter"       = "#3273ff")
     
   }
@@ -768,7 +768,7 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
         case_when(
           !is.na(CAR_q59_G1) & !is.na(CAR_q59_G2) ~ NA_character_,
           CAR_q59_G1 == 1   | CAR_q59_G2 == 1     ~ "Gov. Supporter",
-          CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non Gov. Supporter",
+          CAR_q59_G1 == 2   | CAR_q59_G2 == 2     ~ "Non-Gov. Supporter",
           CAR_q59_G1 == 99  | CAR_q59_G2 == 99    ~ NA_character_,
           is.na(CAR_q59_G1) & is.na(CAR_q59_G2)   ~ NA_character_
           ),
@@ -783,13 +783,13 @@ figure_PACG.fn <- function(nchart = 6, data = master_data.df) {
       value2plot  = value2plot * 100,
       highlighted = if_else(govSupp == "Gov. Supporter", "Highlighted", "Regular"),
       labels      = to_percentage.fn(value2plot),
-      govSupp      = factor(govSupp, levels = c("Gov. Supporter", "Non Gov. Supporter"))
+      govSupp      = factor(govSupp, levels = c("Gov. Supporter", "Non-Gov. Supporter"))
     )
   
   # Defining colors
   
   colors4plot <- c("Gov. Supporter"       = "#3273ff",
-                   "Non Gov. Supporter"   = "#a90099")
+                   "Non-Gov. Supporter"   = "#a90099")
   names(colors4plot) <- c("Highlighted", "Regular")
   
   # Saving data points
