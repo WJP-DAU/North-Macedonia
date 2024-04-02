@@ -410,7 +410,7 @@ figure_BVAG.fn <- function(nchart = 10, data = master_data.df) {
         variable == "CAR_q8e"  ~ "Customs Officers",
         variable == "CAR_q8i"  ~ "Car Registration Agency Officers",
         variable == "CAR_q8k"  ~ "Elected Representatives",
-        variable == "NM_q5_2d" ~ "Public Defence Attorneys"
+        variable == "NM_q5_2d" ~ "Public Defense Attorneys"
       ),
       order_value = case_when(
         variable == "CAR_q8a"  ~ 5,
