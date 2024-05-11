@@ -152,6 +152,20 @@
 	#FundamentalFreedoms2 .col-md-6.mb-5{
 		margin-bottom: 2rem !important;
 	}
+
+	#ROLI2{
+		padding-top: 2rem;
+	}
+	#ROLI2 .col-md-6.mb-5.mb-print-none{
+		margin-bottom: 0rem !important;
+	}
+	#ROLI2 .row.justify-content-center.mt-4.foot-note.mt-print-none{
+		margin-top: 2rem !important;
+		height:20px;
+	}
+	#ROLI2 .col-md-6.mb-5{
+		margin-bottom: 2rem !important;
+	}
 	#FundamentalFreedoms4{
 		padding-top: 0.5rem;
 	}
@@ -286,7 +300,11 @@
 		max-width: 1100px;
 	}
 	*/
-	#Authoritarianism2, #Authoritarianism3, #FundamentalFreedoms2, #Corruption3{
+	#ROLI2 .img-chart{
+		width: auto;
+		height: 220px;
+	}
+	#Authoritarianism2, #Authoritarianism3, #FundamentalFreedoms2, #Corruption3, #ROLI2{
 		padding-top: 3rem;
 	}
 	#FundamentalFreedoms3, #FundamentalFreedoms4, #FundamentalFreedoms5{
@@ -300,6 +318,7 @@
 		width: auto;
 		height: 220px;
 	}
+
 	
 	#Corruption3 .w-90.img-chart{
 		margin-bottom: 2rem;
@@ -514,6 +533,27 @@
 		width: 80%;
 	}
 	#FundamentalFreedoms2 .col-12 .mb-4{
+		margin-bottom: 1rem!important;
+	}
+	/* ROLI2 chart 2 page 13 */
+	#ROLI2{
+		height: 34.47cm;
+	}
+	#ROLI2 .col-md-6 {
+		-ms-flex: 0 0 50%;
+		flex: 0 0 50%;
+		max-width: 50%;
+	}
+	#ROLI2 .col-md-6.mb-5, #ROLI2 .col-md-6.mb-5 p{
+		margin-bottom: 0px !important;
+	}
+	#ROLI2 .col-md-6 br{
+		display: none;
+	}
+	#ROLI2 .img-chart{
+		width: 80%;
+	}
+	#ROLI2 .col-12 .mb-4{
 		margin-bottom: 1rem!important;
 	}
 	/* chart 5 page 15 */
