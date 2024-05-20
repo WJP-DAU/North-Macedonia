@@ -178,6 +178,9 @@
 	.w-90.img-chart{
 		width: 100%;
 	}
+	.w-10.img-chart{
+		width: 50%;
+	}
 	.w-85.img-chart{
 		width: 100%;
 		max-width: 100%;
